@@ -1,0 +1,22 @@
+.DS_Store
+node_modules/
+/dist/
+/server/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/test/unit/coverage/
+/test/e2e/reports/
+selenium-debug.log
+package-lock.json
+forge商城项目前后台接口设计文案.rtf
+
+
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
