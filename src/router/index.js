@@ -4,15 +4,15 @@ import Home from '@/views/home/index'
 import User from '@/views/user/index'
 import Items from '@/views/items/index'
 import Cart from '@/views/order/index'
+// import Login from '@/views/login/index'
 const Tabbar = () => import('@/components/Tabbar');
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
+const router = new Router({
+  routes: [{
       path: '/',
       name: 'index',
-      components:{
+      components: {
         default: Home,
         tabbar: Tabbar
       },
@@ -24,7 +24,7 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      components:{
+      components: {
         default: Home,
         tabbar: Tabbar
       },
@@ -34,21 +34,26 @@ export default new Router({
       }
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/login/index'),
+    },
+    {
       path: '/order',
       name: 'cart',
-      components:{
+      components: {
         default: Cart,
         tabbar: Tabbar
       },
       meta: {
-        requiresAuth: false,
+        requiresAuth: true,
         keepAlive: true
       }
     },
     {
       path: '/items',
       name: 'items',
-      components:{
+      components: {
         default: Items,
         tabbar: Tabbar
       },
@@ -57,11 +62,11 @@ export default new Router({
         keepAlive: true
       }
     },
-    
+
     {
       path: '/user',
       name: 'user',
-      components:{
+      components: {
         default: User,
         tabbar: Tabbar
       },
@@ -72,3 +77,21 @@ export default new Router({
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log(to);
+  if (to.matched.some(r => r.meta.requiresAuth)) {
+    // store.getters.loginStatus
+    if (true) {
+      next()
+    } else {
+      next({
+        path: '/login'
+      })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router;
