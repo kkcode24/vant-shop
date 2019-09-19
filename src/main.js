@@ -2,12 +2,15 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vant from 'vant';
+import { Lazyload } from 'vant';
 import 'vant/lib/index.css';
 import 'lib-flexible/flexible';
 
 import App from './App'
 import router from './router'
 
+
+Vue.use(Lazyload);
 Vue.use(Vant);
 
 
