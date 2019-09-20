@@ -34,31 +34,13 @@
           <div class="cap-search">
             <van-search placeholder="输入产品的关键字，如“苹果”" />
           </div>
-          <div class="showcase-search-wap__mask">
-            <input
-              @focus="activeSearch=true"
-              type="text"
-            >
+          <div
+            @click="$router.push({ name: 'search' })"
+            class="showcase-search-mask"
+          >
           </div>
         </div>
       </div>
-      <section
-        class="shop-search"
-        v-show="activeSearch"
-      >
-        <div class="cap-search-box__view">
-          <form class="shop-search__form">
-            <van-search
-              v-model="value"
-              placeholder="输入产品的关键字，如“苹果”"
-              show-action
-              @search="onSearch"
-              @cancel="onCancel"
-            />
-          </form>
-        </div>
-        <section class="shop-search__list-wrap"></section>
-      </section>
     </div>
   </div>
 </template>
@@ -80,12 +62,6 @@ export default {
     };
   },
   methods: {
-    onSearch() {
-      console.log(this.value);
-    },
-    onCancel() {
-      this.activeSearch = false;
-    }
   }
 };
 </script>
@@ -123,40 +99,13 @@ export default {
       position: relative;
       height: 38px;
       width: 100%;
-      .showcase-search-wap__mask {
+      .showcase-search-mask {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
         background-color: transparent;
-        input {
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-        }
-      }
-    }
-  }
-
-  .shop-search {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: #fff;
-    overflow: hidden;
-    z-index: 99999;
-    .cap-search-box__view {
-      .van-search--show-action {
-        background: rgb(242, 242, 242) !important;
-        .van-search__content--square {
-          background: white;
-        }
-      }
-      .van-search__action div {
-        color: #06bf04;
       }
     }
   }

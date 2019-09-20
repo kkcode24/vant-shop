@@ -39,6 +39,11 @@ const router = new Router({
       component: () => import('@/views/login/index'),
     },
     {
+      path: '/search',
+      name: 'search',
+      component: () => import('@/views/search/index'),
+    },
+    {
       path: '/order',
       name: 'cart',
       components: {
@@ -79,7 +84,6 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to);
   if (to.matched.some(r => r.meta.requiresAuth)) {
     // store.getters.loginStatus
     if (true) {
