@@ -4,7 +4,6 @@ import Home from '@/views/home/index'
 import User from '@/views/user/index'
 import Items from '@/views/items/index'
 import Cart from '@/views/order/index'
-// import Login from '@/views/login/index'
 const Tabbar = () => import('@/components/Tabbar');
 Vue.use(Router)
 
@@ -44,6 +43,66 @@ const router = new Router({
       component: () => import('@/views/search/index'),
     },
     {
+      path: '/coupon',
+      name: 'coupon',
+      components: {
+        default: () => import('@/views/coupon/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/news',
+      name: 'news',
+      components: {
+        default: () => import('@/views/news/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/salesman',
+      name: 'salesman',
+      components: {
+        default: () => import('@/views/salesman/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/groupDiscount',
+      name: 'groupDiscount',
+      components: {
+        default: () => import('@/views/groupDiscount/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/integralMall',
+      name: 'integralMall',
+      components: {
+        default: () => import('@/views/integralMall/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
       path: '/order',
       name: 'cart',
       components: {
@@ -67,7 +126,7 @@ const router = new Router({
         keepAlive: true
       }
     },
-
+    
     {
       path: '/user',
       name: 'user',
@@ -77,6 +136,18 @@ const router = new Router({
       },
       meta: {
         requiresAuth: false,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/user/signin',
+      name: 'signin',
+      components: {
+        default: () => import('@/views/user/signin/index'),
+        tabbar: Tabbar
+      },
+      meta: {
+        requiresAuth: true,
         keepAlive: true
       }
     },

@@ -42,6 +42,72 @@
         </div>
       </div>
     </div>
+
+    <div class="modules-entry">
+      <van-row
+        type="flex"
+        justify="space-around"
+      >
+        <van-col span="6">
+          <div @click="$router.push({ name: 'coupon' })" class="router-image">
+            <img :src="modulesEntry.coupon">
+          </div>
+          <div class="nav-title">
+            领券中心
+          </div>
+        </van-col>
+        <van-col span="6">
+          <div @click="$router.push({ name: 'news' })" class="router-image">
+            <img :src="modulesEntry.news">
+          </div>
+          <div class="nav-title">
+            新品预售
+          </div>
+        </van-col>
+        <van-col span="6">
+          <div @click="$router.push({ name: 'signin' })" class="router-image">
+            <img :src="modulesEntry.signin">
+          </div>
+          <div class="nav-title">
+            每日签到
+          </div>
+        </van-col>
+        <van-col span="6">
+          <div @click="$router.push({ name: 'salesman' })" class="router-image">
+            <img :src="modulesEntry.distribution">
+          </div>
+          <div class="nav-title">
+            我要代言
+          </div>
+        </van-col>
+      </van-row>
+      <van-row
+        type="flex"
+        justify="space-around"
+      >
+        <van-col span="12">
+          <div @click="$router.push({ name: 'groupDiscount' })" class="router-big-image">
+            <img :src="modulesEntry.ptzk">
+          </div>
+        </van-col>
+        <van-col span="12">
+          <div @click="$router.push({ name: 'integralMall' })"  class="router-big-image">
+            <img :src="modulesEntry.jfsc">
+          </div>
+        </van-col>
+      </van-row>
+      <van-row
+        type="flex"
+        justify="space-around"
+      >
+        <van-col span="24">
+          <div class="router-big-image">
+            <img :src="modulesEntry.mzsx">
+          </div>
+        </van-col>
+      </van-row>
+    </div>
+
   </div>
 </template>
 
@@ -58,11 +124,19 @@ export default {
         "../../../static/images/index/swipe2.jpg",
         "../../../static/images/index/swipe3.jpg",
         "../../../static/images/index/swipe4.jpg"
-      ]
+      ],
+      modulesEntry: {
+        coupon: "../../../static/images/index/coupon.png",
+        news: "../../../static/images/index/news.png",
+        signin: "../../../static/images/index/signin.png",
+        distribution: "../../../static/images/index/distribution.png",
+        ptzk: "../../../static/images/index/ptzk.png",
+        jfsc: "../../../static/images/index/jfsc.png",
+        mzsx: "../../../static/images/index/mzsx.png"
+      }
     };
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
@@ -107,6 +181,25 @@ export default {
         bottom: 0;
         background-color: transparent;
       }
+    }
+  }
+}
+.modules-entry {
+  padding: 0 10px;
+  .router-image {
+    text-align: center;
+    img {
+      width: 75px;
+      height: 75px;
+    }
+  }
+  .nav-title {
+    text-align: center;
+  }
+  .router-big-image {
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
 }
