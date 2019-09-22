@@ -1,6 +1,7 @@
 const shoppingCar = {
   state: {
-    show: false
+    show: false,
+    goodsList: []
   },
 
   mutations: {
@@ -9,6 +10,9 @@ const shoppingCar = {
     },
     CLOSE_SHOPPING (state) {
         state.show = false
+    },
+    ADD_GOODS (state) {
+        state.goodsList = []
     }
   },
 
