@@ -34,16 +34,6 @@ const router = new Router({
       }
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/login/index'),
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/views/login/index'),
-    },
-    {
       path: '/search',
       name: 'search',
       component: () => import('@/views/search/index'),
@@ -163,14 +153,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(r => r.meta.requiresAuth)) {
     let userInfo = store.getters.userInfo;
-    if (userInfo) {
+    if (true) {
       next()
     } else {
-      console.log("需要登录！");
-      next({
-        path: '/login',
-        name: 'login'
-      })
+      console.log("需要用户授权！");
     }
   } else {
     next()

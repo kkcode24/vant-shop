@@ -1,6 +1,6 @@
 
 const USERINfO = 'USERINfO';
-const LOGINSTATUS = 'LoginStatus';
+const ISAUTH = 'isAuth';
 
 export function getUserInfo() {
   return localStorage.getItem(USERINfO)
@@ -10,14 +10,10 @@ export function setUserInfo(data) {
   localStorage.setItem(USERINfO, data)
 }
 
-export function removeUserInfo() {
-  localStorage.removeItem(USERINfO)
+export function getUserAuth() {
+  return localStorage.getItem(ISAUTH)
 }
 
-export function clearLocalStorage() {
-  localStorage.clear()
-}
-
-export function getLoginStatus() {
-  return localStorage.getItem(LOGINSTATUS)
+export function setUserAuth(data) {
+  localStorage.setItem(ISAUTH, data)
 }

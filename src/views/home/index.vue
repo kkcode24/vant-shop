@@ -137,10 +137,16 @@ export default {
     };
   },
   mounted() {
+    this.showAuth();
   },
   methods: {
+    showAuth(){
+      if(!this.$store.getters.isAuth){
+        this.$store.commit('OPEN_AUTH');
+      }
+    },
     showShop() {
-      this.$store.commit('OPEN_SHOPPING')
+      this.$store.commit('OPEN_SHOPPING');
     }
   }
 };
