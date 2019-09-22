@@ -5,6 +5,7 @@
             closeable
             close-icon="close"
             position="bottom"
+            style="overflow: visible;"
         >
             <div class="van-sku-container">
                 <div class="van-hairline--bottom van-sku-header">
