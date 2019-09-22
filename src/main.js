@@ -5,20 +5,21 @@ import Vant from 'vant';
 import { Lazyload } from 'vant';
 import 'vant/lib/index.css';
 import 'lib-flexible/flexible';
-
+import store from './store'
 import App from './App'
 import router from './router'
-
+import components from '@/components'
 
 Vue.use(Lazyload);
 Vue.use(Vant);
-
+Vue.use(components);
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

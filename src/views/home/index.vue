@@ -101,7 +101,7 @@
         justify="space-around"
       >
         <van-col span="24">
-          <div class="router-big-image">
+          <div class="router-big-image" @click="showShop">
             <img :src="modulesEntry.mzsx">
           </div>
         </van-col>
@@ -136,7 +136,13 @@ export default {
       }
     };
   },
-  methods: {}
+  mounted() {
+  },
+  methods: {
+    showShop() {
+      this.$store.commit('OPEN_SHOPPING')
+    }
+  }
 };
 </script>
 
