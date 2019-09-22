@@ -17,9 +17,7 @@
               >
             </div>
           </van-col>
-          <van-col
-            span="20"
-          >
+          <van-col span="20">
             <div class="user-info">
               <van-cell
                 :title="user.nickname"
@@ -59,15 +57,16 @@ export default {
     };
   },
   mounted() {
-    this.$store
-      .dispatch("getActionWxUserInfo")
-      .then(res => {
-        console.log(res);
-        this.user = res;
-      })
-      .catch(res => {
-        console.log(res);
-      });
+    if (!this.$store.getters.isAuth) {
+      this.$store
+        .dispatch("getActionWxUserInfo")
+        .then(res => {
+          this.user = res;
+        })
+        .catch(res => {
+          console.log(res);
+        });
+    }
   },
   methods: {
     closePopup() {

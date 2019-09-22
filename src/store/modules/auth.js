@@ -2,11 +2,10 @@ import { UserInfo,goAuth } from '@/api/user'
 import { getUserInfo, setUserInfo,getUserAuth,setUserAuth } from '@/store/localStorage'
 const auth = {
   state: {
-    isAuth: JSON.parse(getUserAuth()),
+    // 用户授权状态
+    isAuth: JSON.parse(getUserAuth()) || false,
     // 是否显示Popup授权框
     show: false,
-    // 用户登录状态
-    loginStatus: JSON.parse(localStorage.getItem('loginStatus')) || false,
     // 用户登录信息
     userInfo: JSON.parse(getUserInfo())
   },
