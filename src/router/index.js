@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '@/store/index'
 import Router from 'vue-router'
 import Home from '@/views/home/index'
 import User from '@/views/user/index'
@@ -35,6 +36,11 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
+      component: () => import('@/views/login/index'),
+    },
+    {
+      path: '/register',
+      name: 'register',
       component: () => import('@/views/login/index'),
     },
     {
@@ -156,12 +162,14 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(r => r.meta.requiresAuth)) {
-    // store.getters.loginStatus
-    if (true) {
+    let userInfo = store.getters.userInfo;
+    if (userInfo) {
       next()
     } else {
+      console.log("需要登录！");
       next({
-        path: '/login'
+        path: '/login',
+        name: 'login'
       })
     }
   } else {

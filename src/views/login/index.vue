@@ -4,7 +4,7 @@
       <div class="welcome"></div>
       <div class="login-form">
         <div class="login-inp">
-          <label>用户名</label>
+          <label>手机号</label>
           <input
             type="text"
             placeholder="请输入用户名"
@@ -26,9 +26,6 @@
       <div class="login-txt">
         <span @click="redirects('/register')">立即注册</span>|<span @click="tip()">忘记密码？</span></div>
     </div>
-    <div style="text-align:center;">
-    </div>
-
   </div>
 
 </template>
@@ -40,9 +37,24 @@ export default {
     return {
       username: null,
       password: null,
-      btnName: "立即登录"
+      btnName: "立即登录",
+      redirect: "/"
     };
   },
+  watch: {
+    $route: {
+      handler: function(route) {
+        if (route.name == "login") {
+          this.btnName = "立即登录";
+        } else if (route.name == "register") {
+          this.btnName = "立即注册";
+        }
+        this.redirect = route.query && route.query.redirect;
+      },
+      immediate: true
+    }
+  },
+  mounted() {},
   methods: {
     submit(username, password) {
       let data = {
@@ -52,23 +64,15 @@ export default {
       if (data.username == null || data.password == null) {
         this.$toast("用户名和密码不能为空 o(╥﹏╥)o");
       } else {
-        this.axios.post("/login", data).then(res => {
-          if (res.status == 200) {
-            console.log(res.data);
-          }
-        });
-      }
-      if (
-        this.$route.name == "login" &&
-        data.username !== null &&
-        data.password !== null
-      ) {
-        this.btnName = "立即登录";
-        this.redirects("/");
-        this.$toast("登录成功");
-      } else if (this.$route.name == "register") {
-        this.btnName = "立即注册";
-        this.redirects("/login");
+        this.$store
+          .dispatch("LoginByUsername", data)
+          .then(() => {
+            this.$toast("登录成功");
+            this.$router.push({ path: this.redirect || "/" });
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
     },
     redirects(url) {
