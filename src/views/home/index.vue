@@ -198,6 +198,7 @@ export default {
 }
 .modules-entry {
   padding: 0 10px;
+  background: #fff;
   .router-image {
     text-align: center;
     img {

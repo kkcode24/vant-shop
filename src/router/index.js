@@ -147,6 +147,21 @@ const router = new Router({
         keepAlive: true
       }
     },
+    {
+      path: '/user/address',
+      name: 'address',
+      component: () => import('@/views/user/address/index'),
+    },
+    {
+      path: '/user/address/add',
+      name: 'addAddress',
+      component: () => import('@/views/user/address/add')
+    },
+    {
+      path: '/user/address/edit',
+      name: 'editAddress',
+      component: () => import('@/views/user/address/edit')
+    }
   ]
 })
 
