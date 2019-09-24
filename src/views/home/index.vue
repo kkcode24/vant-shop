@@ -49,7 +49,10 @@
         justify="space-around"
       >
         <van-col span="6">
-          <div @click="$router.push({ name: 'coupon' })" class="router-image">
+          <div
+            @click="$router.push({ name: 'coupon' })"
+            class="router-image"
+          >
             <img :src="modulesEntry.coupon">
           </div>
           <div class="nav-title">
@@ -57,7 +60,10 @@
           </div>
         </van-col>
         <van-col span="6">
-          <div @click="$router.push({ name: 'news' })" class="router-image">
+          <div
+            @click="$router.push({ name: 'news' })"
+            class="router-image"
+          >
             <img :src="modulesEntry.news">
           </div>
           <div class="nav-title">
@@ -65,7 +71,10 @@
           </div>
         </van-col>
         <van-col span="6">
-          <div @click="$router.push({ name: 'signin' })" class="router-image">
+          <div
+            @click="$router.push({ name: 'signin' })"
+            class="router-image"
+          >
             <img :src="modulesEntry.signin">
           </div>
           <div class="nav-title">
@@ -73,7 +82,10 @@
           </div>
         </van-col>
         <van-col span="6">
-          <div @click="$router.push({ name: 'salesman' })" class="router-image">
+          <div
+            @click="$router.push({ name: 'salesman' })"
+            class="router-image"
+          >
             <img :src="modulesEntry.distribution">
           </div>
           <div class="nav-title">
@@ -86,12 +98,18 @@
         justify="space-around"
       >
         <van-col span="12">
-          <div @click="$router.push({ name: 'groupDiscount' })" class="router-big-image">
+          <div
+            @click="$router.push({ name: 'groupDiscount' })"
+            class="router-big-image"
+          >
             <img :src="modulesEntry.ptzk">
           </div>
         </van-col>
         <van-col span="12">
-          <div @click="$router.push({ name: 'integralMall' })"  class="router-big-image">
+          <div
+            @click="$router.push({ name: 'integralMall' })"
+            class="router-big-image"
+          >
             <img :src="modulesEntry.jfsc">
           </div>
         </van-col>
@@ -101,13 +119,192 @@
         justify="space-around"
       >
         <van-col span="24">
-          <div class="router-big-image" @click="showShop">
+          <div class="router-big-image">
             <img :src="modulesEntry.mzsx">
           </div>
         </van-col>
       </van-row>
     </div>
+    <!-- 分类 -->
+    <van-sticky>
+      <van-tabs
+        v-model="active"
+        swipeable
+      >
+        <van-tab
+          v-for="index in 8"
+          :title="'选项 ' + index"
+          :key="index"
+        ></van-tab>
+      </van-tabs>
+    </van-sticky>
 
+    <div class="goods">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <div class="goods-list-wrapper">
+          <ul class="cap-goods-layout-container">
+            <li class="good-item">
+              <a class="cap-goods-layout__item">
+                <div class="cap-goods__photo">
+                  <div
+                    class="cap-goods__img--cover"
+                    v-lazy:background-image="appleImg"
+                  />
+                </div>
+                <div class="cap-goods-layout__info">
+                  <div class="cap-goods-layout__info-title">
+                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                  </div>
+                  <div class="cap-goods-layout__info-price">
+                    <div class="price-info">
+                      <span class="sale-price">
+                        <div class="cap-theme-view">
+                          <span class="price-tag">¥</span>39
+                        </div>
+                      </span>
+                    </div>
+                    <div
+                      @click.stop="showShop"
+                      class="cap-goods-layout__buy-btn-wrapper"
+                    >
+                      <van-icon
+                        class="cap-goods-layout__buy-btn"
+                        name="add-o"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li class="good-item">
+              <a class="cap-goods-layout__item">
+                <div class="cap-goods__photo">
+                  <div
+                    class="cap-goods__img--cover"
+                    v-lazy:background-image="goodsImg"
+                  />
+                </div>
+                <div class="cap-goods-layout__info">
+                  <div class="cap-goods-layout__info-title">
+                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                  </div>
+                  <div class="cap-goods-layout__info-price">
+                    <div class="price-info">
+                      <span class="sale-price">
+                        <div class="cap-theme-view">
+                          <span class="price-tag">¥</span>39
+                        </div>
+                      </span>
+                    </div>
+                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                      <van-icon
+                        class="cap-goods-layout__buy-btn"
+                        name="add-o"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li class="good-item">
+              <a class="cap-goods-layout__item">
+                <div class="cap-goods__photo">
+                  <div
+                    class="cap-goods__img--cover"
+                    v-lazy:background-image="appleImg"
+                  />
+                </div>
+                <div class="cap-goods-layout__info">
+                  <div class="cap-goods-layout__info-title">
+                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                  </div>
+                  <div class="cap-goods-layout__info-price">
+                    <div class="price-info">
+                      <span class="sale-price">
+                        <div class="cap-theme-view">
+                          <span class="price-tag">¥</span>39
+                        </div>
+                      </span>
+                    </div>
+                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                      <van-icon
+                        class="cap-goods-layout__buy-btn"
+                        name="add-o"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li class="good-item">
+              <a class="cap-goods-layout__item">
+                <div class="cap-goods__photo">
+                  <div
+                    class="cap-goods__img--cover"
+                    v-lazy:background-image="appleImg"
+                  />
+                </div>
+                <div class="cap-goods-layout__info">
+                  <div class="cap-goods-layout__info-title">
+                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                  </div>
+                  <div class="cap-goods-layout__info-price">
+                    <div class="price-info">
+                      <span class="sale-price">
+                        <div class="cap-theme-view">
+                          <span class="price-tag">¥</span>39
+                        </div>
+                      </span>
+                    </div>
+                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                      <van-icon
+                        class="cap-goods-layout__buy-btn"
+                        name="add-o"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li class="good-item">
+              <a class="cap-goods-layout__item">
+                <div class="cap-goods__photo">
+                  <div
+                    class="cap-goods__img--cover"
+                    v-lazy:background-image="goodsImg"
+                  />
+                </div>
+                <div class="cap-goods-layout__info">
+                  <div class="cap-goods-layout__info-title">
+                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                  </div>
+                  <div class="cap-goods-layout__info-price">
+                    <div class="price-info">
+                      <span class="sale-price">
+                        <div class="cap-theme-view">
+                          <span class="price-tag">¥</span>39
+                        </div>
+                      </span>
+                    </div>
+                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                      <van-icon
+                        class="cap-goods-layout__buy-btn"
+                        name="add-o"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </van-list>
+    </div>
   </div>
 </template>
 
@@ -133,20 +330,42 @@ export default {
         ptzk: "../../../static/images/index/ptzk.png",
         jfsc: "../../../static/images/index/jfsc.png",
         mzsx: "../../../static/images/index/mzsx.png"
-      }
+      },
+      // 当前选中分类
+      active: 0,
+      list: [],
+      loading: false,
+      finished: false,
+      goodsImg: "../../../static/images/index/goods.webp",
+      appleImg: "../../../static/images/index/apple.webp"
     };
   },
   mounted() {
     this.showAuth();
   },
   methods: {
-    showAuth(){
-      if(!this.$store.getters.isAuth){
-        this.$store.commit('OPEN_AUTH');
+    showAuth() {
+      if (!this.$store.getters.isAuth) {
+        this.$store.commit("OPEN_AUTH");
       }
     },
     showShop() {
-      this.$store.commit('OPEN_SHOPPING');
+      this.$store.commit("OPEN_SHOPPING");
+    },
+    onLoad() {
+      // 异步更新数据
+      setTimeout(() => {
+        for (let i = 0; i < 20; i++) {
+          this.list.push(this.list.length + 1);
+        }
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.list.length >= 40) {
+          this.finished = true;
+        }
+      }, 500);
     }
   }
 };
@@ -213,6 +432,101 @@ export default {
     img {
       width: 100%;
       height: 100%;
+    }
+  }
+}
+.goods {
+  padding-bottom: 100px;
+  .goods-list-wrapper {
+    overflow: hidden;
+    ul.cap-goods-layout-container {
+      overflow: hidden;
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-left: -5px;
+      margin-right: -5px;
+      .good-item {
+        float: left;
+        width: 33.33%;
+        a.cap-goods-layout__item {
+          display: block;
+          margin: 5px;
+          position: relative;
+          min-height: 50px;
+          color: #333;
+          background: transparent;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          overflow: hidden;
+          .cap-goods__photo {
+            padding-top: 100%;
+            position: relative;
+            .cap-goods__img--cover {
+              width: 100%;
+              background-position: 50%;
+              background-repeat: no-repeat;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              background-size: cover;
+            }
+          }
+          .cap-goods-layout__info {
+            padding: 0 10px;
+            position: relative;
+            .cap-goods-layout__info-title {
+              margin: 10px 0 0;
+              text-align: left;
+              h3.title {
+                font-weight: normal;
+                font-size: 12px;
+                height: 30px;
+                max-height: 30px;
+                overflow: hidden;
+                word-break: break-all;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+              }
+            }
+            .cap-goods-layout__info-price {
+              position: relative;
+              width: 100%;
+              .price-info {
+                font-weight: normal;
+                padding-right: 25px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                align-content: center;
+                .sale-price {
+                  color: #f44;
+                  height: 14px;
+                  line-height: 14px;
+                  font-size: 14px;
+                }
+              }
+              .cap-goods-layout__buy-btn-wrapper {
+                position: absolute;
+                top: 5px;
+                right: 0;
+                height: 20px;
+                .cap-goods-layout__buy-btn {
+                  color: #f44;
+                  font-size: 20px;
+                  height: 20px;
+                  line-height: 20px;
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
