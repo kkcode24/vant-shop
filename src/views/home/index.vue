@@ -125,20 +125,7 @@
         </van-col>
       </van-row>
     </div>
-    <!-- 分类 -->
-    <van-sticky>
-      <van-tabs
-        v-model="active"
-        swipeable
-      >
-        <van-tab
-          v-for="index in 8"
-          :title="'选项 ' + index"
-          :key="index"
-        ></van-tab>
-      </van-tabs>
-    </van-sticky>
-
+    <!-- 水果list -->
     <div class="goods">
       <van-list
         v-model="loading"
@@ -309,6 +296,7 @@
 </template>
 
 <script>
+import {getNewFruits,getAllItems} from '@/api/index'
 export default {
   name: "home",
   data() {
@@ -341,9 +329,36 @@ export default {
     };
   },
   mounted() {
-    this.showAuth();
+    this.initView().then((process)=>{
+      if(process==='done'){
+        this.showAuth();
+      }else{
+        this.$notify({
+          type: 'warning',
+          message: '页面初始化失败，请重试！',
+          duration: 3 * 1000
+        })
+      }
+    })
   },
   methods: {
+    getNewFruits(){
+      getNewFruits().then(res=>{
+        console.log('时令上新');
+        console.log(res);
+      })
+    },
+    async initView(){
+      let process = 'done';
+      try {
+        //await Promise.reject('error')
+        await this.getNewFruits();
+      } catch (error) {
+        process = 'error';
+        return process;
+      }
+      return process;
+    },
     showAuth() {
       if (!this.$store.getters.isAuth) {
         this.$store.commit("OPEN_AUTH");

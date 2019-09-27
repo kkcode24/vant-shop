@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Notify } from 'vant'
 const service = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: '/api',
   timeout: 20000
 })
 
@@ -16,7 +16,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    const res = response.data
+    const res = response.data;
     if (res.code != 0) {
       if (res.code === 401) {
         return Promise.reject('error')

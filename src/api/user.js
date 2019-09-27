@@ -9,7 +9,7 @@ export function loginByUsername(data) {
   })
 }
 
-// 获取微信进入的用户信息
+// 获取微信进入的用户信息s
 export function UserInfo() {
   return new Promise(function (resolve, reject) {
     resolve({
