@@ -25,3 +25,6 @@ html,body{
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+[v-cloak]{
+  display: none;
+}

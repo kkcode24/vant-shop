@@ -10,6 +10,10 @@ import store from './store'
 import App from './App'
 import router from './router'
 import components from '@/components'
+import appConfig from '@/utils/config'
+
+// 应用全局配置项
+Vue.prototype.app = appConfig;
 
 Vue.use(Lazyload);
 Vue.use(Vant);

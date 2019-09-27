@@ -148,9 +148,14 @@ const router = new Router({
       }
     },
     {
+      path: '/goods',
+      name: 'detail',
+      component: () => import('@/views/goods/index')
+    },
+    {
       path: '/user/address',
       name: 'address',
-      component: () => import('@/views/user/address/index'),
+      component: () => import('@/views/user/address/index')
     },
     {
       path: '/user/address/add',

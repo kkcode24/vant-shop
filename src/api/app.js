@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+// 首页轮播图
+export function getIndexSwipeImages() {
+  return request({
+    url: '/getRotationChart',
+    method: 'get'
+  })
+}
+
 // 时令上新水果
 export function getNewFruits(data) {
   return request({
