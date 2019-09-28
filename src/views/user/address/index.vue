@@ -1,6 +1,14 @@
 <template>
   <div class="address-list">
     <van-address-list
+      v-model="chosenAddressId"
+      :list="list"
+      :disabled-list="disabledList"
+      disabled-text="以下地址超出配送范围"
+      @add="onAdd"
+      @edit="onEdit"
+    />
+    <!-- <van-address-list
       @add="onAdd"
     >
       <van-cell-group>
@@ -17,7 +25,7 @@
           />
         </van-cell>
       </van-cell-group>
-    </van-address-list>
+    </van-address-list> -->
   </div>
 </template>
 
@@ -26,6 +34,7 @@ export default {
   name: "addressList",
   data() {
     return {
+      chosenAddressId: '1',
       list: [
         {
           id: "1",
@@ -67,9 +76,9 @@ export default {
   .van-address-list {
     box-sizing: border-box;
     padding-bottom: 100px;
-    .van-radio__icon {
-      display: none !important;
-    }
+    // .van-radio__icon {
+    //   display: none !important;
+    // }
   }
 }
 </style>

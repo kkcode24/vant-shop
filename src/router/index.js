@@ -111,6 +111,14 @@ const router = new Router({
       }
     },
     {
+      path: '/order/submit',
+      name: 'submitOrder',
+      component: () => import('@/views/order/submit'),
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
       path: '/items',
       name: 'items',
       components: {
