@@ -17,7 +17,7 @@
       </van-cell>
     </van-cell-group>
 
-    <van-cell-group class="goods-cell-group">
+    <!-- <van-cell-group class="goods-cell-group">
       <van-cell value="进入店铺" icon="shop-o" is-link @click="sorry">
         <template slot="title">
           <span class="van-cell-text">有赞的店</span>
@@ -25,11 +25,11 @@
         </template>
       </van-cell>
       <van-cell title="线下门店" icon="location-o" is-link @click="sorry" />
-    </van-cell-group>
+    </van-cell-group> -->
 
-    <van-cell-group class="goods-cell-group">
+    <!-- <van-cell-group class="goods-cell-group">
       <van-cell title="查看商品详情" is-link @click="sorry" />
-    </van-cell-group>
+    </van-cell-group> -->
 
     <van-goods-action>
       <van-goods-action-icon icon="chat-o" @click="sorry">
@@ -49,34 +49,11 @@
 </template>
 
 <script>
-// import {
-//   Tag,
-//   Col,
-//   Icon,
-//   Cell,
-//   CellGroup,
-//   Swipe,
-//   Toast,
-//   SwipeItem,
-//   GoodsAction,
-//   GoodsActionIcon,
-//   GoodsActionButton
-// } from 'vant';
+import {getGoodDetail}from "@/api/app"
 export default {
-//   components: {
-//     [Tag.name]: Tag,
-//     [Col.name]: Col,
-//     [Icon.name]: Icon,
-//     [Cell.name]: Cell,
-//     [CellGroup.name]: CellGroup,
-//     [Swipe.name]: Swipe,
-//     [SwipeItem.name]: SwipeItem,
-//     [GoodsAction.name]: GoodsAction,
-//     [GoodsActionIcon.name]: GoodsActionIcon,
-//     [GoodsActionButton.name]: GoodsActionButton
-//   },
   data() {
     return {
+      fruitId: '',
       goods: {
         title: '美国伽力果（约680g/3个）',
         price: 2680,
@@ -89,7 +66,17 @@ export default {
       }
     };
   },
+  mounted(){
+    this.fruitId = this.$route.params.id;
+    this.initView();
+    console.log(this.fruitId);
+  },
   methods: {
+    initView(){
+      getGoodDetail(this.fruitId).then(res=>{
+        console.log(res);
+      })
+    },
     formatPrice() {
       return '¥' + (this.goods.price / 100).toFixed(2);
     },

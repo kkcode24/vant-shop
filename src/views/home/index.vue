@@ -31,6 +31,7 @@
       </div>
     </section>
 
+    <!-- 搜索 -->
     <div class="showcase-search">
       <div class="showcase-search-wap">
         <div class="cap-search-box">
@@ -139,7 +140,7 @@
           v-for="(item,index) in newGoods"
           :key="index"
         >
-          <li class="good-item">
+          <li @click="goDetail(item)" class="good-item">
             <a class="cap-goods-layout__item">
               <div class="cap-goods__photo">
                 <div
@@ -155,7 +156,7 @@
                   <div class="price-info">
                     <span class="sale-price">
                       <div class="cap-theme-view">
-                        <span class="price-tag">¥</span>39
+                        <span class="price-tag">¥</span>{{item.price}}
                       </div>
                     </span>
                   </div>
@@ -417,6 +418,12 @@ export default {
         }
       });
     },
+    goDetail(fruit){
+      this.$router.push({
+        params: {id:fruit.id},
+        name: 'goods'
+      })
+    },
     showAuth() {
       if (!this.$store.getters.isAuth) {
         this.$store.commit("OPEN_AUTH");
@@ -471,23 +478,7 @@ export default {
     }
   }
 }
-.showcase-search {
-  .showcase-search-wap {
-    .cap-search-box {
-      position: relative;
-      height: 38px;
-      width: 100%;
-      .showcase-search-mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: transparent;
-      }
-    }
-  }
-}
+
 .modules-entry {
   padding: 0 10px;
   background: #fff;

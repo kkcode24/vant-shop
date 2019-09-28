@@ -148,8 +148,8 @@ const router = new Router({
       }
     },
     {
-      path: '/goods',
-      name: 'detail',
+      path: '/goods/:id',
+      name: 'goods',
       component: () => import('@/views/goods/index')
     },
     {
