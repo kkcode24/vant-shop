@@ -1,1 +1,11 @@
+@import './reset.scss';
 @import './common.scss';
+html, body {
+    height: 100%;
+    width: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+    box-sizing: border-box;
+}

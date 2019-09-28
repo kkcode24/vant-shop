@@ -3,7 +3,7 @@ import {
   Notify
 } from 'vant'
 const service = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: '/fruit',
   timeout: 20000
 })
 
