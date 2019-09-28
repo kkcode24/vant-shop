@@ -11,6 +11,7 @@ const order = {
     },
   
     actions: {
+        // 把提交的订单数据存到本地
         setOrderCache({commit},orderInfo){
             return new Promise(resolve => {
                 const order_info = JSON.stringify(orderInfo);
@@ -19,7 +20,7 @@ const order = {
                 resolve()
             })
         },
-        // 清除订单信息
+        // 订单提交成功，清除本地订单信息
         clearOrderCache({ commit }) {
             return new Promise(resolve => {
                 clearUserOrder()
