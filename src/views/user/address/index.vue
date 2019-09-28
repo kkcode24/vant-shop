@@ -34,7 +34,7 @@ export default {
   name: "addressList",
   data() {
     return {
-      chosenAddressId: '1',
+      chosenAddressId: null,
       list: [
         {
           id: "1",
@@ -59,6 +59,23 @@ export default {
       ]
     };
   },
+  mounted(){
+    let storeAddressList = this.$store.getters.addressList;
+    if(!storeAddressList){
+      this.$store.dispatch("getWxUserAddress").then((res) => {
+        if(res.code === 0&&res.data.length>0){
+          this.addressList = res.data;
+        }
+      });
+    }
+    if(storeAddressList&&storeAddressList.length>0){
+      let defaultAddress = storeAddressList.filter(item=>item.isDefault);
+      if(defaultAddress.length>0){
+        this.chosenContactId = defaultAddress[0].id;
+      }
+      this.addressList = storeAddressList;
+    }
+  },
   methods: {
     onAdd() {
       this.$router.push("/user/address/add");
@@ -72,13 +89,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.address-list {
-  .van-address-list {
-    box-sizing: border-box;
-    padding-bottom: 100px;
-    // .van-radio__icon {
-    //   display: none !important;
-    // }
-  }
-}
+// .address-list {
+//   .van-address-list {
+//     box-sizing: border-box;
+//     padding-bottom: 100px;
+//     .van-radio__icon {
+//       display: none !important;
+//     }
+//   }
+// }
 </style>

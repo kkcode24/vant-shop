@@ -2,11 +2,8 @@
   <div>
     <van-address-edit
       :area-list="areaList"
-      show-set-default
-      show-search-result
-      :search-result="searchResult"
+      save-button-text="保存并使用"
       @save="onSave"
-      @change-detail="onChangeDetail"
     />
   </div>
 </template>
@@ -17,25 +14,12 @@ export default {
   name: "addAddress",
   data() {
     return {
-      areaList,
-      searchResult: []
+      areaList
     };
   },
   methods: {
     onSave() {
       this.$toast("save");
-    },
-    onChangeDetail(val) {
-      if (val) {
-        this.searchResult = [
-          {
-            name: "黄龙万科中心",
-            address: "杭州市西湖区"
-          }
-        ];
-      } else {
-        this.searchResult = [];
-      }
     }
   }
 };
