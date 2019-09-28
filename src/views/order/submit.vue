@@ -5,6 +5,7 @@
       :type="cardType"
       :name="currentContact.name"
       :tel="currentContact.tel"
+      add-text="添加收货地址"
       @click="choseAddress"
     />
   </div>
@@ -12,50 +13,36 @@
 
 <script>
 export default {
-  name: 'submitOrder',
+  name: "submitOrder",
   data() {
     return {
+      currentContact:{},
       chosenContactId: null,
-      addresslist: [{
-        name: '张三',
-        tel: '13000000000',
-        id: 0
-      }]
+      addresslist: []
     };
   },
-
-  computed: {
-    cardType() {
-      return this.chosenContactId !== null ? 'edit' : 'add';
-    },
-    currentContact() {
-      const id = this.chosenContactId;
-      return id !== null ? this.addresslist.filter(item => item.id === id)[0] : {};
+  mounted() {
+    let storeAddressList = this.$store.getters.addressList;
+    if (storeAddressList && storeAddressList.length > 0) {
+      let defaultAddress = storeAddressList.filter(item => !item.isDefault);
+      this.chosenContactId = defaultAddress[0].id;
+      this.currentContact = defaultAddress[0];
+      this.addressList = storeAddressList;
+      console.log(storeAddressList);
     }
   },
-  mounted(){
-    let storeAddressList = this.$store.getters.addressList;
-    if(!storeAddressList){
-      this.$store.dispatch("getWxUserAddress").then((res) => {
-        if(res.code === 0&&res.data.length>0){
-          this.addressList = res.data;
-        }
+  
+  methods: {
+    choseAddress() {
+      this.$router.push({
+        path: "/user/address/add",
+        query: { redirect: this.$route.fullPath } //登录重定向
       });
     }
-    if(storeAddressList&&storeAddressList.length>0){
-      let defaultAddress = storeAddressList.filter(item=>item.isDefault);
-      if(defaultAddress.length>0){
-        this.chosenContactId = defaultAddress[0].id;
-      }
-      this.addressList = storeAddressList;
-    }
   },
-  methods: {
-    choseAddress(){
-       this.$router.push({
-        path: '/user/address/add',
-        query: { redirect: this.$route.fullPath } //登录重定向
-      })
+  computed: {
+    cardType() {
+      return this.chosenContactId !== null ? "edit" : "add";
     }
   }
 };

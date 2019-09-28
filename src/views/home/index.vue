@@ -398,6 +398,8 @@ export default {
       try {
         await this.getNewFruits();
         await this.getSwipeImages();
+        // 收货地址
+        this.$store.dispatch("getWxUserAddress");
       } catch (error) {
         process = "error";
         return process;

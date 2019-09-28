@@ -5,7 +5,7 @@ export function saveAddress(data) {
     return request({
         url: '/userAddress/save',
         method: 'post',
-        data
+        params: {entity:JSON.stringify(data)}
     })
 }
 

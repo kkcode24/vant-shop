@@ -1,4 +1,4 @@
-import { getAddressList } from '@/api/address'
+import { getAddressList,saveAddress } from '@/api/address'
 import { getUserAddress, setUserAddress } from '@/store/localStorage'
 const address = {
   state: {
@@ -18,10 +18,33 @@ const address = {
       return new Promise((resolve, reject) => {
         getAddressList().then(response => {
           const address_list = JSON.stringify(response.data);
+          if(response.data.length===0){
+            commit('SET_USERADDRESS', null);
+            setUserAddress(null);
+          }else{
+            commit('SET_USERADDRESS', address_list);
+            setUserAddress(address_list);
+          }
+          resolve(response);
+        }).catch(error => {
+          reject(error);
+        })
+      })
+    },
+    saveWxUserAddress({commit},addressData){
+      return new Promise((resolve, reject)=>{
+        saveAddress(addressData).then(response=>{
+          const addressList = JSON.parse(getUserAddress())
+          addressList.forEach((v,i) => {
+            console.log(v);
+            addressList[i].isDefault = 1;
+          });
+          addressList.push(response.data);
+          const address_list = JSON.stringify(addressList);
           commit('SET_USERADDRESS', address_list);
           setUserAddress(address_list);
           resolve(response);
-        }).catch(error => {
+        }).catch(error=>{
           reject(error);
         })
       })

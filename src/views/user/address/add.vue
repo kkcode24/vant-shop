@@ -18,8 +18,13 @@ export default {
     };
   },
   methods: {
-    onSave() {
-      this.$toast("save");
+    onSave(f) {
+      let postData = Object.assign({},f,{isDefault:0});
+      this.$store.dispatch('saveWxUserAddress',postData).then(res=>{
+        if(res.code===0){
+          this.$router.replace(this.$route.query.redirect || '/user/address')
+        }
+      })
     }
   }
 };
