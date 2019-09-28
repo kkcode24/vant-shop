@@ -4,7 +4,10 @@
       class="goods-swipe"
       :autoplay="3000"
     >
-      <div v-for="item in goods.fruitImageList" :key="item.id">
+      <div
+        v-for="item in goods.fruitImageList"
+        :key="item.id"
+      >
         <van-swipe-item v-if="item.type===2">
           <img :src="app.prefixAttachs+item.image">
         </van-swipe-item>
@@ -136,22 +139,23 @@ export default {
     },
     initSku() {
       this.sku.price = this.goods.price;
-      this.sku.tree[0].v = this.goodSpecificationsList.map(item=>{
+      this.sku.tree[0].v = this.goodSpecificationsList.map(item => {
         this.sku.list.push({
           id: item.id,
           price: item.price,
           s1: item.id,
           stock_num: item.fruitNumber
-        })
+        });
         return {
           id: item.id,
           name: item.specifications
-        }
-      })
+        };
+      });
     },
     onBuyClicked(skuData) {
-      this.$store.dispach('setOrderCache',skuData);
-      console.log(this.$store);
+      this.$store.dispatch("setOrderCache", skuData).then(() => {
+        this.$router.push({ name: "submitOrder" });
+      });
     },
     onClickCart() {
       this.$router.push({ name: "cart" });

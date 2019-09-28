@@ -1,7 +1,7 @@
 import { getUserOrder, setUserOrder,clearUserOrder } from '@/store/localStorage'
 const order = {
     state: {
-        orderInfo: JSON.parse(getUserOrder())
+        orderInfo: JSON.parse(getUserOrder()) || {}
     },
   
     mutations: {
