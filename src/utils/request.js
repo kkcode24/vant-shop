@@ -1,27 +1,22 @@
 import axios from 'axios'
-import {
-  Notify
-} from 'vant'
+import { Notify } from 'vant'
 const service = axios.create({
-  baseURL: '/fruit',
+  baseURL: '/api',
   timeout: 20000
 })
 
-// request interceptor
 service.interceptors.request.use(
   config => {
     return config
   },
   error => {
-    console.log(error) // for debug
     Promise.reject(error)
   }
 )
 
-// response interceptor
 service.interceptors.response.use(
   response => {
-    const res = response.data
+    const res = response.data;
     if (res.code != 0) {
       if (res.code === 401) {
         return Promise.reject('error')
@@ -37,13 +32,11 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
     Notify({
-        type: 'danger',
-        message: error.message,
-        duration: 3 * 1000
-      });
-
+      type: 'danger',
+      message: error.message,
+      duration: 3 * 1000
+    });
     return Promise.reject(error)
   }
 )

@@ -4,11 +4,16 @@ import Vue from 'vue'
 import Vant from 'vant';
 import { Lazyload } from 'vant';
 import 'vant/lib/index.css';
+import '@/styles/common.scss'
 import 'lib-flexible/flexible';
 import store from './store'
 import App from './App'
 import router from './router'
 import components from '@/components'
+import appConfig from '@/utils/config'
+
+// 应用全局配置项
+Vue.prototype.app = appConfig;
 
 Vue.use(Lazyload);
 Vue.use(Vant);
@@ -18,8 +23,8 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
   store,
+  router,
   components: { App },
   template: '<App/>'
 })

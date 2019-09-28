@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '@/store/index'
 import Router from 'vue-router'
 import Home from '@/views/home/index'
 import User from '@/views/user/index'
@@ -31,11 +32,6 @@ const router = new Router({
         requiresAuth: false,
         keepAlive: true
       }
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/login/index'),
     },
     {
       path: '/search',
@@ -151,18 +147,36 @@ const router = new Router({
         keepAlive: true
       }
     },
+    {
+      path: '/goods/:id',
+      name: 'goods',
+      component: () => import('@/views/goods/index')
+    },
+    {
+      path: '/user/address',
+      name: 'address',
+      component: () => import('@/views/user/address/index')
+    },
+    {
+      path: '/user/address/add',
+      name: 'addAddress',
+      component: () => import('@/views/user/address/add')
+    },
+    {
+      path: '/user/address/edit',
+      name: 'editAddress',
+      component: () => import('@/views/user/address/edit')
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(r => r.meta.requiresAuth)) {
-    // store.getters.loginStatus
+    let userInfo = store.getters.userInfo;
     if (true) {
       next()
     } else {
-      next({
-        path: '/login'
-      })
+      console.log("需要用户授权！");
     }
   } else {
     next()

@@ -1,5 +1,6 @@
 const getters = {
-    // shopCartVisi: state => state.shoppingCar.show
+    isAuth: state => state.auth.isAuth,
+    userInfo: state => state.auth.userInfo
 }
 export default getters
   

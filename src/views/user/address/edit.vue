@@ -1,12 +1,12 @@
 <template>
   <div>
-    签到
+    地址编辑
   </div>
 </template>
 
 <script>
 export default {
-  name: "signin",
+  name: "editAddress",
   data() {
     return {
     };
