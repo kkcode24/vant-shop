@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询水果详情
 export function getGoodDetail(fruitId) {
   return request({
-    url: `/fruit/{fruitId}/getForm`,
+    url: '/fruit/'+fruitId+'/getForm',
     method: 'get'
   })
 }

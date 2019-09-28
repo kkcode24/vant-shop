@@ -1,5 +1,6 @@
 
 const USERINfO = 'USERINfO';
+const USERORDER = 'USERORDER';
 const ISAUTH = 'isAuth';
 
 export function getUserInfo() {
@@ -17,3 +18,17 @@ export function getUserAuth() {
 export function setUserAuth(data) {
   localStorage.setItem(ISAUTH, data)
 }
+
+
+export function getUserOrder() {
+  return localStorage.getItem(USERORDER)
+}
+
+export function setUserOrder(data) {
+  localStorage.setItem(USERORDER, data)
+}
+
+export function clearUserOrder() {
+  localStorage.removeItem(USERORDER)
+}
+
