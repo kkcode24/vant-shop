@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    class="page"
+    v-cloak
+  >
     <van-notice-bar
       left-icon="volume-o"
       mode="closeable"
@@ -13,10 +16,10 @@
         indicator-color="white"
       >
         <van-swipe-item
-          v-for="(image, index) in images"
+          v-for="(item, index) in images"
           :key="index"
         >
-          <img :src="image" />
+          <img :src="prefixAttachs+item.image" />
         </van-swipe-item>
       </van-swipe>
 
@@ -28,6 +31,7 @@
       </div>
     </section>
 
+    <!-- 搜索 -->
     <div class="showcase-search">
       <div class="showcase-search-wap">
         <div class="cap-search-box">
@@ -125,6 +129,44 @@
         </van-col>
       </van-row>
     </div>
+    <div class="goods-swipe-container">
+      <van-swipe
+        :loop="false"
+        :show-indicators="false"
+        :width="115"
+        :height="200"
+      >
+        <van-swipe-item
+          v-for="(item,index) in newGoods"
+          :key="index"
+        >
+          <li @click="goDetail(item)" class="good-item">
+            <a class="cap-goods-layout__item">
+              <div class="cap-goods__photo">
+                <div
+                  class="cap-goods__img--cover"
+                  v-lazy:background-image="appleImg"
+                />
+              </div>
+              <div class="cap-goods-layout__info">
+                <div class="cap-goods-layout__info-title">
+                  <h3 class="title">{{item.fruitDescribe}}</h3>
+                </div>
+                <div class="cap-goods-layout__info-price">
+                  <div class="price-info">
+                    <span class="sale-price">
+                      <div class="cap-theme-view">
+                        <span class="price-tag">¥</span>{{item.price}}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        </van-swipe-item>
+      </van-swipe>
+    </div>
     <!-- 水果list -->
     <div class="goods">
       <van-list
@@ -188,7 +230,10 @@
                         </div>
                       </span>
                     </div>
-                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                    <div
+                      @click.stop="showShop"
+                      class="cap-goods-layout__buy-btn-wrapper"
+                    >
                       <van-icon
                         class="cap-goods-layout__buy-btn"
                         name="add-o"
@@ -218,7 +263,10 @@
                         </div>
                       </span>
                     </div>
-                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                    <div
+                      @click.stop="showShop"
+                      class="cap-goods-layout__buy-btn-wrapper"
+                    >
                       <van-icon
                         class="cap-goods-layout__buy-btn"
                         name="add-o"
@@ -248,7 +296,10 @@
                         </div>
                       </span>
                     </div>
-                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                    <div
+                      @click.stop="showShop"
+                      class="cap-goods-layout__buy-btn-wrapper"
+                    >
                       <van-icon
                         class="cap-goods-layout__buy-btn"
                         name="add-o"
@@ -278,7 +329,10 @@
                         </div>
                       </span>
                     </div>
-                    <div @click.stop="showShop" class="cap-goods-layout__buy-btn-wrapper">
+                    <div
+                      @click.stop="showShop"
+                      class="cap-goods-layout__buy-btn-wrapper"
+                    >
                       <van-icon
                         class="cap-goods-layout__buy-btn"
                         name="add-o"
@@ -296,20 +350,17 @@
 </template>
 
 <script>
-import {getNewFruits,getAllItems} from '@/api/index'
+import { getIndexSwipeImages, getNewFruits } from "@/api/app";
 export default {
   name: "home",
   data() {
     return {
+      prefixAttachs: this.app.prefixAttachs,
       value: "",
       activeSearch: false,
       adSrc: "../../../static/images/index/ad-swipe.jpg",
-      images: [
-        "../../../static/images/index/swipe1.jpg",
-        "../../../static/images/index/swipe2.jpg",
-        "../../../static/images/index/swipe3.jpg",
-        "../../../static/images/index/swipe4.jpg"
-      ],
+      images: [], // 轮播图
+      newGoods: [], // 时令上新
       modulesEntry: {
         coupon: "../../../static/images/index/coupon.png",
         news: "../../../static/images/index/news.png",
@@ -329,35 +380,51 @@ export default {
     };
   },
   mounted() {
-    this.initView().then((process)=>{
-      if(process==='done'){
+    this.initView().then(process => {
+      if (process === "done") {
         this.showAuth();
-      }else{
+      } else {
         this.$notify({
-          type: 'warning',
-          message: '页面初始化失败，请重试！',
+          type: "warning",
+          message: "页面初始化失败，请重试！",
           duration: 3 * 1000
-        })
+        });
       }
-    })
+    });
   },
   methods: {
-    getNewFruits(){
-      getNewFruits().then(res=>{
-        console.log('时令上新');
-        console.log(res);
-      })
-    },
-    async initView(){
-      let process = 'done';
+    async initView() {
+      let process = "done";
       try {
-        //await Promise.reject('error')
         await this.getNewFruits();
+        await this.getSwipeImages();
+        // 收货地址
+        this.$store.dispatch("getWxUserAddress");
       } catch (error) {
-        process = 'error';
+        process = "error";
         return process;
       }
       return process;
+    },
+    getNewFruits() {
+      getNewFruits().then(res => {
+        if (res.code === 0) {
+          this.newGoods = res.data;
+        }
+      });
+    },
+    getSwipeImages() {
+      getIndexSwipeImages().then(res => {
+        if (res.code === 0) {
+          this.images = res.data;
+        }
+      });
+    },
+    goDetail(fruit){
+      this.$router.push({
+        params: {id:fruit.id},
+        name: 'goods'
+      })
     },
     showAuth() {
       if (!this.$store.getters.isAuth) {
@@ -413,23 +480,7 @@ export default {
     }
   }
 }
-.showcase-search {
-  .showcase-search-wap {
-    .cap-search-box {
-      position: relative;
-      height: 38px;
-      width: 100%;
-      .showcase-search-mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: transparent;
-      }
-    }
-  }
-}
+
 .modules-entry {
   padding: 0 10px;
   background: #fff;
@@ -447,6 +498,78 @@ export default {
     img {
       width: 100%;
       height: 100%;
+    }
+  }
+}
+.goods-swipe-container {
+  padding: 0 10px;
+  background-color: #f8f8f8;
+  .good-item {
+    list-style: none;
+    a.cap-goods-layout__item {
+      display: block;
+      margin: 5px;
+      position: relative;
+      min-height: 50px;
+      color: #333;
+      background: transparent;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      overflow: hidden;
+      .cap-goods__photo {
+        padding-top: 100%;
+        position: relative;
+        .cap-goods__img--cover {
+          width: 100%;
+          background-position: 50%;
+          background-repeat: no-repeat;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background-size: cover;
+        }
+      }
+      .cap-goods-layout__info {
+        padding: 0 10px;
+        position: relative;
+        .cap-goods-layout__info-title {
+          margin: 10px 0 0;
+          text-align: left;
+          h3.title {
+            font-weight: normal;
+            font-size: 12px;
+            height: 30px;
+            max-height: 30px;
+            overflow: hidden;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+        }
+        .cap-goods-layout__info-price {
+          position: relative;
+          width: 100%;
+          .price-info {
+            font-weight: normal;
+            padding-right: 25px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            align-content: center;
+            .sale-price {
+              color: #f44;
+              height: 14px;
+              line-height: 14px;
+              font-size: 14px;
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -25,3 +25,26 @@ html,body{
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+/* 搜索样式 */
+.showcase-search {
+  .showcase-search-wap {
+    .cap-search-box {
+      position: relative;
+      height: 38px;
+      width: 100%;
+      .showcase-search-mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+[v-cloak]{
+  display: none;
+}

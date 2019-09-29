@@ -30,7 +30,7 @@ export default {
         {
           name: '分类',
           path: '/items',
-          pathName: 'class',
+          pathName: 'items',
           icon: 'label',
           dot: false,
           info: ''

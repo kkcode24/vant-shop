@@ -23,7 +23,7 @@ service.interceptors.response.use(
       } else {
         Notify({
           type: 'danger',
-          message: res.message,
+          message: res.msg,
           duration: 3 * 1000
         });
       }
@@ -34,7 +34,7 @@ service.interceptors.response.use(
   error => {
     Notify({
       type: 'danger',
-      message: error.message,
+      message: error.msg,
       duration: 3 * 1000
     });
     return Promise.reject(error)

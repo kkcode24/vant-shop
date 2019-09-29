@@ -111,6 +111,14 @@ const router = new Router({
       }
     },
     {
+      path: '/order/submit',
+      name: 'submitOrder',
+      component: () => import('@/views/order/submit'),
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
       path: '/items',
       name: 'items',
       components: {
@@ -148,9 +156,14 @@ const router = new Router({
       }
     },
     {
+      path: '/goods/:id',
+      name: 'goods',
+      component: () => import('@/views/goods/index')
+    },
+    {
       path: '/user/address',
       name: 'address',
-      component: () => import('@/views/user/address/index'),
+      component: () => import('@/views/user/address/index')
     },
     {
       path: '/user/address/add',
