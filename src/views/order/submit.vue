@@ -16,7 +16,7 @@ export default {
   name: "submitOrder",
   data() {
     return {
-      currentContact:{},
+      currentContact: {},
       chosenContactId: null,
       addresslist: []
     };
@@ -28,15 +28,18 @@ export default {
       this.chosenContactId = defaultAddress[0].id;
       this.currentContact = defaultAddress[0];
       this.addressList = storeAddressList;
-      console.log(storeAddressList);
     }
   },
-  
+
   methods: {
     choseAddress() {
+      let path = "/user/address";
+      if (this.addressList.length === 0) {
+        path = "/user/address/add";
+      }
       this.$router.push({
-        path: "/user/address/add",
-        query: { redirect: this.$route.fullPath } //登录重定向
+        path: path,
+        query: { redirect: this.$route.fullPath }
       });
     }
   },
