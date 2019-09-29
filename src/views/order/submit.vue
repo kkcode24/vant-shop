@@ -22,7 +22,9 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$store.getters.addressList);
     let storeAddressList = this.$store.getters.addressList;
+    console.log(storeAddressList);
     if (storeAddressList && storeAddressList.length > 0) {
       let defaultAddress = storeAddressList.filter(item => !item.isDefault);
       this.chosenContactId = defaultAddress[0].id;

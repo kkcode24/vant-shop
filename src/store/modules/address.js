@@ -19,8 +19,10 @@ const address = {
           const address_list = JSON.stringify(response.data);
           if(response.data.length===0){
             setUserAddress(null);
+            commit('SET_USERADDRESS', null);
           }else{
             setUserAddress(address_list);
+            commit('SET_USERADDRESS', response.data);
           }
           resolve(response);
         }).catch(error => {
