@@ -2,18 +2,20 @@
   <div class="address-list">
     <van-address-list
       v-model="chosenAddressId"
-      :list="list"
+      :list="addressList"
       :disabled-list="disabledList"
       disabled-text="以下地址超出配送范围"
+      :switchable="isSwitch"
       @add="onAdd"
       @edit="onEdit"
+      @select="onSelect"
     />
     <!-- <van-address-list
       @add="onAdd"
     >
       <van-cell-group>
         <van-cell
-          v-for="(item,index) in list"
+          v-for="(item,index) in addressList"
           :title="item.name+'  '+item.tel"
           :label="item.address"
           :key="index"
@@ -34,19 +36,14 @@ export default {
   name: "addressList",
   data() {
     return {
+      isSwitch: false,
       chosenAddressId: null,
-      list: [
+      addressList: [
         {
           id: "1",
           name: "张三",
           tel: "13000000000",
           address: "浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室"
-        },
-        {
-          id: "2",
-          name: "李四",
-          tel: "1310000000",
-          address: "浙江省杭州市拱墅区莫干山路 50 号"
         }
       ],
       disabledList: [
@@ -60,29 +57,34 @@ export default {
     };
   },
   mounted(){
+    if(this.$route.query.redirect === '/order/submit'){
+      this.isSwitch = true;
+    }
+
     let storeAddressList = this.$store.getters.addressList;
-    if(!storeAddressList){
-      this.$store.dispatch("getWxUserAddress").then((res) => {
-        if(res.code === 0&&res.data.length>0){
-          this.addressList = res.data;
+    if (storeAddressList && storeAddressList.length > 0) {
+      this.addressList = storeAddressList.map(item=>{
+        if(!item.isDefault){
+          this.chosenAddressId = item.id;
         }
-      });
+        item.address = item.province + item.city + item.county + item.addressDetail;
+        return item;
+      })
     }
-    if(storeAddressList&&storeAddressList.length>0){
-      let defaultAddress = storeAddressList.filter(item=>item.isDefault);
-      if(defaultAddress.length>0){
-        this.chosenContactId = defaultAddress[0].id;
-      }
-      this.addressList = storeAddressList;
-    }
+    
   },
   methods: {
     onAdd() {
       this.$router.push("/user/address/add");
     },
     onEdit(item, index) {
-      this.$toast("编辑地址:" + index);
       this.$router.push("/user/address/edit");
+    },
+    onSelect(item, index){
+      item.isDefault = 0;
+      this.$store.dispatch('selectAddress',item).then(()=>{
+        this.$router.replace(this.$route.query.redirect);
+      })
     }
   }
 };

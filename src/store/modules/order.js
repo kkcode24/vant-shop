@@ -1,12 +1,12 @@
 import { getUserOrder, setUserOrder,clearUserOrder } from '@/store/localStorage'
 const order = {
     state: {
-        orderInfo: JSON.parse(getUserOrder()) || {}
+        orderList: JSON.parse(getUserOrder())
     },
   
     mutations: {
-        SET_USERORDER: (state, orderInfo) => {
-            state.orderInfo = orderInfo
+        SET_USERORDER: (state, orderList) => {
+            state.orderList = orderList
         }
     },
   
@@ -14,9 +14,11 @@ const order = {
         // 把提交的订单数据存到本地
         setOrderCache({commit},orderInfo){
             return new Promise(resolve => {
-                const order_info = JSON.stringify(orderInfo);
-                commit('SET_USERORDER', order_info)
-                setUserOrder(order_info)
+                const orderList = JSON.parse(getUserOrder())||[]
+                orderList.push(orderInfo)
+                const order_list = JSON.stringify(orderList)
+                commit('SET_USERORDER', order_list)
+                setUserOrder(order_list)
                 resolve()
             })
         },

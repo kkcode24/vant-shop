@@ -108,7 +108,6 @@ export default {
         none_sku: false,
         hide_stock: false
       },
-
       show: false,
       fruitId: "",
       storageNum: 0,
@@ -142,9 +141,16 @@ export default {
       this.sku.tree[0].v = this.goodSpecificationsList.map(item => {
         this.sku.list.push({
           id: item.id,
-          price: item.price,
           s1: item.id,
-          stock_num: item.fruitNumber
+          price: item.price,
+          stock_num: item.fruitNumber,
+          advancePrice: item.advancePrice,
+          freightPrice: item.freightPrice,
+          fruitId: item.fruitId,
+          fruitNumber: item.fruitNumber,
+          memberPrice: item.memberPrice,
+          openingPrice: item.openingPrice,
+          specifications: item.specifications
         });
         return {
           id: item.id,
@@ -153,7 +159,7 @@ export default {
       });
     },
     onBuyClicked(skuData) {
-      this.$store.dispatch("setOrderCache", skuData).then(() => {
+      this.$store.dispatch("setOrderCache", {...skuData,...this.goods,fruitImageList:null}).then(() => {
         this.$router.push({ name: "submitOrder" });
       });
     },
