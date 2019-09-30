@@ -132,6 +132,7 @@ export default {
         ...skuData,
         ...this.goods,
         fruitNum: skuData.selectedNum,
+        price: skuData.selectedSkuComb.price/100,
         s1: null,
         messages: null,
         cartMessages: null,
