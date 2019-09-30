@@ -10,7 +10,8 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    Promise.reject(error)
+    error.msg = "请求参数错误";
+    Promise.reject(error);
   }
 )
 
@@ -34,7 +35,7 @@ service.interceptors.response.use(
   error => {
     Notify({
       type: 'danger',
-      message: error.msg,
+      message: '服务器未响应',
       duration: 3 * 1000
     });
     return Promise.reject(error)
