@@ -11,7 +11,10 @@ import App from './App'
 import router from './router'
 import components from '@/components'
 import appConfig from '@/utils/config'
-
+import * as filters from './filters' 
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 // 应用全局配置项
 Vue.prototype.app = appConfig;
 

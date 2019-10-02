@@ -1,18 +1,22 @@
+import { Promise, resolve, reject } from "q";
+
 const shoppingCar = {
   state: {
     show: false,
-    goodsList: []
+    fruit: {}
   },
 
   mutations: {
     OPEN_SHOPPING (state) {
-        state.show = true
+      state.show = true
     },
     CLOSE_SHOPPING (state) {
         state.show = false
     },
-    ADD_GOODS (state) {
-        state.goodsList = []
+    ADD_GOODS (state, fruit) {
+      state.fruit = fruit
+      console.log(state.fruit)
+      state.show = true
     }
   },
 

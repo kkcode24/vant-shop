@@ -1,32 +1,42 @@
 <template>
-  <div>
-    <van-checkbox-group class="card-goods" v-model="checkedGoods">
-      <van-checkbox
-        class="card-goods__item"
-        v-for="item in goods"
-        :key="item.id"
-        :name="item.id"
-      >
-        <van-card
-          :title="item.title"
-          :desc="item.desc"
-          :num="item.num"
-          :price="formatPrice(item.price)"
-          :thumb="item.thumb"
-        />
-      </van-checkbox>
-    </van-checkbox-group>
-    <van-submit-bar
-      :price="totalPrice"
-      :disabled="!checkedGoods.length"
-      :button-text="submitBarText"
-      @submit="onSubmit"
-    />
+  <div id="shoppingCar">
+    <div class="card_item">
+       <div class="shopping_item" v-for="item in list" :key="item.fruitPrice">
+          <van-checkbox v-model="item.checked" @change="selectedChange(item)"></van-checkbox>
+          <div class="card_content">
+            <img class="card_img" v-lazy="app.prefixAttachs + item.fruitImage" >
+            <div class="card_main">
+                <h3 class="fruitTitle">
+                  {{item.fruitDescribe}}
+                </h3>
+                <div class="addShop">
+                    <div class="sale-price" style="color: rgb(255, 68, 68);">
+                      <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
+                    </div>
+                    <span @click.stop="addShopCart(1)">
+                      <van-stepper v-model="item.fruitNumber"  />
+                    </span>
+                </div>
+            </div>
+          </div>
+       </div>
+        <!-- 结算 -->
+        <van-submit-bar
+          :price="3050"
+          button-text="提交订单"
+          @submit="onSubmit"
+          style="padding: 0 10px;bottom: 50px;"
+        >
+          <van-checkbox v-model="allChecked" @change="allselectChange">全选</van-checkbox>
+        </van-submit-bar>
+    </div>
   </div>
 </template>
 
 <script>
 import { Checkbox, CheckboxGroup, Card, SubmitBar, Toast } from 'vant';
+import { getCartList } from '@/api/shopingCart'
+console.log(getCartList)
 export default {
   components: {
     [Card.name]: Card,
@@ -36,56 +46,140 @@ export default {
   },
   data() {
     return {
-      checkedGoods: ['1', '2', '3'],
-      goods: [{
-        id: '1',
-        title: '进口香蕉',
-        desc: '约250g，2根',
-        price: 200,
-        num: 1,
-        thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
-      }, {
-        id: '2',
-        title: '陕西蜜梨',
-        desc: '约600g',
-        price: 690,
-        num: 1,
-        thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/f6aabd6ac5521195e01e8e89ee9fc63f.jpeg'
-      }, {
-        id: '3',
-        title: '美国伽力果',
-        desc: '约680g/3个',
-        price: 2680,
-        num: 1,
-        thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-      }]
+      allChecked: false, // 全选
+      checkedGoods: [],
+      list: [],
+      checked: false  
     };
   },
-  computed: {
-    submitBarText() {
-      const count = this.checkedGoods.length;
-      return '结算' + (count ? `(${count})` : '');
-    },
-    totalPrice() {
-      return this.goods.reduce((total, item) => total + (this.checkedGoods.indexOf(item.id) !== -1 ? item.price : 0), 0);
-    }
+  mounted() {
+    this.getCartList()
   },
   methods: {
-    formatPrice(price) {
-      return (price / 100).toFixed(2);
+    allselectChange() {
+        this.list.forEach(item => {
+          item.checked = this.allChecked
+        });
+    },
+    // 单选改变
+    selectedChange(data) {
+       this.checkedGoods.forEach((item) => {
+          if(data.checked) {
+            this.checkedGoods.push(item)
+          } else {
+            let findIndex = this.checkedGoods((currentValue, index, arr) => {
+              return currentValue.id == data.id
+            })
+            this.checkedGoods.splice(findIndex, 1)
+          }
+        });
     },
     onSubmit() {
       Toast('点击结算');
+      let data = [] 
+      this.list.forEach(item => {
+        if(item.checked) {
+          data.push(item)
+        }
+      })
+
+      console.log(data)
+    },
+    // 添加购物车
+    addShopCart(id) {
+      console.log(id)
+    },
+    // 获取购物车列表
+    getCartList() {
+      getCartList({}).then(res => {
+        if(res.code == 0) {
+          console.log(res)
+          res.data.forEach(item => {
+            item.checked = false
+          });
+          this.list = res.data
+        }
+      })
     }
   }
 };
 </script>
 
 <style rel="stylesheet/scss" scoped lang="scss">
+#shoppingCar {
+  width: 100%;
+  height: calc(100% - 55px);
+  background: #fafafa;
+  position: relative;
+  .card_item {
+    background: #fff;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    .allSelected {
+      margin: 10px 0;
+    }
+    .shopping_item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .card_content {
+        flex: 1;
+        margin-left: 10px;
+        display: flex;
+        justify-content: space-between;
+        .card_img {
+          width: 96px;
+          height: 96px;
+          border-radius: 4px;
+          margin-right: 10px;
+        }
+        .card_main {
+            flex: 1;
+            background: #fff;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            .fruitTitle {
+              max-height: 40px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            }
+            .addShop {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .sale-price {
+                  color: #f44;
+                  margin-right: 4px;
+                  .price-tag{
+                    font-size: 12px;
+                    margin-right: 2px;
+                  }
+              }
+              .shoppingCart {
+                font-size: 24px;
+                color: #f44;
+              }
+            }
+        }
+      }
+    }
+  }
+}
 .card-goods {
-  padding: 10px 0;
+  width: 100%;
+  height: 100%;
+  background: #fafafa;
   background-color: #fff;
   &__item {
+    margin: 0 12px 12px;
+    border-radius: 4px;
+    background: #fff;
     position: relative;
     background-color: #fafafa;
     .van-checkbox__label {
