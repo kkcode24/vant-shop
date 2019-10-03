@@ -55,7 +55,7 @@ export default {
       currentContact: {},
       addresslist: [],
       orderGoodList: [],
-      orderId: 21,
+      orderId: '',
       order: {
         addressId: null,
         // 给卖家留言
@@ -113,12 +113,11 @@ export default {
       });
     },
     onSubmit() {
-      this.show = true;
-      return false;
       this.loading = true;
       saveOrder({ ...this.order, orderFruit: this.orderGoodList }).then(res => {
         this.loading = false;
         if(res.code === 0){
+          this.show = true;
           this.orderId = res.data;
         }
       });
@@ -131,9 +130,9 @@ export default {
               function onBridgeReady(e, d) {
                 WeixinJSBridge.invoke(
                   'getBrandWCPayRequest', {
-                    "appId": d.appid, //公众号名称，由商户传入     
+                    "appId": d.appId, //公众号名称，由商户传入     
                     "timeStamp": d.timestamp + '', //时间戳，自1970年以来的秒数     
-                    "nonceStr": d.noncestr, //随机串     
+                    "nonceStr": d.nonce_str, //随机串     
                     "package": d.package,
                     "signType": "MD5", //微信签名方式：     
                     "paySign": d.sign //微信签名 
@@ -150,7 +149,7 @@ export default {
                     }
                   });
               }
-              if (res.Code === 0) {
+              if (res.code === 0) {
                 var d = res.data
                 if (typeof WeixinJSBridge == "undefined") {
                   if (document.addEventListener) {

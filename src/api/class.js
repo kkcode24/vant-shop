@@ -1,5 +1,9 @@
 import request from '@/utils/request'
 // 获取所有水果
+export function getAllFriuts(data) {
+  return request({ url: '/fruit/getDataList', method: 'get', params: data })
+}
+// 获取所有分类水果
 export function getFriutList(data) {
   return request({ url: '/type/getDataList', method: 'get', params: data })
 }
