@@ -83,17 +83,17 @@
           <span>+ ¥ {{order.goodsPrice}}</span>
         </p>
         <p>优惠
-          <span>- ¥ 2.00</span>
+          <span>- ¥ {{order.couponPrice}}</span>
         </p>
         <div class="price-panel__total van-hairline--top">
           合计：<span class="price-panel__amount theme-color">
-            ¥{{order.discountTotalPrice+order.goodsPrice}}</span></div>
+            ¥{{order.discountTotalPrice+order.goodsPrice-order.couponPrice}}</span></div>
       </div>
     </div>
 
     <van-submit-bar
       :loading="loading"
-      :price="order.totalPrice*100"
+      :price="(order.discountTotalPrice+order.goodsPrice-order.couponPrice)*100"
       button-text="提交订单"
       @submit="onSubmit"
     />
@@ -126,6 +126,7 @@ export default {
       orderGoodList: [],
       orderId: "",
       order: {
+        couponPrice: 0,
         addressId: null,
         // 给卖家留言
         remark: "",
@@ -194,7 +195,7 @@ export default {
               }else{
                 // 如果存在使用门槛，则需保证满足门槛金额
                 if(this.order.totalPrice<item.thresholdPrice){
-                  this.disabledCoupons.push({...currObj,reason:'不满足满减活动金额'})
+                  this.disabledCoupons.push({...currObj,reason:'不满'+item.thresholdPrice+'元'})
                 }else{
                   this.coupons.push({...currObj})
                 }
@@ -209,6 +210,9 @@ export default {
     onChange(index) {
       this.showCoupon = false;
       this.chosenCoupon = index;
+      let coupon = this.coupons[index];
+      this.order.couponPrice = coupon.value;
+      this.order.couponId = coupon.id;
     },
     choseAddress() {
       let path = "/user/address";
