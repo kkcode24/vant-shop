@@ -1,7 +1,13 @@
 <template>
   <div class="goods">
-    <van-swipe class="goods-swipe" :autoplay="3000">
-      <div v-for="item in goods.fruitImageList" :key="item.id">
+    <van-swipe
+      class="goods-swipe"
+      :autoplay="3000"
+    >
+      <div
+        v-for="item in goods.fruitImageList"
+        :key="item.id"
+      >
         <van-swipe-item v-if="item.type===2">
           <img :src="app.prefixAttachs+item.image">
         </van-swipe-item>
@@ -14,7 +20,10 @@
         <div class="goods-price">¥ {{ goods.price }}</div>
       </van-cell>
       <van-cell class="goods-express">
-        <van-col v-if="goodSpecificationsList.length>0" span="10">
+        <van-col
+          v-if="goodSpecificationsList.length>0"
+          span="10"
+        >
           运费：
           <span v-if="goodSpecificationsList[0].freightPrice>0">{{ goodSpecificationsList[0].freightPrice }}</span>
           <span v-else>免运费</span>
@@ -23,17 +32,58 @@
       </van-cell>
     </van-cell-group>
 
+    <div class="goods-detail">
+      <h3>商品详情</h3>
+      <div
+      class="goods-detail-image"
+        v-for="item in goods.fruitImageList"
+        :key="item.id"
+      >
+        <van-image
+          v-if="item.type===3"
+          :src="app.prefixAttachs+item.image"
+        />
+      </div>
+    </div>
+
     <van-goods-action>
-      <van-goods-action-icon icon="chat-o" @click="sorry">客服</van-goods-action-icon>
-      <van-goods-action-icon icon="cart-o" @click="onClickCart">购物车</van-goods-action-icon>
-      <van-goods-action-button type="warning" @click="sorry">加入购物车</van-goods-action-button>
-      <van-goods-action-button type="danger" @click="show=true">立即购买</van-goods-action-button>
+      <van-goods-action-icon
+        icon="chat-o"
+        @click="sorry"
+      >客服</van-goods-action-icon>
+      <van-goods-action-icon
+        icon="cart-o"
+        @click="onClickCart"
+      >购物车</van-goods-action-icon>
+      <van-goods-action-button
+        type="warning"
+        @click="sorry"
+      >加入购物车</van-goods-action-button>
+      <van-goods-action-button
+        type="danger"
+        @click="show=true"
+      >立即购买</van-goods-action-button>
     </van-goods-action>
 
-    <van-sku v-model="show" :sku="sku" :goods="goods" :goods-id="fruitId" :hide-stock="sku.hide_stock" @buy-clicked="onBuyClicked">
-      <template slot="sku-actions" slot-scope="props">
+    <van-sku
+      v-model="show"
+      :sku="sku"
+      :goods="goods"
+      :goods-id="fruitId"
+      :hide-stock="sku.hide_stock"
+      @buy-clicked="onBuyClicked"
+    >
+      <template
+        slot="sku-actions"
+        slot-scope="props"
+      >
         <div class="van-sku-actions">
-          <van-button square size="large" type="danger" @click="props.skuEventBus.$emit('sku:buy')">
+          <van-button
+            square
+            size="large"
+            type="danger"
+            @click="props.skuEventBus.$emit('sku:buy')"
+          >
             下一步
           </van-button>
         </div>
@@ -127,12 +177,12 @@ export default {
     onBuyClicked(skuData) {
       let cacheData = filterEmpyKey({
         ...skuData.selectedSkuComb,
-        fruitSpecificationsId:skuData.selectedSkuComb.id,
-        totalPrice: (skuData.selectedSkuComb.price/100)*skuData.selectedNum,
+        fruitSpecificationsId: skuData.selectedSkuComb.id,
+        totalPrice: (skuData.selectedSkuComb.price / 100) * skuData.selectedNum,
         ...skuData,
         ...this.goods,
         fruitNum: skuData.selectedNum,
-        price: skuData.selectedSkuComb.price/100,
+        price: skuData.selectedSkuComb.price / 100,
         s1: null,
         messages: null,
         cartMessages: null,
@@ -156,31 +206,42 @@ export default {
 <style lang="scss" scope>
 .goods {
   padding-bottom: 50px;
-  &-swipe {
+  .goods-swipe {
     img {
       width: 100%;
       display: block;
     }
   }
-  &-title {
+  .goods-title {
     font-size: 16px;
   }
-  &-price {
+  .goods-price {
     color: #f44;
   }
-  &-express {
+  .goods-express {
     color: #999;
     font-size: 12px;
     padding: 5px 15px;
   }
-  &-cell-group {
+  .goods-cell-group {
     margin: 15px 0;
     .van-cell__value {
       color: #999;
     }
   }
-  &-tag {
+  .goods-tag {
     margin-left: 5px;
+  }
+  .goods-detail {
+    margin-top: 20px;
+    h3 {
+      padding: 10px;
+      text-align: center;
+      background-color: #fff;
+    }
+    .goods-detail-image {
+      padding: 10px;
+    }
   }
 }
 </style>
