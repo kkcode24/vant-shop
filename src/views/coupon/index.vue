@@ -97,7 +97,6 @@ export default {
       });
     },
     getCoupon(item,index){
-      console.log(item,index);
       getCoupon(item.id).then(res=>{
         if(res.code===0){
           this.$set(this.couponList[index], 'isGet', true);
