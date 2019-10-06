@@ -38,7 +38,7 @@ export default {
       console.log(this.value);
     },
     onCancel() {
-      this.$router.push("/home");
+      this.$router.push(this.$route.query.redirect || "/home");
     }
   }
 };
