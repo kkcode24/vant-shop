@@ -179,6 +179,11 @@ const router = new Router({
       path: '/user/address/edit',
       name: 'editAddress',
       component: () => import('@/views/user/address/edit')
+    },
+    {
+      path: '/user/order',
+      name: 'myOrder',
+      component: () => import('@/views/user/order/index')
     }
   ]
 })

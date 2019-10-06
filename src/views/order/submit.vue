@@ -255,12 +255,12 @@ export default {
                   if (res.err_msg == "get_brand_wcpay_request:ok") {
                     setTimeout(function() {
                       that.$toast("支付成功");
-                      //that.$router.push('/order/pay/success')
+                      that.$router.push({name:'home'})
                     }, 500);
                   }
                   if (res.err_msg == "get_brand_wcpay_request:cancel") {
                     this.$toast("支付已取消");
-                    that.$router.push({name:'/home'})
+                    that.$router.push({name:'home'})
                   }
                 }
               );
@@ -299,6 +299,7 @@ export default {
     },
     onCancel() {
       this.$toast("已取消支付");
+      that.$router.push({name:'home'})
     }
   },
   computed: {

@@ -11,24 +11,25 @@
           title="全部订单"
           value="查看全部订单"
           is-link
+          to="user/order"
         />
       </van-cell-group>
       <van-row class="user-links">
-        <van-col span="6">
+        <van-col @click="goOrder(0)" span="6">
           <van-icon name="pending-payment" />
           待付款
         </van-col>
-        <van-col span="6">
+        <van-col @click="goOrder(1)" span="6">
           <van-icon name="records" />
-          待接单
-        </van-col>
-        <van-col span="6">
-          <van-icon name="tosend" />
           待发货
         </van-col>
-        <van-col span="6">
+        <van-col @click="goOrder(2)" span="6">
+          <van-icon name="tosend" />
+          待收货
+        </van-col>
+        <van-col @click="goOrder(3)" span="6">
           <van-icon name="logistics" />
-          已发货
+          已完成
         </van-col>
       </van-row>
       <van-cell-group>
@@ -59,14 +60,17 @@
 </template>
 
 <script>
-import { Row, Col, Icon, Cell, CellGroup } from "vant";
+
 export default {
-  components: {
-    [Row.name]: Row,
-    [Col.name]: Col,
-    [Icon.name]: Icon,
-    [Cell.name]: Cell,
-    [CellGroup.name]: CellGroup
+  name: "user",
+  data() {
+    return {
+    };
+  },
+  methods: {
+    goOrder(i){
+      this.$router.push({ name: "myOrder", query: { status: i } });
+    }
   }
 };
 </script>
