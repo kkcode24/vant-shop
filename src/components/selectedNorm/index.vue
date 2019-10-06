@@ -7,17 +7,17 @@
             position="bottom"
             style="overflow: visible;"
         >
-            <div class="van-sku-container">
+            <div class="van-sku-container" v-if="$store.state.shoppingCar.show">
                 <div class="van-hairline--bottom van-sku-header">
                     <div class="van-sku-header__img-wrap">
-                        <img :src="goods.url">
+                        <img :src="app.prefixAttachs + $store.state.shoppingCar.fruit.fruit.thumbnailImage">
                     </div>
                     <div class="van-sku-header__goods-info">
-                        <div class="van-sku__goods-name van-ellipsis">{{goods.name}}</div>
+                        <div class="van-sku__goods-name van-ellipsis">{{$store.state.shoppingCar.fruit.fruit.name}}</div>
                         <div class="van-sku__goods-price">
                             <span>
                                 <span class="van-sku__price-symbol">￥</span>
-                                <span class="van-sku__price-num">39.00</span>
+                                <span class="van-sku__price-num">{{currentFruit.price | amount}}</span>
                             </span>
                         </div>
                     </div>
@@ -26,9 +26,9 @@
                 <div class="van-sku-body" style="max-height: 536px;">
                     <div class="van-sku-group-container van-hairline--bottom">
                         <div class="van-sku-row">
-                            <div class="van-sku-row__title">{{goods.normName}}：</div>
-                            <span  class="sku-row__item " :class="{'sku-row__item--active':item.isActive}" @click="selected(item)" v-for="item in goods.normList" :key="item.name">
-                            {{item.name}}
+                            <div class="van-sku-row__title">规格：</div>
+                            <span  class="sku-row__item " :class="{'sku-row__item--active':item.isActive}" @click="selected(item)" v-for="item in $store.state.shoppingCar.fruit.fruitSpecificationsList" :key="item.specifications">
+                                {{item.specifications}}
                             </span>
                         </div>
                     </div>
@@ -36,16 +36,16 @@
                         <div class="van-sku-stepper-container">
                             <div class="van-sku__stepper-title">购买数量：</div>
                             <div class="van-sku__stepper van-stepper">
-                            <van-stepper @overlimit='overlimit' v-model="selectedGoods.num" min="1" :max="goods.limitNum" />
+                              <van-stepper @overlimit='overlimit' v-model="selectedGoods.num" min="1"  :max='currentFruit.fruitNumber' />
                             </div>
                         </div>
-                        <div class="van-sku__stock">剩余40930件</div>
+                        <div class="van-sku__stock">剩余{{currentFruit.fruitNumber}}件</div>
                         <!---->
                     </div>
                 </div>
                 <!-- 按钮 -->
                 <div class="van-sku-actions">
-                <van-button class="van-sku-button" color="#f44" :square='true' type="primary" @click="submit">加入购物车</van-button>
+                    <van-button class="van-sku-button" color="#f44" :square='true' type="primary" @click="submit">加入购物车</van-button>
                 </div>
             </div>
         </van-popup>
@@ -54,57 +54,35 @@
 
 <script>
 import { Toast } from 'vant';
+import { addFriutToCart } from '@/api/shopingCart' 
 export default {
     name: 'shoppingCar',
-    props: {
-        id: [String, Number]
-    },
     data() {
         return {
             isActive: false,
-            goods: {
-              url: 'https://img.yzcdn.cn/upload_files/2019/02/15/FvQABol-o2caaSWZn6EgjrD_TmMG.jpg',
-              name: '泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水',
-              normName: '颜色',
-              normList: [
-                {name: '250g*3(买三送一）', id: 1, isActive: false},
-                {name: '250g*3(买三）', id: 2, isActive: false},
-                {name: '250g*3(买', id: 3, isActive: false},
-                {name: '250g*3(买三送一1）', id: 4, isActive: false},
-                {name: '250g*3(买三21）', id: 5, isActive: false},
-                {name: '250g*3(买21', id: 6, isActive: false}
-              ],
-              limitNum: 11
-            },
             activeId: '',
             selectedGoods: {
                 num: 0,
                 id: '',
                 cat: ''
-            }
+            },
+            currentFruit: {}
         }
     },
-    mounted() {
-      this.init()
-    },
     methods: {
-        init() {
-          if(this.goods.normList.length == 1) {
-            this.selectedGoods.id = this.goods.normList[0].id
-            this.selectedGoods.cat = this.goods.normList[0].name
-          }
-        },
         selected(data) {
+            console.log(data)
+            this.currentFruit  = data
             if(this.activeId != data.id) {
-                this.goods.normList.forEach(item => {
-                    item.isActive = false
+                this.$store.state.shoppingCar.fruit.fruitSpecificationsList.forEach(item => {
+                    this.$set(item, 'isActive', false)
                 });
             }
             this.activeId = data.id
             data.isActive = !data.isActive
             if(data.isActive) {
-              this.selectedGoods.id = this.goods.normList[0].id
-              this.selectedGoods.cat = this.goods.normList[0].name
+              this.selectedGoods.id = data.id
+              this.selectedGoods.cat = data.specifications    
             } else {
               this.selectedGoods.id = ''
               this.selectedGoods.cat = ''
@@ -112,7 +90,7 @@ export default {
         },
         submit() {
             if(!this.selectedGoods.cat) {
-                Toast(`请选择${this.goods.normName}`);
+                Toast(`请选择规格`);
                 return 
             }
             console.log(this.selectedGoods)
@@ -121,6 +99,17 @@ export default {
             if(this.selectedGoods.num == 1) {
                 Toast('至少选择一件商品');
             }
+        },
+        // 加入购物车
+        addFriutToCart() {
+            addFriutToCart({
+
+            }).then(res => {
+              if(re.code == 0) {
+                Toast('已成功添加至购物车');
+                this.$store.commit('CLOSE_SHOPPING')
+              }
+            })
         }
     }
 }

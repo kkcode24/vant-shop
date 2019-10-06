@@ -119,6 +119,14 @@ const router = new Router({
       }
     },
     {
+      path: '/order/pay',
+      name: 'pay',
+      component: () => import('@/views/order/pay'),
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
       path: '/items',
       name: 'items',
       components: {

@@ -143,10 +143,13 @@
           <li @click="goDetail(item)" class="good-item">
             <a class="cap-goods-layout__item">
               <div class="cap-goods__photo">
-                <div
-                  class="cap-goods__img--cover"
-                  v-lazy:background-image="appleImg"
-                />
+                <van-image
+                    class="cap-goods__img--cover"
+                    lazy-load
+                    :src="prefixAttachs+item.thumbnailImage"
+                  >
+                  <template v-slot:error>加载失败</template>
+                  </van-image>
               </div>
               <div class="cap-goods-layout__info">
                 <div class="cap-goods-layout__info-title">
@@ -177,155 +180,26 @@
       >
         <div class="goods-list-wrapper">
           <ul class="cap-goods-layout-container">
-            <li class="good-item">
+            <li @click="goDetail(item)" v-for="(item,index) in list" class="good-item" :key="index">
               <a class="cap-goods-layout__item">
                 <div class="cap-goods__photo">
-                  <div
+                  <van-image
                     class="cap-goods__img--cover"
-                    v-lazy:background-image="appleImg"
-                  />
+                    lazy-load
+                    :src="prefixAttachs+item.thumbnailImage"
+                  >
+                  <template v-slot:error>加载失败</template>
+                  </van-image>
                 </div>
                 <div class="cap-goods-layout__info">
                   <div class="cap-goods-layout__info-title">
-                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
+                    <h3 class="title">{{item.fruitDescribe}}</h3>
                   </div>
                   <div class="cap-goods-layout__info-price">
                     <div class="price-info">
                       <span class="sale-price">
                         <div class="cap-theme-view">
-                          <span class="price-tag">¥</span>39
-                        </div>
-                      </span>
-                    </div>
-                    <div
-                      @click.stop="showShop"
-                      class="cap-goods-layout__buy-btn-wrapper"
-                    >
-                      <van-icon
-                        class="cap-goods-layout__buy-btn"
-                        name="add-o"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="good-item">
-              <a class="cap-goods-layout__item">
-                <div class="cap-goods__photo">
-                  <div
-                    class="cap-goods__img--cover"
-                    v-lazy:background-image="goodsImg"
-                  />
-                </div>
-                <div class="cap-goods-layout__info">
-                  <div class="cap-goods-layout__info-title">
-                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
-                  </div>
-                  <div class="cap-goods-layout__info-price">
-                    <div class="price-info">
-                      <span class="sale-price">
-                        <div class="cap-theme-view">
-                          <span class="price-tag">¥</span>39
-                        </div>
-                      </span>
-                    </div>
-                    <div
-                      @click.stop="showShop"
-                      class="cap-goods-layout__buy-btn-wrapper"
-                    >
-                      <van-icon
-                        class="cap-goods-layout__buy-btn"
-                        name="add-o"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="good-item">
-              <a class="cap-goods-layout__item">
-                <div class="cap-goods__photo">
-                  <div
-                    class="cap-goods__img--cover"
-                    v-lazy:background-image="appleImg"
-                  />
-                </div>
-                <div class="cap-goods-layout__info">
-                  <div class="cap-goods-layout__info-title">
-                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
-                  </div>
-                  <div class="cap-goods-layout__info-price">
-                    <div class="price-info">
-                      <span class="sale-price">
-                        <div class="cap-theme-view">
-                          <span class="price-tag">¥</span>39
-                        </div>
-                      </span>
-                    </div>
-                    <div
-                      @click.stop="showShop"
-                      class="cap-goods-layout__buy-btn-wrapper"
-                    >
-                      <van-icon
-                        class="cap-goods-layout__buy-btn"
-                        name="add-o"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="good-item">
-              <a class="cap-goods-layout__item">
-                <div class="cap-goods__photo">
-                  <div
-                    class="cap-goods__img--cover"
-                    v-lazy:background-image="appleImg"
-                  />
-                </div>
-                <div class="cap-goods-layout__info">
-                  <div class="cap-goods-layout__info-title">
-                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
-                  </div>
-                  <div class="cap-goods-layout__info-price">
-                    <div class="price-info">
-                      <span class="sale-price">
-                        <div class="cap-theme-view">
-                          <span class="price-tag">¥</span>39
-                        </div>
-                      </span>
-                    </div>
-                    <div
-                      @click.stop="showShop"
-                      class="cap-goods-layout__buy-btn-wrapper"
-                    >
-                      <van-icon
-                        class="cap-goods-layout__buy-btn"
-                        name="add-o"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </li>
-            <li class="good-item">
-              <a class="cap-goods-layout__item">
-                <div class="cap-goods__photo">
-                  <div
-                    class="cap-goods__img--cover"
-                    v-lazy:background-image="goodsImg"
-                  />
-                </div>
-                <div class="cap-goods-layout__info">
-                  <div class="cap-goods-layout__info-title">
-                    <h3 class="title">泰国进口椰青原箱 2个装 单果重750g以上 （赠送开椰器和吸管） 新鲜水</h3>
-                  </div>
-                  <div class="cap-goods-layout__info-price">
-                    <div class="price-info">
-                      <span class="sale-price">
-                        <div class="cap-theme-view">
-                          <span class="price-tag">¥</span>39
+                          <span class="price-tag">¥{{item.price}}</span>
                         </div>
                       </span>
                     </div>
@@ -351,6 +225,7 @@
 
 <script>
 import { getIndexSwipeImages, getNewFruits } from "@/api/app";
+import { getFriutList, getFriutListById, getNromById,getAllFriuts } from "@/api/class";
 export default {
   name: "home",
   data() {
@@ -376,7 +251,11 @@ export default {
       loading: false,
       finished: false,
       goodsImg: "../../../static/images/index/goods.webp",
-      appleImg: "../../../static/images/index/apple.webp"
+      appleImg: "../../../static/images/index/apple.webp",
+      page: {
+        current: 1,
+        size: 3
+      }
     };
   },
   mounted() {
@@ -435,19 +314,22 @@ export default {
       this.$store.commit("OPEN_SHOPPING");
     },
     onLoad() {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 20; i++) {
-          this.list.push(this.list.length + 1);
+      getAllFriuts(this.page).then(res => {
+        if (res.code == 0) {
+          if(res.data.length>0){
+            this.list = this.list.concat(res.data);
+          }
+          this.loading = false;
+          if (this.list.length >= res.total) {
+            this.finished = true;
+          }else{
+            this.page.current++
+          }
+        }else{
+          this.page.current=1;
         }
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 500);
+        console.log(this.list);
+      });
     }
   }
 };

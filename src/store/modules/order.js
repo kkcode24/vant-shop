@@ -17,7 +17,7 @@ const order = {
                 const orderList = JSON.parse(getUserOrder())||[]
                 orderList.push(orderInfo)
                 const order_list = JSON.stringify(orderList)
-                commit('SET_USERORDER', order_list)
+                commit('SET_USERORDER', orderList)
                 setUserOrder(order_list)
                 resolve()
             })
@@ -25,6 +25,7 @@ const order = {
         // 订单提交成功，清除本地订单信息
         clearOrderCache({ commit }) {
             return new Promise(resolve => {
+                commit('SET_USERORDER',null)
                 clearUserOrder()
                 resolve()
             })
