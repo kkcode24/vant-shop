@@ -176,7 +176,7 @@ const router = new Router({
       component: () => import('@/views/user/address/add')
     },
     {
-      path: '/user/address/edit',
+      path: '/user/address/edit/:id',
       name: 'editAddress',
       component: () => import('@/views/user/address/edit')
     },
