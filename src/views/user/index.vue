@@ -3,23 +3,24 @@
     <div class="member-center__user-info-wrapper">
       <div class="member-center__user-info avatar-at-top">
         <div class="user-info__avatar">
-          <img src="../../../static/images/user/avatar.png">
+          <img v-if="user.wxImage" :src="user.wxImage">
+          <img v-else src="../../../static/images/user/avatar.png" alt="avatar">
         </div>
         <div class="user-info__info">
-          <div class="user-info__username">15951830551</div>
+          <div v-if="user.phone" class="user-info__username">{{user.phone}}</div>
+          <div v-else class="user-info__username">{{user.wxNickname}}</div>
         </div>
-        <div class="user-info__sign">
-          <img
-            src="../../../static/images/user/right.png"
-            class="user-info__sign-img"
-          >
-          <span>已签到</span>
+        <div @click="$router.push({name:'signin'})" class="user-info__sign">
+          <img src="../../../static/images/user/right.png">
+          <span v-if="user.isRegister">已签到</span>
+          <span v-else>去签到</span>
         </div>
         <div class="user-info__level-wrapper">
           <div class="user-info__level">
             <span class="name">丰登水果</span>
             <div class="level">
-              <span>丰登水果会员</span>
+              <span v-if="user.isMember">丰登水果会员</span>
+              <span v-else>丰登水果普通会员</span>
               <i class="van-icon van-icon-arrow"></i>
             </div>
             <img
@@ -33,16 +34,16 @@
     </div>
     <div class="member-center__stats">
       <div class="member-center__stats-item">
-        <div>0.00</div>
+        <div>{{user.userBalance}}</div>
         <div>余额</div>
       </div>
       <div class="member-center__stats-item">
-        <div>114</div>
+        <div>{{user.integral}}</div>
         <div>积分</div>
       </div>
       <div class="member-center__stats-item">
-        <div>5</div>
-        <div>券码</div>
+        <div>{{user.couponNum}}</div>
+        <div>优惠券</div>
       </div>
     </div>
     <div class="user-info">
@@ -116,7 +117,13 @@
 export default {
   name: "user",
   data() {
-    return {};
+    return {
+      user:{},
+    };
+  },
+  mounted(){
+    this.user = this.$store.getters.userInfo;
+    console.log(this.user);
   },
   methods: {
     goOrder(i) {
@@ -194,7 +201,7 @@ export default {
         border-radius: 11px;
         color: #fff;
         background-color: rgba(0, 0, 0, 0.2);
-        .user-info__sign-img {
+        img {
           width: 12px;
           height: 12px;
           margin-right: 5px;
