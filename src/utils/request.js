@@ -27,6 +27,7 @@ service.interceptors.response.use(
           message: res.msg,
           duration: 3 * 1000
         });
+        return response.data;
       }
     } else {
       return response.data

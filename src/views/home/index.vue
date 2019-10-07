@@ -250,8 +250,6 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      goodsImg: "../../../static/images/index/goods.webp",
-      appleImg: "../../../static/images/index/apple.webp",
       page: {
         current: 1,
         size: 3
@@ -328,7 +326,6 @@ export default {
         }else{
           this.page.current=1;
         }
-        console.log(this.list);
       });
     }
   }

@@ -37,7 +37,6 @@
 import { Checkbox, CheckboxGroup, Card, SubmitBar, Toast } from 'vant';
 import { getCartList } from '@/api/shopingCart'
 import { filterEmpyKey } from "@/utils/index";
-console.log(getCartList)
 export default {
   components: {
     [Card.name]: Card,
