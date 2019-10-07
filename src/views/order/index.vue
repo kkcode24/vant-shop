@@ -1,6 +1,6 @@
 <template>
   <div id="shoppingCar">
-    <div class="card_item">
+    <div class="card_item" v-if="list.length > 0">
        <div class="shopping_item" v-for="item in list" :key="item.fruitPrice">
           <van-checkbox v-model="item.checked" @change="selectedChange(item)"></van-checkbox>
           <div class="card_content">
@@ -22,8 +22,8 @@
        </div>
         <!-- 结算 -->
         <van-submit-bar
-          :price="3050"
-          button-text="提交订单"
+          :price="totalPrice"
+          button-text="结算"
           @submit="onSubmit"
           style="padding: 0 10px;bottom: 50px;"
         >
@@ -36,6 +36,7 @@
 <script>
 import { Checkbox, CheckboxGroup, Card, SubmitBar, Toast } from 'vant';
 import { getCartList } from '@/api/shopingCart'
+import { filterEmpyKey } from "@/utils/index";
 console.log(getCartList)
 export default {
   components: {
@@ -49,7 +50,7 @@ export default {
       allChecked: false, // 全选
       checkedGoods: [],
       list: [],
-      checked: false  
+      totalPrice: 0
     };
   },
   mounted() {
@@ -61,6 +62,23 @@ export default {
           item.checked = this.allChecked
         });
     },
+    // 判断是不是全选 计算总价
+    isAllChecked() {
+      let selectedNum = 0
+      this.totalPrice = 0
+      this.list.forEach(item => {
+        if(item.checked) {
+          selectedNum++
+          this.totalPrice += item.fruitPrice
+        }
+      });
+      this.totalPrice = this.totalPrice * 100
+      if(selectedNum == this.list.length) {
+        this.allChecked = true
+      } else {
+        this.allChecked = false
+      }
+    },
     // 单选改变
     selectedChange(data) {
        this.checkedGoods.forEach((item) => {
@@ -70,20 +88,39 @@ export default {
             let findIndex = this.checkedGoods((currentValue, index, arr) => {
               return currentValue.id == data.id
             })
-            this.checkedGoods.splice(findIndex, 1)
+            if(findIndex >= 0 ) {
+              this.checkedGoods.splice(findIndex, 1)
+            }
           }
         });
+        this.isAllChecked()
     },
     onSubmit() {
-      Toast('点击结算');
       let data = [] 
       this.list.forEach(item => {
         if(item.checked) {
-          data.push(item)
+          let fruit = filterEmpyKey({
+            fruitSpecificationsId: item.fruitSpecificationsId,
+            totalPrice: (item.fruitPrice) * item.fruitNumber,
+            fruitNum: item.fruitNumber,
+            price: item.fruitPrice,
+            s1: null,
+            messages: null,
+            cartMessages: null,
+            fruitImageList: null,
+            selectedSkuComb: null
+          });
+          data.push(fruit)
         }
       })
-
+      if(data.length == 0) {
+        Toast('请选择需要结算的商品');
+        return false;
+      }
       console.log(data)
+      this.$store.dispatch("setOrderCache", data).then(() => {
+        this.$router.push({ name: "submitOrder" });
+      });
     },
     // 添加购物车
     addShopCart(id) {
@@ -93,7 +130,6 @@ export default {
     getCartList() {
       getCartList({}).then(res => {
         if(res.code == 0) {
-          console.log(res)
           res.data.forEach(item => {
             item.checked = false
           });

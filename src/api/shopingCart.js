@@ -8,5 +8,5 @@ export function addFriutToCart(data) {
 //查询购物车
 
 export function getCartList(data) {
-  return request({ url: '/shoppingCart/ajaxList', method: 'get', params: data })
+  return request({ url: '/shoppingCart/getDataList', method: 'get', params: data })
 }
