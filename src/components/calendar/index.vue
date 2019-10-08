@@ -18,7 +18,7 @@
         </div>
       </div>
       <div class="wh_content">
-        <div class="wh_content_item" v-for="(item,index) in list" @click="clickDay(item,index)" :key="index">
+        <div class="wh_content_item" v-for="(item,index) in list" :key="index">
           <div class="wh_item_date" v-bind:class="[{ wh_isMark: item.isMark},{wh_other_dayhide:item.otherMonth!=='nowMonth'},{wh_want_dayhide:item.dayHide},{wh_isToday:item.isToday},{wh_chose_day:item.chooseDay},setClass(item)]">
             {{item.id}}
           </div>
@@ -41,7 +41,7 @@ export default {
   props: {
     markDate: {
       type: Array,
-      default: () => []
+      default: () => ['2019-10-05','2019-10-07']
     },
     markDateMore: {
       type: Array,
@@ -70,16 +70,6 @@ export default {
       let obj = {};
       obj[data.markClassName] = data.markClassName;
       return obj;
-    },
-    clickDay: function (item, index) {
-      if (item.otherMonth === 'nowMonth' && !item.dayHide) {
-        this.getList(this.myDate, item.date);
-      }
-      if (item.otherMonth !== 'nowMonth') {
-        item.otherMonth === 'preMonth'
-          ? this.PreMonth(item.date)
-          : this.NextMonth(item.date);
-      }
     },
     ChoseMonth: function (date, isChosedDay = true) {
       date = timeUtil.dateFormat(date);
@@ -208,12 +198,8 @@ export default {
     border-radius: 50%;
   }
 }
-* {
-  margin: 0;
-  padding: 0;
-}
 .wh_container {
-  margin-top: 20px;
+  padding: 0 10px;
   margin-bottom: 20px;
 }
 li {
@@ -235,6 +221,9 @@ li {
 .wh_top_changge .wh_content_li {
   cursor: auto;
   flex: 2.5;
+  color: #a25700;
+  font-size: 12px;
+  font-family: PingFangSC-Semibold;
 }
 .wh_content_all {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
@@ -243,6 +232,7 @@ li {
   width: 100%;
   overflow: hidden;
   padding-bottom: 8px;
+  border-radius: 4px;
 }
 .wh_content {
   display: flex;
@@ -256,7 +246,7 @@ li {
   font-size: 16px;
 }
 .wh_content_item,
-wh_content_item_tag {
+.wh_content_item_tag {
   font-size: 15px;
   width: 13.4%;
   text-align: center;
@@ -264,7 +254,7 @@ wh_content_item_tag {
   position: relative;
 }
 .wh_content_item {
-  height: 40px;
+  height: 35px;
 }
 .wh_top_tag {
   width: 40px;
@@ -274,11 +264,13 @@ wh_content_item_tag {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #999;
+  font-size: 12px;
 }
 .wh_item_date {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
   margin: auto;
   display: flex;
   justify-content: center;
@@ -296,13 +288,15 @@ wh_content_item_tag {
   content: '>';
   position: absolute;
   top: -10px;
-  left: 0
+  left: 0;
+  color: #a25700;
 }
 .wh_jiantou1::before{
   content: '<';
   position: absolute;
   top: -10px;
-  left: 0
+  left: 0;
+  color: #a25700;
 }
 .wh_jiantou2 {
   width: 12px;
@@ -313,9 +307,10 @@ wh_content_item_tag {
   position: relative;
 }
 .wh_content_item > .wh_isMark {
+  color: #fff!important;
   margin: auto;
   border-radius: 100px;
-  background: blue;
+  background: #ff9300;
   z-index: 2;
 }
 .wh_content_item .wh_other_dayhide {
@@ -325,11 +320,12 @@ wh_content_item_tag {
   color: #bfbfbf;
 }
 .wh_content_item .wh_isToday {
-  background: #999;
+  /* background: red; */
   border-radius: 100px;
 }
 .wh_content_item .wh_chose_day {
-  background: #ccc;
+  color: #fff;
+  background: #ff9300;
   border-radius: 100px;
 }
 </style>

@@ -1,5 +1,12 @@
 import request from '@/utils/request'
 
+// 用户签到
+export function signin() {
+  return request({
+    url: '/register/save',
+    method: 'post'
+  })
+}
 // 查询水果详情
 export function getGoodDetail(fruitId) {
   return request({

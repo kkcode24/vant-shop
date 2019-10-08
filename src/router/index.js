@@ -148,7 +148,7 @@ const router = new Router({
       },
       meta: {
         requiresAuth: false,
-        keepAlive: true
+        keepAlive: false
       }
     },
     {

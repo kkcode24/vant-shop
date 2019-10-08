@@ -3,8 +3,10 @@
 import Vue from 'vue'
 import Vant from 'vant';
 import { Lazyload } from 'vant';
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'vant/lib/index.css';
 import '@/styles/common.scss'
+import 'swiper/dist/css/swiper.css'
 import 'lib-flexible/flexible';
 import store from './store'
 import App from './App'
@@ -21,6 +23,7 @@ Vue.prototype.app = appConfig;
 Vue.use(Lazyload);
 Vue.use(Vant);
 Vue.use(components);
+Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */

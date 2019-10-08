@@ -32,7 +32,7 @@ const auth = {
         UserInfo().then(response => {
           const user_info = JSON.stringify(response.data);
           commit('SET_AUTH', false);
-          commit('SET_USERINfO', user_info);
+          commit('SET_USERINfO', response.data);
           setUserInfo(user_info);
           setUserAuth(false);
           resolve(response.data);
