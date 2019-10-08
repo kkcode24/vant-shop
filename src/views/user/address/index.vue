@@ -3,13 +3,13 @@
     <van-address-list
       v-model="chosenAddressId"
       :list="addressList"
-      :disabled-list="disabledList"
-      disabled-text="以下地址超出配送范围"
       :switchable="isSwitch"
       @add="onAdd"
       @edit="onEdit"
       @select="onSelect"
     />
+      <!-- :disabled-list="disabledList"
+      disabled-text="以下地址超出配送范围" -->
     <!-- <van-address-list
       @add="onAdd"
     >
@@ -78,7 +78,11 @@ export default {
       this.$router.push("/user/address/add");
     },
     onEdit(item, index) {
-      this.$router.push("/user/address/edit");
+      this.$router.push({
+        name: "editAddress",
+        path: "/user/address/edit",
+        params: {id:this.addressList[index].id}
+      });
     },
     onSelect(item, index){
       item.isDefault = 0;

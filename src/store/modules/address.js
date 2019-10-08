@@ -1,4 +1,4 @@
-import { getAddressList,saveAddress } from '@/api/address'
+import { getAddressList,saveAddress,updateAddress,deleteAddress } from '@/api/address'
 import { getUserAddress, setUserAddress } from '@/store/localStorage'
 const address = {
   state: {
@@ -41,6 +41,41 @@ const address = {
           addressList.push(response.data);
           const address_list = JSON.stringify(addressList);
           commit('SET_USERADDRESS', addressList);
+          setUserAddress(address_list);
+          resolve(response);
+        }).catch(error=>{
+          reject(error);
+        })
+      })
+    },
+    // 更新用户收货地址
+    updateWxUserAddress({commit},addressData){
+      return new Promise((resolve, reject)=>{
+        updateAddress(addressData).then(response=>{
+          const addressList = JSON.parse(getUserAddress())
+          addressList.forEach((v,i) => {
+            addressList[i].isDefault = 1;
+          });
+          addressList.push(response.data);
+          const address_list = JSON.stringify(addressList);
+          commit('SET_USERADDRESS', addressList);
+          setUserAddress(address_list);
+          resolve(response);
+        }).catch(error=>{
+          reject(error);
+        })
+      })
+    },
+    // 删除用户一个收货地址
+    deleteWxUserAddress({commit},addressId){
+      return new Promise((resolve, reject)=>{
+        deleteAddress(addressId).then(response=>{
+          const addressList = JSON.parse(getUserAddress())
+          const tempAddressList = addressList.filter(item=>{
+            return item.id !== addressId;
+          })
+          const address_list = JSON.stringify(tempAddressList);
+          commit('SET_USERADDRESS', tempAddressList);
           setUserAddress(address_list);
           resolve(response);
         }).catch(error=>{

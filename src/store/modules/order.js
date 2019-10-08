@@ -12,10 +12,14 @@ const order = {
   
     actions: {
         // 把提交的订单数据存到本地
-        setOrderCache({commit},orderInfo){
+        setOrderCache({ commit }, orderInfo){
             return new Promise(resolve => {
-                const orderList = JSON.parse(getUserOrder())||[]
-                orderList.push(orderInfo)
+                let orderList = JSON.parse(getUserOrder()) || []
+                if(Array.isArray(orderInfo)) {
+                    orderList = [...orderInfo, ...orderList]
+                } else {
+                    orderList.push(orderInfo)
+                }
                 const order_list = JSON.stringify(orderList)
                 commit('SET_USERORDER', orderList)
                 setUserOrder(order_list)

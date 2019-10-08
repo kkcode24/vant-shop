@@ -12,7 +12,7 @@
           <van-col span="4">
             <div class="user-avatar">
               <img
-                :src="user.avatar"
+                :src="user.wxImage"
                 alt="用户头像"
               >
             </div>
@@ -20,7 +20,7 @@
           <van-col span="20">
             <div class="user-info">
               <van-cell
-                :title="user.nickname"
+                :title="user.wxNickname"
                 value=""
                 label="微信个人信息"
               />

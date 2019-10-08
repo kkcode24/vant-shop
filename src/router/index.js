@@ -119,6 +119,14 @@ const router = new Router({
       }
     },
     {
+      path: '/order/pay',
+      name: 'pay',
+      component: () => import('@/views/order/pay'),
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
       path: '/items',
       name: 'items',
       components: {
@@ -146,13 +154,10 @@ const router = new Router({
     {
       path: '/user/signin',
       name: 'signin',
-      components: {
-        default: () => import('@/views/user/signin/index'),
-        tabbar: Tabbar
-      },
+      component: () => import('@/views/user/signin/index'),
       meta: {
         requiresAuth: true,
-        keepAlive: true
+        keepAlive: false
       }
     },
     {
@@ -171,20 +176,25 @@ const router = new Router({
       component: () => import('@/views/user/address/add')
     },
     {
-      path: '/user/address/edit',
+      path: '/user/address/edit/:id',
       name: 'editAddress',
       component: () => import('@/views/user/address/edit')
+    },
+    {
+      path: '/user/order',
+      name: 'myOrder',
+      component: () => import('@/views/user/order/index')
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(r => r.meta.requiresAuth)) {
-    let userInfo = store.getters.userInfo;
+    let isAuth = store.getters.userInfo.isAuth;
     if (true) {
       next()
     } else {
-      console.log("需要用户授权！");
+      store.commit("OPEN_AUTH");
     }
   } else {
     next()
