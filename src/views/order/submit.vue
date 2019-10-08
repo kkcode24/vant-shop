@@ -1,50 +1,23 @@
 <template>
   <div class="order">
     <!-- 联系人卡片 -->
-    <van-contact-card
-      :type="cardType"
-      :name="currentContact.name"
-      :tel="currentContact.tel"
-      add-text="添加收货地址"
-      @click="choseAddress"
-    />
+    <van-contact-card :type="cardType" :name="currentContact.name" :tel="currentContact.tel" add-text="添加收货地址" @click="choseAddress" />
     <!-- 商品Panel -->
-    <van-panel
-      title="商品"
-      class="allGood"
-    >
+    <van-panel title="商品" class="allGood">
       <div class="allGood-item">
-        <div
-          v-for="(item,index) in orderGoodList"
-          :key="index"
-        >
-          <van-card
-            :title="item.name"
-            :desc="item.fruitDescribe"
-            :num="item.selectedNum"
-            :price="item.price"
-            :thumb="item.picture"
-          />
+        <div v-for="(item,index) in orderGoodList" :key="index">
+          <van-card :title="item.name" :desc="item.fruitDescribe" :num="item.selectedNum" :price="item.price" :thumb="item.picture" />
         </div>
       </div>
     </van-panel>
 
     <div class="deduction">
       <van-cell-group>
-        <van-cell
-          title="店铺活动"
-          is-link
-        />
-        <van-coupon-cell
-          :coupons="coupons"
-          :chosen-coupon="chosenCoupon"
-          @click="showCoupon = true"
-        />
-        <van-cell
-          title="积分"
-          class="point-deduction"
-        >
-          使用积分抵现5元<i class="point-deduction__question van-icon van-icon-question-o" style="color: rgb(51, 136, 255); font-size: 14px;"></i>
+        <van-cell title="店铺活动" is-link />
+        <van-coupon-cell :coupons="coupons" :chosen-coupon="chosenCoupon" @click="showCoupon = true" />
+        <van-cell title="积分" class="point-deduction">
+          使用积分抵现5元
+          <i class="point-deduction__question van-icon van-icon-question-o" style="color: rgb(51, 136, 255); font-size: 14px;"></i>
           <van-switch class="point-deduction__switch" size="20px" v-model="checked" />
         </van-cell>
       </van-cell-group>
@@ -52,26 +25,12 @@
 
     <!-- 优惠券列表 -->
     <van-popup v-model="showCoupon" position="bottom">
-      <van-coupon-list
-        :coupons="coupons"
-        :chosen-coupon="chosenCoupon"
-        :disabled-coupons="disabledCoupons"
-        :show-exchange-bar="false"
-        @change="onChange"
-      />
+      <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" :show-exchange-bar="false" @change="onChange" />
     </van-popup>
 
-    <van-panel
-      title="配送方式"
-      :status="order.goodsPrice>0?'快递，运费 ￥'+order.goodsPrice:'快递，免运费'"
-      style="margin-top:15px;"
-    >
+    <van-panel title="配送方式" :status="order.goodsPrice>0?'快递，运费 ￥'+order.goodsPrice:'快递，免运费'" style="margin-top:15px;">
       <van-cell-group>
-        <van-field
-          v-model="order.remark"
-          label="留言"
-          placeholder="点击给卖家留言"
-        />
+        <van-field v-model="order.remark" label="留言" placeholder="点击给卖家留言" />
       </van-cell-group>
     </van-panel>
     <div>
@@ -86,29 +45,25 @@
           <span>- ¥ {{order.couponPrice}}</span>
         </p>
         <div class="price-panel__total van-hairline--top">
-          合计：<span class="price-panel__amount theme-color">
-            ¥{{order.discountTotalPrice+order.goodsPrice-order.couponPrice}}</span></div>
+          合计：
+          <span class="price-panel__amount theme-color">
+            ¥{{order.discountTotalPrice+order.goodsPrice-order.couponPrice}}</span>
+        </div>
       </div>
     </div>
 
-    <van-submit-bar
-      :loading="loading"
-      :price="(order.discountTotalPrice+order.goodsPrice-order.couponPrice)*100"
-      button-text="提交订单"
-      @submit="onSubmit"
-    />
-    <van-action-sheet
-      v-model="show"
-      :actions="actions"
-      cancel-text="取消"
-      @select="onSelect"
-      @cancel="onCancel"
-    />
+    <van-submit-bar :loading="loading" :price="(order.discountTotalPrice+order.goodsPrice-order.couponPrice)*100" button-text="提交订单" @submit="onSubmit" />
+    <van-action-sheet v-model="show" :actions="actions" cancel-text="取消" @select="onSelect" @cancel="onCancel" />
   </div>
 </template>
 
 <script>
-import { saveOrder, billWXPay } from "@/api/order";
+import {
+  saveOrder,
+  billWXPay,
+  queryOrderPayResult,
+  modifyOrderStatus
+} from "@/api/order";
 import { getUserCoupon } from "@/api/coupon";
 export default {
   name: "submitOrder",
@@ -137,10 +92,7 @@ export default {
         // 收费金额（取折后总金额）
         discountTotalPrice: 0
       },
-      actions: [
-        { name: "微信支付", payType: "wx" },
-        { name: "支付宝支付", payType: "ali" }
-      ]
+      actions: [{ name: "微信支付", payType: "wx" }]
     };
   },
   beforeRouteLeave(to, from, next) {
@@ -171,10 +123,10 @@ export default {
   },
 
   methods: {
-    getUserCouponList(){
-      getUserCoupon().then(res=>{
-        if(res.code===0){
-          res.data.forEach(item=>{
+    getUserCouponList() {
+      getUserCoupon().then(res => {
+        if (res.code === 0) {
+          res.data.forEach(item => {
             let startAt = new Date(item.startTime).getTime();
             let endAt = new Date(item.endTime).getTime();
             let now = Date.now();
@@ -183,29 +135,33 @@ export default {
               condition: item.couponRule,
               value: item.couponPrice,
               name: item.couponName,
-              startAt: startAt/1000,
-              endAt: endAt/1000,
+              startAt: startAt / 1000,
+              endAt: endAt / 1000,
               valueDesc: item.couponPrice,
-              unitDesc: '元'
-            }
+              unitDesc: "元"
+            };
             // 必须保证优惠券在有效期内
-            if(now>startAt&&now<endAt){
-              if(item.isThreshold){ // 如果不存在使用门槛
-                this.coupons.push({...currObj})
-              }else{
+            if (now > startAt && now < endAt) {
+              if (item.isThreshold) {
+                // 如果不存在使用门槛
+                this.coupons.push({ ...currObj });
+              } else {
                 // 如果存在使用门槛，则需保证满足门槛金额
-                if(this.order.totalPrice<item.thresholdPrice){
-                  this.disabledCoupons.push({...currObj,reason:'不满'+item.thresholdPrice+'元'})
-                }else{
-                  this.coupons.push({...currObj})
+                if (this.order.totalPrice < item.thresholdPrice) {
+                  this.disabledCoupons.push({
+                    ...currObj,
+                    reason: "不满" + item.thresholdPrice + "元"
+                  });
+                } else {
+                  this.coupons.push({ ...currObj });
                 }
               }
-            }else{
-              this.disabledCoupons.push({...currObj,reason:'已过期'})
+            } else {
+              this.disabledCoupons.push({ ...currObj, reason: "已过期" });
             }
-          })
+          });
         }
-      })
+      });
     },
     onChange(index) {
       this.showCoupon = false;
@@ -253,14 +209,24 @@ export default {
                 },
                 function(res) {
                   if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    setTimeout(function() {
-                      that.$toast("支付成功");
-                      that.$router.push({name:'home'})
-                    }, 500);
+                    queryOrderPayResult(this.orderId).then(response => {
+                      if (response.code === 0) {
+                        this.$toast("支付成功");
+                        // 修改订单状态
+                        modifyOrderStatus(this.orderId).then(r => {
+                          if (r.code === 0) {
+                            this.$router.push({ name: "home" });
+                          }
+                        });
+                      } else {
+                        this.$toast("支付失败");
+                        this.$router.push({ name: "home" });
+                      }
+                    });
                   }
                   if (res.err_msg == "get_brand_wcpay_request:cancel") {
                     this.$toast("支付已取消");
-                    that.$router.push({name:'home'})
+                    this.$router.push({ name: "home" });
                   }
                 }
               );
@@ -292,14 +258,11 @@ export default {
           .catch(error => {
             console.log(error);
           });
-      } else if (item.payType === "ali") {
-        // 支付宝支付
-        this.$toast("开发中");
       }
     },
     onCancel() {
       this.$toast("已取消支付");
-      that.$router.push({name:'home'})
+      that.$router.push({ name: "home" });
     }
   },
   computed: {
@@ -316,7 +279,7 @@ export default {
   .allGood {
     margin-top: 14px;
   }
-  .deduction{
+  .deduction {
     margin-top: 10px;
     .point-deduction {
       .van-cell__title {
