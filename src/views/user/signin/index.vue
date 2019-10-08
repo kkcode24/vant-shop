@@ -9,7 +9,7 @@
           签到规则
         </p>
       </header>
-      <calendar></calendar>
+      <calendar :markDate="markDate" @changeMonth="change"></calendar>
       <div class="l-sign__reward">
         <div class="c-reward__time">当月连签有机会领取以下奖励:</div>
         <div class="l-prize__container">
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import {signin} from "@/api/app"
+import {signin,querySignDateList,queryRegisterCoupon} from "@/api/app"
 import calendar from "@/components/calendar/index";
 export default {
   name: "signin",
@@ -41,6 +41,7 @@ export default {
   data() {
     return {
       user:{},
+      markDate: [],
       registerIntegralList:[],
       swiperOption: {
         slidesPerView: 'auto',
@@ -50,13 +51,40 @@ export default {
   },
   mounted(){
     this.user = this.$store.getters.userInfo;
-    this.goSignIn();
+    if(this.user.isRegister){
+      this.queryDateList();
+    }else {
+      this.goSignIn();
+    }
+    this.getCouponList();
   },
   methods: {
+    getCouponList(){
+      queryRegisterCoupon().then(res=>{
+        if(res.code === 0){
+          this.registerIntegralList = res.data;
+        }
+      })
+    },
+    change(date){
+      this.queryDateList(date);
+    },
+    queryDateList(date){
+      if(!date){
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = now.getMonth() + 1;
+        date = year + '-' + month;
+      }
+      querySignDateList(date).then(res=>{
+        if(res.code===0){
+          this.markDate = res.data;
+        }
+      })
+    },
     goSignIn(){
       signin().then(res=>{
         if(res.code === 0){
-          this.registerIntegralList = res.data.registerIntegralList;
           this.$store.dispatch('getActionWxUserInfo').then(r=>{
             if(r.code===0){
               this.user = r.data;

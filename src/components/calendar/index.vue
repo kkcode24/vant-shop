@@ -41,7 +41,7 @@ export default {
   props: {
     markDate: {
       type: Array,
-      default: () => ['2019-10-05','2019-10-07']
+      default: () => ['2019-10-05']
     },
     markDateMore: {
       type: Array,
