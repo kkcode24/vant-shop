@@ -130,17 +130,9 @@
       </van-row>
     </div>
     <div class="goods-swipe-container">
-      <van-swipe
-        :loop="false"
-        :show-indicators="false"
-        :width="115"
-        :height="200"
-      >
-        <van-swipe-item
-          v-for="(item,index) in newGoods"
-          :key="index"
-        >
-          <li @click="goDetail(item)" class="good-item">
+      <swiper :options="swiperOption">
+        <swiper-slide v-for="(item,index) in newGoods" :key="index" class="good-item">
+          <li @click="goDetail(item)">
             <a class="cap-goods-layout__item">
               <div class="cap-goods__photo">
                 <van-image
@@ -167,8 +159,8 @@
               </div>
             </a>
           </li>
-        </van-swipe-item>
-      </van-swipe>
+        </swiper-slide>
+      </swiper>
     </div>
     <!-- 水果list -->
     <div class="goods">
@@ -230,6 +222,10 @@ export default {
   name: "home",
   data() {
     return {
+      swiperOption: {
+        slidesPerView: 'auto',
+        spaceBetween: 10
+      },
       prefixAttachs: this.app.prefixAttachs,
       value: "",
       activeSearch: false,
@@ -384,6 +380,8 @@ export default {
   padding: 0 10px;
   background-color: #f8f8f8;
   .good-item {
+    width: 115px;
+    height: 200px;
     list-style: none;
     a.cap-goods-layout__item {
       display: block;
