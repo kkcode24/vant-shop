@@ -129,6 +129,7 @@
         </van-col>
       </van-row>
     </div>
+    <!-- 时令上新 -->
     <div class="goods-swipe-container">
       <swiper :options="swiperOption">
         <swiper-slide v-for="(item,index) in newGoods" :key="index" class="good-item">
@@ -196,7 +197,7 @@
                       </span>
                     </div>
                     <div
-                      @click.stop="showShop"
+                      @click.stop="showShopping(item.id)"
                       class="cap-goods-layout__buy-btn-wrapper"
                     >
                       <van-icon
@@ -216,8 +217,8 @@
 </template>
 
 <script>
-import { getIndexSwipeImages, getNewFruits } from "@/api/app";
-import { getFriutList, getFriutListById, getNromById,getAllFriuts } from "@/api/class";
+import { getIndexSwipeImages, getNewFruits,getGoodDetail } from "@/api/app";
+import { getAllFriuts } from "@/api/class";
 export default {
   name: "home",
   data() {
@@ -304,8 +305,12 @@ export default {
         this.$store.commit("OPEN_AUTH");
       }
     },
-    showShop() {
-      this.$store.commit("OPEN_SHOPPING");
+    showShopping(fruitId) {
+      getGoodDetail(fruitId).then(res => {
+        if (res.code === 0) {
+          this.$store.commit('ADD_GOODS', res.data)
+        }
+      });
     },
     onLoad() {
       getAllFriuts(this.page).then(res => {
