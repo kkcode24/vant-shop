@@ -1,7 +1,12 @@
 <template>
   <div id="shoppingCar">
+    <!-- <van-nav-bar title="购物车"
+      :right-text="rightText"
+      @click-right="editCart"
+      :z-index="10"
+      fixed /> -->
     <div class="card_item" v-if="list.length > 0">
-       <div class="shopping_item" v-for="item in list" :key="item.fruitPrice">
+       <div class="shopping_item" v-for="(item,index) in list" :key="index">
           <van-checkbox v-model="item.checked" @change="selectedChange(item)"></van-checkbox>
           <div class="card_content">
             <img class="card_img" v-lazy="app.prefixAttachs + item.fruitImage" >
@@ -10,12 +15,12 @@
                   {{item.fruitDescribe}}
                 </h3>
                 <div class="addShop">
-                    <div class="sale-price" style="color: rgb(255, 68, 68);">
-                      <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
-                    </div>
-                    <span @click.stop="addShopCart(1)">
-                      <van-stepper v-model="item.fruitNumber"  />
-                    </span>
+                  <div class="sale-price" style="color: rgb(255, 68, 68);">
+                    <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
+                  </div>
+                  <span>
+                    <van-stepper v-model="item.fruitNum"/>
+                  </span>
                 </div>
             </div>
           </div>
@@ -46,6 +51,7 @@ export default {
   },
   data() {
     return {
+      isEdit: false,
       allChecked: false, // 全选
       checkedGoods: [],
       list: [],
@@ -121,22 +127,31 @@ export default {
         this.$router.push({ name: "submitOrder" });
       });
     },
-    // 添加购物车
-    addShopCart(id) {
-      console.log(id)
-    },
     // 获取购物车列表
     getCartList() {
       getCartList({}).then(res => {
         if(res.code == 0) {
-          res.data.forEach(item => {
-            item.checked = false
-          });
           this.list = res.data
         }
       })
     }
-  }
+  },
+  computed: {
+    // totalPrice() {
+    //   let all = 0;
+    //   this.cartList.forEach(item => {
+    //     all += this.checkedGoods.indexOf(item.Goodid) !== -1 ? item.GoodPrice * item.Cartcount : 0;
+    //   });
+    //   return all * 100;
+    // },
+    rightText() {
+      if (this.list.length) {
+        return this.isEdit ? '完成' : '编辑';
+      } else {
+        return '';
+      }
+    }
+  },
 };
 </script>
 

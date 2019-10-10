@@ -49,7 +49,6 @@
     <van-goods-action>
       <van-goods-action-icon
         icon="chat-o"
-        @click="sorry"
       >客服</van-goods-action-icon>
       <van-goods-action-icon
         icon="cart-o"
@@ -101,8 +100,7 @@ export default {
       });
     },
     onBuyClicked() {
-      // this.fruitId
-      getGoodDetail(1).then(res => {
+      getGoodDetail(this.fruitId).then(res => {
         if (res.code === 0) {
           this.$store.dispatch('openSku',3).then(()=>{
             this.$store.commit('ADD_GOODS', res.data)
@@ -114,8 +112,7 @@ export default {
       this.$router.push({ name: "cart" });
     },
     onAddCart() {
-      // this.fruitId
-      getGoodDetail(1).then(res => {
+      getGoodDetail(this.fruitId).then(res => {
         if (res.code === 0) {
           this.$store.dispatch('openSku',2).then(()=>{
             this.$store.commit('ADD_GOODS', res.data)

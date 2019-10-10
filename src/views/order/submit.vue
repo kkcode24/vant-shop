@@ -1,36 +1,86 @@
 <template>
   <div class="order">
     <!-- 联系人卡片 -->
-    <van-contact-card :type="cardType" :name="currentContact.name" :tel="currentContact.tel" add-text="添加收货地址" @click="choseAddress" />
+    <van-contact-card
+      :type="cardType"
+      :name="currentContact.name"
+      :tel="currentContact.tel"
+      add-text="添加收货地址"
+      @click="choseAddress"
+    />
     <!-- 商品Panel -->
-    <van-panel title="商品" class="allGood">
+    <van-panel
+      title="商品"
+      class="allGood"
+    >
       <div class="allGood-item">
-        <div v-for="(item,index) in orderGoodList" :key="index">
-          <van-card :title="item.name" :desc="item.fruitDescribe" :num="item.selectedNum" :price="item.price" :thumb="item.picture" />
+        <div
+          v-for="(item,index) in orderGoodList"
+          :key="index"
+        >
+          <van-card
+            :title="item.name"
+            :desc="item.fruitDescribe"
+            :num="item.fruitNum"
+            :price="item.price"
+            :thumb="item.picture"
+          >
+          </van-card>
         </div>
       </div>
     </van-panel>
 
     <div class="deduction">
       <van-cell-group>
-        <!-- <van-cell title="店铺活动" is-link /> -->
-        <van-coupon-cell :coupons="coupons" :chosen-coupon="chosenCoupon" @click="showCoupon = true" />
-        <van-cell title="积分" class="point-deduction">
-          使用积分抵现5元
-          <i class="point-deduction__question van-icon van-icon-question-o" style="color: rgb(51, 136, 255); font-size: 14px;"></i>
-          <van-switch class="point-deduction__switch" size="20px" v-model="checked" />
+        <van-coupon-cell
+          :coupons="coupons"
+          :chosen-coupon="chosenCoupon"
+          @click="showCoupon = true"
+        />
+        <van-cell
+          title="积分"
+          class="point-deduction"
+          v-if="user"
+        >
+          {{user.pointRule.name}}
+          <i
+            class="point-deduction__question van-icon van-icon-question-o"
+            style="color: rgb(51, 136, 255); font-size: 14px;"
+          ></i>
+          <van-switch
+            class="point-deduction__switch"
+            size="20px"
+            v-model="checked"
+          />
         </van-cell>
       </van-cell-group>
     </div>
 
     <!-- 优惠券列表 -->
-    <van-popup v-model="showCoupon" position="bottom">
-      <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" :show-exchange-bar="false" @change="onChange" />
+    <van-popup
+      v-model="showCoupon"
+      position="bottom"
+    >
+      <van-coupon-list
+        :coupons="coupons"
+        :chosen-coupon="chosenCoupon"
+        :disabled-coupons="disabledCoupons"
+        :show-exchange-bar="false"
+        @change="onChange"
+      />
     </van-popup>
 
-    <van-panel title="配送方式" :status="order.goodsPrice>0?'快递，运费 ￥'+order.goodsPrice:'快递，免运费'" style="margin-top:15px;">
+    <van-panel
+      title="配送方式"
+      :status="order.freight>0?'快递，运费 ￥'+order.freight:'快递，免运费'"
+      style="margin-top:15px;"
+    >
       <van-cell-group>
-        <van-field v-model="order.remark" label="留言" placeholder="点击给卖家留言" />
+        <van-field
+          v-model="order.remark"
+          label="留言"
+          placeholder="点击给卖家留言"
+        />
       </van-cell-group>
     </van-panel>
     <div>
@@ -39,21 +89,43 @@
           <span>¥ {{order.totalPrice}}</span>
         </p>
         <p>运费
-          <span>+ ¥ {{order.goodsPrice}}</span>
+          <span>+ ¥ {{order.freight}}</span>
         </p>
-        <p>优惠
-          <span>- ¥ {{order.couponPrice}}</span>
+        <p v-if="order">优惠
+          <span v-if="checked">- ¥ {{(order.couponPrice/100)+user.pointRule.price}}</span>
+          <span v-else>- ¥ {{(order.couponPrice/100)}}</span>
         </p>
         <div class="price-panel__total van-hairline--top">
           合计：
-          <span class="price-panel__amount theme-color">
-            ¥{{order.discountTotalPrice+order.goodsPrice-order.couponPrice}}</span>
+          <span v-if="checked" class="price-panel__amount theme-color">
+            ¥{{order.discountTotalPrice+order.freight-(order.couponPrice/100)-user.pointRule.price}}</span>
+            <span v-else class="price-panel__amount theme-color">
+            ¥{{order.discountTotalPrice+order.freight-(order.couponPrice/100)}}</span>
         </div>
       </div>
     </div>
 
-    <van-submit-bar :loading="loading" :price="(order.discountTotalPrice+order.goodsPrice-order.couponPrice)*100" button-text="提交订单" @submit="onSubmit" />
-    <van-action-sheet v-model="show" :actions="actions" cancel-text="取消" @select="onSelect" @cancel="onCancel" />
+    <van-submit-bar
+      v-if="checked"
+      :loading="loading"
+      :price="(order.discountTotalPrice+order.freight-(order.couponPrice/100)-user.pointRule.price)*100"
+      button-text="提交订单"
+      @submit="onSubmit"
+    />
+    <van-submit-bar
+      v-else
+      :loading="loading"
+      :price="(order.discountTotalPrice+order.freight-(order.couponPrice/100))*100"
+      button-text="提交订单"
+      @submit="onSubmit"
+    />
+    <van-action-sheet
+      v-model="show"
+      :actions="actions"
+      cancel-text="取消"
+      @select="onSelect"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 
@@ -64,16 +136,24 @@ import {
   queryOrderPayResult,
   modifyOrderStatus
 } from "@/api/order";
-import { getUserCoupon } from "@/api/coupon";
+import { queryOrderInfo } from "@/api/order";
 export default {
   name: "submitOrder",
   data() {
     return {
+      user: {
+        pointRule: {
+          id: 1,
+          price: 0,
+          integral: 100,
+          name: '满100积分兑换1元',
+        }
+      },
       showCoupon: false,
       chosenCoupon: -1,
       coupons: [],
       disabledCoupons: [],
-      checked: true,
+      checked: false,
       show: false,
       loading: false,
       currentContact: {},
@@ -86,7 +166,7 @@ export default {
         // 给卖家留言
         remark: "",
         // 运费金额
-        goodsPrice: 0,
+        freight: 0,
         // 商品总金额
         totalPrice: 0,
         // 收费金额（取折后总金额）
@@ -96,10 +176,15 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
+    console.log(to, from);
     // 清除订单数据
-    this.$store.dispatch("clearOrderCache").then(() => {
+    if (to.name !== "address") {
+      this.$store.dispatch("clearOrderCache").then(() => {
+        next();
+      });
+    } else {
       next();
-    });
+    }
   },
   mounted() {
     let storeAddressList = this.$store.getters.addressList;
@@ -112,54 +197,68 @@ export default {
     let orderList = this.$store.getters.orderList;
     if (orderList && orderList.length > 0) {
       orderList.forEach(item => {
-        this.order.goodsPrice += item.freightPrice;
         this.order.totalPrice += item.price * item.selectedNum;
         this.order.discountTotalPrice += item.price * item.selectedNum;
       });
       this.orderGoodList = orderList;
     }
-
-    this.getUserCouponList();
+    this.getOrderInfo();
   },
 
   methods: {
-    getUserCouponList() {
-      getUserCoupon().then(res => {
+    getOrderInfo() {
+      queryOrderInfo({
+        userAddressId: this.order.addressId,
+        orderFruit: this.$store.getters.orderList
+      }).then(res => {
         if (res.code === 0) {
-          res.data.forEach(item => {
-            let startAt = new Date(item.startTime).getTime();
-            let endAt = new Date(item.endTime).getTime();
-            let now = Date.now();
-            let currObj = {
-              id: item.couponId,
-              condition: item.couponRule,
-              value: item.couponPrice,
-              name: item.couponName,
-              startAt: startAt / 1000,
-              endAt: endAt / 1000,
-              valueDesc: item.couponPrice,
-              unitDesc: "元"
-            };
-            // 必须保证优惠券在有效期内
-            if (now > startAt && now < endAt) {
-              if (item.isThreshold) {
-                // 如果不存在使用门槛
-                this.coupons.push({ ...currObj });
-              } else {
-                // 如果存在使用门槛，则需保证满足门槛金额
-                if (this.order.totalPrice < item.thresholdPrice) {
-                  this.disabledCoupons.push({
-                    ...currObj,
-                    reason: "不满" + item.thresholdPrice + "元"
-                  });
-                } else {
-                  this.coupons.push({ ...currObj });
-                }
-              }
+          if (res.data.userCouponList && res.data.userCouponList.length > 0) {
+            this.dealCouponData(res.data.userCouponList);
+          }
+          this.order.freight = res.data.freight;
+          this.user = {
+            isMember: res.data.isMember,
+            point: res.data.userIntegral,
+            pointRule: res.data.userIntegralRule
+          };
+          this.checked =
+            this.user.point > this.user.pointRule.integral ? true : false;
+        }
+      });
+    },
+    dealCouponData(couponList) {
+      couponList.forEach(item => {
+        let startAt = new Date(item.startTime).getTime();
+        let endAt = new Date(item.endTime).getTime();
+        let now = Date.now();
+        let currObj = {
+          id: item.couponId,
+          condition: item.couponRule,
+          value: item.couponPrice * 100,
+          name: item.couponName,
+          startAt: startAt / 1000,
+          endAt: endAt / 1000,
+          valueDesc: item.couponPrice,
+          unitDesc: "元"
+        };
+        // 必须保证优惠券在有效期内
+        if (now > startAt && now < endAt) {
+          if (item.isThreshold) {
+            // 如果不存在使用门槛
+            this.coupons.push({ ...currObj });
+          } else {
+            // 如果存在使用门槛，则需保证满足门槛金额
+            if (this.order.totalPrice < item.thresholdPrice) {
+              this.disabledCoupons.push({
+                ...currObj,
+                reason: "不满" + item.thresholdPrice + "元"
+              });
             } else {
-              this.disabledCoupons.push({ ...currObj, reason: "已过期" });
+              this.coupons.push({ ...currObj });
             }
-          });
+          }
+        } else {
+          this.disabledCoupons.push({ ...currObj, reason: "已过期" });
         }
       });
     },
@@ -181,8 +280,27 @@ export default {
       });
     },
     onSubmit() {
+      let orderData = {...this.order};
+      let lastPrice = orderData.discountTotalPrice+orderData.freight;
+      if (this.checked) {
+        if (this.user.point < this.user.pointRule.integral) {
+          this.$toast("积分不够");
+          return;
+        }else{
+          lastPrice = lastPrice-this.user.pointRule.price;
+        }
+      }
+      if(orderData.couponId){
+        lastPrice = lastPrice - (orderData.couponPrice/100);
+      }
+      orderData.discountTotalPrice = lastPrice;
       this.loading = true;
-      saveOrder({ ...this.order, orderFruit: this.orderGoodList }).then(res => {
+      saveOrder({
+        ...orderData,
+        checked: this.checked,
+        integral: this.user.pointRule.integral,
+        orderFruit: this.orderGoodList
+      }).then(res => {
         this.loading = false;
         if (res.code === 0) {
           this.show = true;
@@ -262,7 +380,7 @@ export default {
     },
     onCancel() {
       this.$toast("已取消支付");
-      that.$router.push({ name: "home" });
+      this.$router.push({ name: "home" });
     }
   },
   computed: {

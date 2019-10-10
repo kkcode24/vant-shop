@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Notify } from 'vant'
 const service = axios.create({
   baseURL: '/api',
-  timeout: 20000
+  timeout: 20000000
 })
 
 service.interceptors.request.use(
