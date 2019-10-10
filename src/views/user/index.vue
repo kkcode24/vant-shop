@@ -118,12 +118,11 @@ export default {
   name: "user",
   data() {
     return {
-      user:{},
+      user: {},
     };
   },
   mounted(){
     this.user = this.$store.getters.userInfo;
-    console.log(this.user);
   },
   methods: {
     goOrder(i) {

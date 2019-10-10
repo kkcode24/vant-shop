@@ -129,18 +129,11 @@
         </van-col>
       </van-row>
     </div>
+    <!-- 时令上新 -->
     <div class="goods-swipe-container">
-      <van-swipe
-        :loop="false"
-        :show-indicators="false"
-        :width="115"
-        :height="200"
-      >
-        <van-swipe-item
-          v-for="(item,index) in newGoods"
-          :key="index"
-        >
-          <li @click="goDetail(item)" class="good-item">
+      <swiper :options="swiperOption">
+        <swiper-slide v-for="(item,index) in newGoods" :key="index" class="good-item">
+          <li @click="goDetail(item)">
             <a class="cap-goods-layout__item">
               <div class="cap-goods__photo">
                 <van-image
@@ -167,8 +160,8 @@
               </div>
             </a>
           </li>
-        </van-swipe-item>
-      </van-swipe>
+        </swiper-slide>
+      </swiper>
     </div>
     <!-- 水果list -->
     <div class="goods">
@@ -204,7 +197,7 @@
                       </span>
                     </div>
                     <div
-                      @click.stop="showShop"
+                      @click.stop="showShopping(item.id)"
                       class="cap-goods-layout__buy-btn-wrapper"
                     >
                       <van-icon
@@ -224,12 +217,16 @@
 </template>
 
 <script>
-import { getIndexSwipeImages, getNewFruits } from "@/api/app";
-import { getFriutList, getFriutListById, getNromById,getAllFriuts } from "@/api/class";
+import { getIndexSwipeImages, getNewFruits,getGoodDetail } from "@/api/app";
+import { getAllFriuts } from "@/api/class";
 export default {
   name: "home",
   data() {
     return {
+      swiperOption: {
+        slidesPerView: 'auto',
+        spaceBetween: 10
+      },
       prefixAttachs: this.app.prefixAttachs,
       value: "",
       activeSearch: false,
@@ -308,8 +305,12 @@ export default {
         this.$store.commit("OPEN_AUTH");
       }
     },
-    showShop() {
-      this.$store.commit("OPEN_SHOPPING");
+    showShopping(fruitId) {
+      getGoodDetail(fruitId).then(res => {
+        if (res.code === 0) {
+          this.$store.commit('ADD_GOODS', res.data)
+        }
+      });
     },
     onLoad() {
       getAllFriuts(this.page).then(res => {
@@ -384,6 +385,8 @@ export default {
   padding: 0 10px;
   background-color: #f8f8f8;
   .good-item {
+    width: 115px;
+    height: 200px;
     list-style: none;
     a.cap-goods-layout__item {
       display: block;

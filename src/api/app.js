@@ -1,5 +1,27 @@
 import request from '@/utils/request'
 
+// 用户某月签到日期list
+export function querySignDateList(month) {
+  return request({
+    url: '/register/queryRegisterByMonth',
+    method: 'get',
+    params: {date:month}
+  })
+}
+// 用户连续签到优惠券list
+export function queryRegisterCoupon() {
+  return request({
+    url: '/register/queryRegisterIntegral',
+    method: 'get'
+  })
+}
+// 用户签到
+export function signin() {
+  return request({
+    url: '/register/save',
+    method: 'post'
+  })
+}
 // 查询水果详情
 export function getGoodDetail(fruitId) {
   return request({
