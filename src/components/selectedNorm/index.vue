@@ -11,6 +11,7 @@
         :goods-id="$store.state.shoppingCar.fruit.id"
         :hide-stock="sku.hide_stock"
         @buy-clicked="onBuyClicked"
+        @add-cart="onAddCartClicked"
       >
         <template
           slot="sku-actions"
@@ -22,7 +23,7 @@
               square
               size="large"
               type="danger"
-              @click="props.skuEventBus.$emit('sku:buy')"
+              @click="props.skuEventBus.$emit('sku:addCart')"
             >
               加入购物车
             </van-button>
@@ -52,6 +53,7 @@
 </template>
 
 <script>
+import { addFriutToCart } from "@/api/shopingCart";
 import { filterEmpyKey } from "@/utils/index";
 export default {
   name: "shoppingCar",
@@ -59,8 +61,26 @@ export default {
     return {};
   },
   methods: {
+    onAddCartClicked(skuData){
+      let postData = this.dealSkuData(skuData);
+      console.log("加入购物车");
+      console.log(postData);
+      addFriutToCart(postData).then(res=>{
+        if(res.code===0){
+          this.$store.state.shoppingCar.show = false;
+          this.$toast("添加成功")
+        }
+      })
+    },
     onBuyClicked(skuData) {
-      let cacheData = filterEmpyKey({
+      let cacheData = this.dealSkuData(skuData);
+      this.$store.dispatch("setOrderCache", cacheData).then(() => {
+        this.$store.state.shoppingCar.show = false;
+        this.$router.push({ name: "submitOrder" });
+      });
+    },
+    dealSkuData(skuData){
+      return filterEmpyKey({
         ...skuData.selectedSkuComb,
         fruitSpecificationsId: skuData.selectedSkuComb.id,
         totalPrice: (skuData.selectedSkuComb.price / 100) * skuData.selectedNum,
@@ -73,10 +93,6 @@ export default {
         cartMessages: null,
         fruitImageList: null,
         selectedSkuComb: null
-      });
-      this.$store.dispatch("setOrderCache", cacheData).then(() => {
-        this.$store.state.shoppingCar.show = false;
-        this.$router.push({ name: "submitOrder" });
       });
     }
   },
