@@ -13,7 +13,7 @@
 
     <div class="deduction">
       <van-cell-group>
-        <van-cell title="店铺活动" is-link />
+        <!-- <van-cell title="店铺活动" is-link /> -->
         <van-coupon-cell :coupons="coupons" :chosen-coupon="chosenCoupon" @click="showCoupon = true" />
         <van-cell title="积分" class="point-deduction">
           使用积分抵现5元

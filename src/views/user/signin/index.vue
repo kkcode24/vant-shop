@@ -50,12 +50,13 @@ export default {
     };
   },
   mounted(){
-    this.user = this.$store.getters.userInfo;
-    if(this.user.isRegister){
+    this.$store.dispatch('getActionWxUserInfo').then(res=>{
+      this.user = this.$store.getters.userInfo;
+      if(!this.user.isRegister){
+        this.goSignIn();
+      }
       this.queryDateList();
-    }else {
-      this.goSignIn();
-    }
+    })
     this.getCouponList();
   },
   methods: {
@@ -88,6 +89,7 @@ export default {
           this.$store.dispatch('getActionWxUserInfo').then(r=>{
             if(r.code===0){
               this.user = r.data;
+              this.$toast('签到成功')
             }
           })
         }
