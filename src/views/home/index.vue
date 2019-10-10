@@ -306,9 +306,11 @@ export default {
       }
     },
     showShopping(fruitId) {
-      getGoodDetail(fruitId).then(res => {
+      getGoodDetail(1).then(res => {
         if (res.code === 0) {
-          this.$store.commit('ADD_GOODS', res.data)
+          this.$store.dispatch('openSku',1).then(()=>{
+            this.$store.commit('ADD_GOODS', res.data)
+          })
         }
       });
     },

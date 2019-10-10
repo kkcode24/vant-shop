@@ -18,6 +18,25 @@
         >
           <div class="van-sku-actions">
             <van-button
+              v-if="$store.state.shoppingCar.type===1||$store.state.shoppingCar.type===2"
+              square
+              size="large"
+              type="danger"
+              @click="props.skuEventBus.$emit('sku:buy')"
+            >
+              加入购物车
+            </van-button>
+            <van-button
+              v-if="$store.state.shoppingCar.type===1"
+              square
+              size="large"
+              type="danger"
+              @click="props.skuEventBus.$emit('sku:buy')"
+            >
+              立即购买
+            </van-button>
+            <van-button
+              v-if="$store.state.shoppingCar.type===3"
               square
               size="large"
               type="danger"
@@ -40,32 +59,28 @@ export default {
     return {};
   },
   methods: {
-    onBuyClicked(sku) {
-        console.log(sku);
-      // let cacheData = filterEmpyKey({
-      //   ...sku.selectedSkuComb,
-      //   fruitSpecificationsId: sku.selectedSkuComb.id,
-      //   totalPrice: (sku.selectedSkuComb.price / 100) * sku.selectedNum,
-      //   ...sku,
-      //   ...this.goods,
-      //   fruitNum: sku.selectedNum,
-      //   price: sku.selectedSkuComb.price / 100,
-      //   s1: null,
-      //   messages: null,
-      //   cartMessages: null,
-      //   fruitImageList: null,
-      //   selectedSkuComb: null
-      // });
-      // this.$store.dispatch("setOrderCache", cacheData).then(() => {
-      //   this.$router.push({ name: "submitOrder" });
-      // });
+    onBuyClicked(skuData) {
+      let cacheData = filterEmpyKey({
+        ...skuData.selectedSkuComb,
+        fruitSpecificationsId: skuData.selectedSkuComb.id,
+        totalPrice: (skuData.selectedSkuComb.price / 100) * skuData.selectedNum,
+        ...skuData,
+        ...this.goods,
+        fruitNum: skuData.selectedNum,
+        price: skuData.selectedSkuComb.price / 100,
+        s1: null,
+        messages: null,
+        cartMessages: null,
+        fruitImageList: null,
+        selectedSkuComb: null
+      });
+      this.$store.dispatch("setOrderCache", cacheData).then(() => {
+        this.$store.state.shoppingCar.show = false;
+        this.$router.push({ name: "submitOrder" });
+      });
     }
   },
   computed: {
-    // fruitId() {
-    //     console.log(this.$store.state.shoppingCar.fruit);
-    //   return this.$store.state.shoppingCar.fruit.id;
-    // },
     storageNum() {
       return this.$store.state.shoppingCar.fruit.storageNum || 0;
     },
@@ -78,7 +93,7 @@ export default {
           return item.type === 1;
         }
       );
-      return Object.assign({}, this.$store.state.shoppingCar.fruit, {
+      return Object.assign({}, this.$store.state.shoppingCar.fruit.fruit, {
         title: this.$store.state.shoppingCar.fruit.fruit.name,
         picture: this.app.prefixAttachs + thumb[0].image
       });
