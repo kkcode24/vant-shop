@@ -1,157 +1,178 @@
 <template>
   <div id="shoppingCar">
-    <!-- <van-nav-bar title="购物车"
+    <van-nav-bar
+      title="购物车"
       :right-text="rightText"
       @click-right="editCart"
       :z-index="10"
-      fixed /> -->
-    <div class="card_item" v-if="list.length > 0">
-       <div class="shopping_item" v-for="(item,index) in list" :key="index">
-          <van-checkbox v-model="item.checked" @change="selectedChange(item)"></van-checkbox>
-          <div class="card_content">
-            <img class="card_img" v-lazy="app.prefixAttachs + item.fruitImage" >
-            <div class="card_main">
-                <h3 class="fruitTitle">
-                  {{item.fruitDescribe}}
-                </h3>
-                <div class="addShop">
-                  <div class="sale-price" style="color: rgb(255, 68, 68);">
-                    <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
-                  </div>
-                  <span>
-                    <van-stepper v-model="item.fruitNum"/>
-                  </span>
-                </div>
+      fixed
+    />
+    <div
+      class="nogood"
+      v-if="!this.list.length"
+    >
+      <div>购物车空空的，快去购物吧~</div>
+      <van-button
+        type="primary"
+        class="btn"
+        @click="goHome"
+      >去首页</van-button>
+    </div>
+
+    <div
+      class="card_item"
+      v-if="list.length > 0"
+    >
+      <div
+        class="shopping_item"
+        v-for="(item,index) in list"
+        :key="index"
+      >
+        <van-checkbox
+          v-model="item.checked"
+          @change="itemChange(item)"
+        ></van-checkbox>
+        <div class="card_content">
+          <img
+            class="card_img"
+            v-lazy="app.prefixAttachs + item.fruitImage"
+          >
+          <div class="card_main">
+            <h3 class="fruitTitle">
+              {{item.fruitDescribe}}
+            </h3>
+            <div class="addShop">
+              <div
+                class="sale-price"
+                style="color: rgb(255, 68, 68);"
+              >
+                <span class="price-tag">¥</span>{{item.price | amount}}
+              </div>
+              <span>
+                <van-stepper v-model="item.fruitNum" />
+              </span>
             </div>
           </div>
-       </div>
-        <!-- 结算 -->
-        <van-submit-bar
-          :price="totalPrice"
-          button-text="结算"
-          @submit="onSubmit"
-          style="padding: 0 10px;bottom: 50px;"
-        >
-          <van-checkbox v-model="allChecked" @change="allselectChange">全选</van-checkbox>
-        </van-submit-bar>
+        </div>
+      </div>
+      <van-submit-bar
+        :price="totalPrice"
+        :button-text="isEdit?'删除':'结算'"
+        @submit="onSubmit"
+        style="padding-left:10px;bottom: 50px;"
+      >
+        <van-checkbox
+          v-model="allCheck"
+          @change="change"
+        >{{allCheck?'取消全选':'全选'}}</van-checkbox>
+      </van-submit-bar>
     </div>
   </div>
 </template>
 
 <script>
-import { Checkbox, CheckboxGroup, Card, SubmitBar, Toast } from 'vant';
-import { getCartList } from '@/api/shopingCart'
+import { getCartList, delFromCartByIds } from "@/api/shopingCart";
 import { filterEmpyKey } from "@/utils/index";
 export default {
-  components: {
-    [Card.name]: Card,
-    [Checkbox.name]: Checkbox,
-    [SubmitBar.name]: SubmitBar,
-    [CheckboxGroup.name]: CheckboxGroup
-  },
   data() {
     return {
       isEdit: false,
-      allChecked: false, // 全选
-      checkedGoods: [],
-      list: [],
-      totalPrice: 0
+      allCheck: false,
+      list: []
     };
   },
   mounted() {
-    this.getCartList()
+    this.getCartList();
   },
   methods: {
-    allselectChange() {
-        this.list.forEach(item => {
-          item.checked = this.allChecked
-        });
+    goHome() {
+      this.$router.push({ name: "home" });
     },
-    // 判断是不是全选 计算总价
-    isAllChecked() {
-      let selectedNum = 0
-      this.totalPrice = 0
-      this.list.forEach(item => {
-        if(item.checked) {
-          selectedNum++
-          this.totalPrice += item.fruitPrice
-        }
+    editCart() {
+      this.isEdit = !this.isEdit;
+    },
+    change() {
+      this.list.forEach((v, o) => {
+        v.checked = this.allCheck;
       });
-      this.totalPrice = this.totalPrice * 100
-      if(selectedNum == this.list.length) {
-        this.allChecked = true
-      } else {
-        this.allChecked = false
-      }
     },
-    // 单选改变
-    selectedChange(data) {
-       this.checkedGoods.forEach((item) => {
-          if(data.checked) {
-            this.checkedGoods.push(item)
-          } else {
-            let findIndex = this.checkedGoods((currentValue, index, arr) => {
-              return currentValue.id == data.id
-            })
-            if(findIndex >= 0 ) {
-              this.checkedGoods.splice(findIndex, 1)
-            }
-          }
-        });
-        this.isAllChecked()
+
+    //单选勾住后全选
+    itemChange(item) {
+      let select = this.list.filter(v => {
+        return v.checked;
+      });
+      if (select.length === 0) {
+        this.allCheck = false;
+      }
+      select.length == this.list.length ? (this.allCheck = true) : "";
     },
     onSubmit() {
-      let data = [] 
-      this.list.forEach(item => {
-        if(item.checked) {
-          let fruit = filterEmpyKey({
-            fruitSpecificationsId: item.fruitSpecificationsId,
-            totalPrice: (item.fruitPrice) * item.fruitNumber,
-            fruitNum: item.fruitNumber,
-            price: item.fruitPrice,
-            s1: null,
-            messages: null,
-            cartMessages: null,
-            fruitImageList: null,
-            selectedSkuComb: null
-          });
-          data.push(fruit)
-        }
-      })
-      if(data.length == 0) {
-        Toast('请选择需要结算的商品');
-        return false;
-      }
-      console.log(data)
-      this.$store.dispatch("setOrderCache", data).then(() => {
-        this.$router.push({ name: "submitOrder" });
+      let select = this.list.filter(v => {
+        return v.checked;
       });
+      if (select.length === 0) {
+        this.$toast({
+          position: "bottom",
+          message: "没有选择物品~"
+        });
+        return;
+      }
+      if (this.isEdit) {
+        this.$dialog
+          .confirm({
+            title: "警告",
+            message: "确实要删除吗?"
+          })
+          .then(() => {
+            let ids = select.map(v => {
+              return v.id;
+            });
+            delFromCartByIds(ids.join(",")).then(result => {
+              this.$toast.success("删除成功");
+              this.getCartList();
+            });
+          });
+      } else {
+        let postData = [];
+        this.list.forEach(item => {
+          if (item.checked) {
+            postData.push(item);
+          }
+        });
+        this.$store.dispatch("setOrderCache", postData).then(() => {
+          this.$router.push({ name: "submitOrder" });
+        });
+      }
     },
     // 获取购物车列表
     getCartList() {
-      getCartList({}).then(res => {
-        if(res.code == 0) {
-          this.list = res.data
+      getCartList().then(res => {
+        if (res.code == 0) {
+          this.list = res.data;
+          this.itemChange();
         }
-      })
+      });
     }
   },
   computed: {
-    // totalPrice() {
-    //   let all = 0;
-    //   this.cartList.forEach(item => {
-    //     all += this.checkedGoods.indexOf(item.Goodid) !== -1 ? item.GoodPrice * item.Cartcount : 0;
-    //   });
-    //   return all * 100;
-    // },
+    totalPrice() {
+      let all = 0;
+      this.list.forEach(item => {
+        if(item.checked){
+          all += item.price * item.fruitNum;
+        }
+      });
+      return all * 100;
+    },
     rightText() {
       if (this.list.length) {
-        return this.isEdit ? '完成' : '编辑';
+        return this.isEdit ? "完成" : "编辑";
       } else {
-        return '';
+        return "";
       }
     }
-  },
+  }
 };
 </script>
 
@@ -161,18 +182,31 @@ export default {
   height: calc(100% - 55px);
   background: #fafafa;
   position: relative;
+  .nogood {
+    position: absolute;
+    width: 220px;
+    text-align: center;
+    color: #666;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    .btn {
+      margin-top: 15px;
+    }
+  }
   .card_item {
-    background: #fff;
-    margin: 10px;
-    padding: 10px;
+    margin-top: 55px;
     border-radius: 4px;
     .allSelected {
       margin: 10px 0;
     }
     .shopping_item {
+      background: #fff;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin: 10px;
+      padding: 10px;
       .card_content {
         flex: 1;
         margin-left: 10px;
@@ -185,37 +219,37 @@ export default {
           margin-right: 10px;
         }
         .card_main {
-            flex: 1;
-            background: #fff;
-            font-size: 14px;
+          flex: 1;
+          background: #fff;
+          font-size: 14px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          .fruitTitle {
+            max-height: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+          .addShop {
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            .fruitTitle {
-              max-height: 40px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-            }
-            .addShop {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              .sale-price {
-                  color: #f44;
-                  margin-right: 4px;
-                  .price-tag{
-                    font-size: 12px;
-                    margin-right: 2px;
-                  }
-              }
-              .shoppingCart {
-                font-size: 24px;
-                color: #f44;
+            align-items: center;
+            .sale-price {
+              color: #f44;
+              margin-right: 4px;
+              .price-tag {
+                font-size: 12px;
+                margin-right: 2px;
               }
             }
+            .shoppingCart {
+              font-size: 24px;
+              color: #f44;
+            }
+          }
         }
       }
     }

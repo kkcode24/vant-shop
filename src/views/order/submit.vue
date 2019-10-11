@@ -176,7 +176,6 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
-    console.log(to, from);
     // 清除订单数据
     if (to.name !== "address") {
       this.$store.dispatch("clearOrderCache").then(() => {
@@ -197,8 +196,8 @@ export default {
     let orderList = this.$store.getters.orderList;
     if (orderList && orderList.length > 0) {
       orderList.forEach(item => {
-        this.order.totalPrice += item.price * item.selectedNum;
-        this.order.discountTotalPrice += item.price * item.selectedNum;
+        this.order.totalPrice += item.price * item.fruitNum;
+        this.order.discountTotalPrice += item.price * item.fruitNum;
       });
       this.orderGoodList = orderList;
     }

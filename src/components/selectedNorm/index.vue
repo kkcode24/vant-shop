@@ -63,8 +63,6 @@ export default {
   methods: {
     onAddCartClicked(skuData){
       let postData = this.dealSkuData(skuData);
-      console.log("加入购物车");
-      console.log(postData);
       addFriutToCart(postData).then(res=>{
         if(res.code===0){
           this.$store.state.shoppingCar.show = false;

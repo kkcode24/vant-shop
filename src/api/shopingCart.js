@@ -1,5 +1,17 @@
 import request from '@/utils/request'
 
+
+// 从购物车中删除商品
+export function delFromCartByIds(data) {
+  return request({
+    url: '/shoppingCart/batch/delete',
+    method: 'post',
+    params: {
+      ids: data
+    }
+  })
+}
+
 // 向购物车添加商品
 export function addFriutToCart(data) {
   return request({
@@ -12,10 +24,9 @@ export function addFriutToCart(data) {
 }
 
 //查询购物车商品list
-export function getCartList(data) {
+export function getCartList() {
   return request({
     url: '/shoppingCart/getDataList',
-    method: 'get',
-    params: data
+    method: 'get'
   })
 }
