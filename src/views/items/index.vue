@@ -1,35 +1,42 @@
 <template>
   <div class="classification">
-    <van-sidebar v-model="activeIndex" @change='changeClass'  style="height:100%;">
-      <van-sidebar-item 
-        v-for="(data, index) in dataList" 
-        :key="index" 
-        :title="data.name"
-        v-if="data.fruitList&&data.fruitList.length > 0"
-      />
-    </van-sidebar>
-    <div class="mainConent" ref="mainConent">
-      <template  v-for="data in dataList">
-        <h1 style="margin-left: 20px;height:20px;" v-if="data.fruitList&&data.fruitList.length > 0" :key="data.name ">{{data.name}}</h1>
-        <div class="fruitItem" ref="fruitItem" :key="index"  v-for="(item, index) in data.fruitList">
-           <div class="fruitImg">
-             <img  v-lazy="app.prefixAttachs + item.thumbnailImage" >
-           </div>
-           <div class="fruitDetail">
-              <h3 class="fruitTitle">
-                {{item.fruitDescribe}}
-              </h3>
-              <div class="addShop">
-                  <div class="sale-price" style="color: rgb(255, 68, 68);">
-                    <span class="price-tag">¥</span>{{item.price | amount}}
-                  </div>
-                  <span @click.stop="addShopCart(1)">
-                    <van-icon name="cart-circle-o" class="shoppingCart" />
-                  </span>
-              </div>
-           </div>
-        </div>
-      </template>
+    <div class="menu-wrapper" ref="menuWrapper">
+      <ul>
+        <li 
+          v-for="(item, index) in dataList" 
+          class="menu-item van-ellipsis" 
+          :class="{'current':currentIndex == index}"
+          @click="selectMenu(index, $event)"
+          v-if='item.fruitList&&item.fruitList.length > 0'
+        >
+          <span class="text"> {{item.name}} </span>
+        </li>
+      </ul>
+    </div>
+    <div class="mainConent" ref="foodWrapper">
+      <ul>
+        <li v-for="data in dataList" class="food-list-hook">
+          <h1 style="margin-left: 20px;height:20px;" v-if="data.fruitList&&data.fruitList.length > 0" :key="data.name ">{{data.name}}</h1>
+          <div class="fruitItem"  :key="index"  v-for="(item, index) in data.fruitList">
+            <div class="fruitImg">
+              <img  v-lazy="app.prefixAttachs + item.thumbnailImage" >
+            </div>
+            <div class="fruitDetail">
+                <h3 class="fruitTitle">
+                  {{item.fruitDescribe}}
+                </h3>
+                <div class="addShop">
+                    <div class="sale-price" style="color: rgb(255, 68, 68);">
+                      <span class="price-tag">¥</span>{{item.price | amount}}
+                    </div>
+                    <span @click.stop="addShopCart(1)">
+                      <van-icon name="cart-circle-o" class="shoppingCart" />
+                    </span>
+                </div>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -37,24 +44,66 @@
 <script>
 import { getFriutList, getFriutListById, getNromById } from "@/api/class";
 import BScroll from 'better-scroll'
+console.log(BScroll)
 export default {
   name: "items",
   data() {
     return {
       dataList: [],
-      activeIndex: 0
+      listHeight: [],
+      scrolly: 0, // 滚动高度
+      foodScroll: "",
+      menuScroll: '',
+      clickFlag: false
     };
+  },
+  computed: {
+      currentIndex() {
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height = this.listHeight[i];
+          let height2 = this.listHeight[i + 1];
+          if (!height2 || (this.scrolly >= height && this.scrolly < height2)) {
+            return i;
+          }
+        }
+        return 0;
+      }
   },
   mounted() {
     this.getFriutList();
-    this.$refs.mainConent.addEventListener('scroll', this.scrollFn)
   },
   methods: {
-    scrollFn() {
-      this.$nextTick(()=> {
-        let itemHeight = this.$refs.fruitItem[0].offsetHeight
-          this.activeIndex =  Math.floor(this.$refs.mainConent.scrollTop / itemHeight)
-      })
+    selectMenu(index, event) {
+       if (!event._constructed) {
+          // 去掉自带click事件的点击
+          return;
+        }
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
+        let el = foodList[index];
+        this.foodScroll.scrollToElement(el, 300);
+    },
+    _initScroll() {
+        this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+          click: true
+        });
+        this.foodScroll = new BScroll(this.$refs.foodWrapper, {
+          probeType: 3,
+          click: true
+        });
+        this.foodScroll.on('scroll', (pos) => {
+          this.scrolly = Math.abs(Math.round(pos.y));
+        });
+    },
+    // 收集每个分类的高度
+    _calculateHeight() {
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < foodList.length; i++) {
+          let item = foodList[i];
+          height += item.clientHeight;
+          this.listHeight.push(height);
+        }
     },
     // 添加购物车
     addShopCart(id) {
@@ -65,15 +114,15 @@ export default {
         }
       })
     },
-    // 选择分类
-    changeClass() {
-      console.log(this.activeIndex);
-      this.$refs.mainConent.scrollTop  = this.activeIndex * 100
-    },
     getFriutList(fruitTypeId) {
       getFriutList({}).then(res => {
         if (res.code == 0) {
           this.dataList = res.data;
+          this.dataList = [...this.dataList, ...this.dataList, ...this.dataList]
+          this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
         }
       });
     }
@@ -88,6 +137,29 @@ export default {
   background: #eee;
   display: flex;
   justify-content: flex-start;
+  .menu-wrapper {
+    flex: 0 0 80px;
+    width: 80px;
+    background: #f3f5f7;
+    .menu-item {
+      height:50px;
+      line-height: 50px;
+      padding-left: 10px;
+      &.current {
+        position: relative;
+        background:#fff;
+        &:before {
+          content: '';
+          position: absolute;
+          height: 50px;
+          width: 4px;
+          top: 0;
+          left: 0;
+          background:#ee0a24;
+        }
+      }
+    }
+  }
   .mainConent {
     background: #fff;
     flex: 1;
