@@ -119,7 +119,6 @@ export default {
       getFriutList({}).then(res => {
         if (res.code == 0) {
           this.dataList = res.data;
-          this.dataList = [...this.dataList, ...this.dataList, ...this.dataList]
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();

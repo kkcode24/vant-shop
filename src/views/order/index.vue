@@ -6,10 +6,17 @@
       fixed
       right-text="清空购物车"
       @click-right="emtyShoppCart"
+      v-if="list.length > 0"
+    />
+    <van-nav-bar
+      title="购物车"
+      :z-index="10"
+      fixed
+      v-if="list.length == 0"
     />
     <div
       class="nogood"
-      v-if="!this.list.length"
+      v-if="list.length == 0"
     >
       <div>购物车空空的，快去购物吧~</div>
       <van-button
@@ -41,7 +48,7 @@
                         class="sale-price"
                         style="color: rgb(255, 68, 68);"
                       >
-                        <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
+                        <span class="price-tag">¥</span>{{item.price | amount}}
                       </div>
                       <span>
                         <van-stepper v-model="item.fruitNum" />
@@ -172,7 +179,7 @@ export default {
       let all = 0;
       this.list.forEach(item => {
         if(item.checked){
-          all += item.fruitNum * item.fruitPrice;
+          all += item.fruitNum * item.price;
         }
       });
       return all * 100;
