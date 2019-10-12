@@ -19,7 +19,7 @@
       >去首页</van-button>
     </div>
     <div style="margin-top: 55px;">
-       <van-swipe-cell :on-close="deleteGoods" :name='item.id'  v-for="(item,index) in list" :key="index" >
+       <van-swipe-cell :on-close="closeSlide" :name='item.id'  v-for="(item,index) in list" :key="index" >
           <template slot="default">
             <div class="card_item"  v-if="list.length > 0" >
               <div class="shopping_item" >
@@ -54,7 +54,7 @@
             </div>
           </template>
           <template slot="right">
-            <van-button style="height: 100%;font-size: 18px;" square type="danger" text="删除" />
+            <van-button @click="deleteGoods(item.id)"  style="height: 100%;font-size: 18px;" square type="danger" text="删除" />
           </template>
       </van-swipe-cell>
     </div>
@@ -85,13 +85,17 @@ export default {
     this.getCartList();
   },
   methods: {
-    deleteGoods(clickPosition, instance, detail) {
-        this.$dialog
-          .confirm({
+    // 关闭滑块
+    closeSlide(clickPosition, instance, detail) {
+      instance.close()
+    },
+    // 删除商品
+    deleteGoods(id) {
+        this.$dialog.confirm({
             title: "提示",
             message: "确定删除该商品吗?"
           }).then(() => {
-            let ids = [detail.name]
+            let ids = [id]
             delFromCartByIds(ids.join(",")).then(result => {
               if(result.code == 0) {
                 this.$toast.success("删除成功");
@@ -99,7 +103,6 @@ export default {
               }
             });
         }).catch(() => {});
-        instance.close()
     },
     // 清空购物车
     emtyShoppCart() {

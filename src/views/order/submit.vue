@@ -392,7 +392,6 @@ export default {
 
 <style lang="scss" scoped>
 .order {
-  padding-bottom: 100px;
   .allGood {
     margin-top: 14px;
   }
