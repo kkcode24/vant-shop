@@ -138,20 +138,18 @@ export default {
     },
     // 结算
     onSubmit() {
-     
-      if (select.length === 0) {
-        this.$toast({
-          position: "bottom",
-          message: "没有选择物品~"
-        });
-        return;
-      }
       let postData = [];
       this.list.forEach(item => {
         if (item.checked) {
           postData.push(item);
         }
       });
+      if (postData.length === 0) {
+        this.$toast({
+          message: "请选择要结算的商品~"
+        });
+        return;
+      }
       this.$store.dispatch("setOrderCache", postData).then(() => {
         this.$router.push({ name: "submitOrder" });
       });
