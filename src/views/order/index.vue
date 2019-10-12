@@ -2,10 +2,10 @@
   <div id="shoppingCar">
     <van-nav-bar
       title="购物车"
-      :right-text="rightText"
-      @click-right="editCart"
       :z-index="10"
       fixed
+      right-text="清空购物车"
+      @click-right="emtyShoppCart"
     />
     <div
       class="nogood"
@@ -18,55 +18,56 @@
         @click="goHome"
       >去首页</van-button>
     </div>
-
-    <div
-      class="card_item"
-      v-if="list.length > 0"
-    >
-      <div
-        class="shopping_item"
-        v-for="(item,index) in list"
-        :key="index"
-      >
-        <van-checkbox
-          v-model="item.checked"
-          @change="itemChange(item)"
-        ></van-checkbox>
-        <div class="card_content">
-          <img
-            class="card_img"
-            v-lazy="app.prefixAttachs + item.fruitImage"
-          >
-          <div class="card_main">
-            <h3 class="fruitTitle">
-              {{item.fruitDescribe}}
-            </h3>
-            <div class="addShop">
-              <div
-                class="sale-price"
-                style="color: rgb(255, 68, 68);"
-              >
-                <span class="price-tag">¥</span>{{item.price | amount}}
+    <div style="margin-top: 55px;">
+       <van-swipe-cell :on-close="deleteGoods" :name='item.id'  v-for="(item,index) in list" :key="index" >
+          <template slot="default">
+            <div class="card_item"  v-if="list.length > 0" >
+              <div class="shopping_item" >
+                <van-checkbox
+                  v-model="item.checked"
+                  @change="itemChange(item)"
+                ></van-checkbox>
+                <div class="card_content">
+                  <img
+                    class="card_img"
+                    v-lazy="app.prefixAttachs + item.fruitImage"
+                  >
+                  <div class="card_main">
+                    <h3 class="fruitTitle">
+                      {{item.fruitDescribe}}
+                    </h3>
+                    <div class="addShop">
+                      <div
+                        class="sale-price"
+                        style="color: rgb(255, 68, 68);"
+                      >
+                        <span class="price-tag">¥</span>{{item.fruitPrice | amount}}
+                      </div>
+                      <span>
+                        <van-stepper v-model="item.fruitNum" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <span>
-                <van-stepper v-model="item.fruitNum" />
-              </span>
+              
             </div>
-          </div>
-        </div>
-      </div>
-      <van-submit-bar
-        :price="totalPrice"
-        :button-text="isEdit?'删除':'结算'"
-        @submit="onSubmit"
-        style="padding-left:10px;bottom: 50px;"
-      >
-        <van-checkbox
-          v-model="allCheck"
-          @change="change"
-        >{{allCheck?'取消全选':'全选'}}</van-checkbox>
-      </van-submit-bar>
+          </template>
+          <template slot="right">
+            <van-button style="height: 100%;font-size: 18px;" square type="danger" text="删除" />
+          </template>
+      </van-swipe-cell>
     </div>
+    
+    <van-submit-bar
+      :price="totalPrice"
+      v-if="this.list.length > 0"
+      button-text="结算"
+      @submit="onSubmit"
+      style="padding-left:10px;bottom: 50px;"
+    >
+      <van-checkbox v-model="allCheck" @click="allCheckChange" style="margin-left: 10px;" >全选</van-checkbox>
+    </van-submit-bar>
   </div>
 </template>
 
@@ -76,7 +77,6 @@ import { filterEmpyKey } from "@/utils/index";
 export default {
   data() {
     return {
-      isEdit: false,
       allCheck: false,
       list: []
     };
@@ -85,15 +85,47 @@ export default {
     this.getCartList();
   },
   methods: {
+    deleteGoods(clickPosition, instance, detail) {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "确定删除该商品吗?"
+          }).then(() => {
+            let ids = [detail.name]
+            delFromCartByIds(ids.join(",")).then(result => {
+              if(result.code == 0) {
+                this.$toast.success("删除成功");
+                this.getCartList();
+              }
+            });
+        }).catch(() => {});
+        instance.close()
+    },
+    // 清空购物车
+    emtyShoppCart() {
+      this.$dialog.confirm({
+          title: "提示",
+          message: "确定要清空购物车吗?"
+        }).then(() => {
+          let ids = this.list.map((v) => {
+            return v.id
+          })
+          delFromCartByIds(ids.join(",")).then(result => {
+              if(result.code == 0) {
+                this.$toast.success("删除成功");
+                this.getCartList();
+              }
+          });
+      }).catch(() => {});
+    },
+    // 回到首页
     goHome() {
       this.$router.push({ name: "home" });
     },
-    editCart() {
-      this.isEdit = !this.isEdit;
-    },
-    change() {
+    // 全选
+    allCheckChange() {
       this.list.forEach((v, o) => {
-        v.checked = this.allCheck;
+        v.checked = !this.allCheck;
       });
     },
 
@@ -102,15 +134,11 @@ export default {
       let select = this.list.filter(v => {
         return v.checked;
       });
-      if (select.length === 0) {
-        this.allCheck = false;
-      }
-      select.length == this.list.length ? (this.allCheck = true) : "";
+      this.allCheck = (select.length == this.list.length&&this.list.length != 0)
     },
+    // 结算
     onSubmit() {
-      let select = this.list.filter(v => {
-        return v.checked;
-      });
+     
       if (select.length === 0) {
         this.$toast({
           position: "bottom",
@@ -118,32 +146,15 @@ export default {
         });
         return;
       }
-      if (this.isEdit) {
-        this.$dialog
-          .confirm({
-            title: "警告",
-            message: "确实要删除吗?"
-          })
-          .then(() => {
-            let ids = select.map(v => {
-              return v.id;
-            });
-            delFromCartByIds(ids.join(",")).then(result => {
-              this.$toast.success("删除成功");
-              this.getCartList();
-            });
-          });
-      } else {
-        let postData = [];
-        this.list.forEach(item => {
-          if (item.checked) {
-            postData.push(item);
-          }
-        });
-        this.$store.dispatch("setOrderCache", postData).then(() => {
-          this.$router.push({ name: "submitOrder" });
-        });
-      }
+      let postData = [];
+      this.list.forEach(item => {
+        if (item.checked) {
+          postData.push(item);
+        }
+      });
+      this.$store.dispatch("setOrderCache", postData).then(() => {
+        this.$router.push({ name: "submitOrder" });
+      });
     },
     // 获取购物车列表
     getCartList() {
@@ -160,7 +171,7 @@ export default {
       let all = 0;
       this.list.forEach(item => {
         if(item.checked){
-          all += item.price * item.fruitNum;
+          all += item.fruitNum * item.fruitPrice;
         }
       });
       return all * 100;
@@ -179,9 +190,10 @@ export default {
 <style rel="stylesheet/scss" scoped lang="scss">
 #shoppingCar {
   width: 100%;
-  height: calc(100% - 55px);
+  height: calc(100% - 110px);
   background: #fafafa;
   position: relative;
+  overflow-y: scroll;
   .nogood {
     position: absolute;
     width: 220px;
@@ -195,7 +207,6 @@ export default {
     }
   }
   .card_item {
-    margin-top: 55px;
     border-radius: 4px;
     .allSelected {
       margin: 10px 0;

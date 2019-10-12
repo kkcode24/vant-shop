@@ -4,6 +4,7 @@
       <ul>
         <li 
           v-for="(item, index) in dataList" 
+          :key="index"
           class="menu-item van-ellipsis" 
           :class="{'current':currentIndex == index}"
           @click="selectMenu(index, $event)"
@@ -15,7 +16,7 @@
     </div>
     <div class="mainConent" ref="foodWrapper">
       <ul>
-        <li v-for="data in dataList" class="food-list-hook">
+        <li v-for="(data, i) in dataList" class="food-list-hook" :key="data.name + i">
           <h1 style="margin-left: 20px;height:20px;" v-if="data.fruitList&&data.fruitList.length > 0" :key="data.name ">{{data.name}}</h1>
           <div class="fruitItem"  :key="index"  v-for="(item, index) in data.fruitList">
             <div class="fruitImg">
@@ -44,7 +45,6 @@
 <script>
 import { getFriutList, getFriutListById, getNromById } from "@/api/class";
 import BScroll from 'better-scroll'
-console.log(BScroll)
 export default {
   name: "items",
   data() {
@@ -81,7 +81,8 @@ export default {
         let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
         let el = foodList[index];
         this.foodScroll.scrollToElement(el, 300);
-    },
+        this.$refs.foodWrapper.scrollTop = this.listHeight[index]
+      },
     _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true

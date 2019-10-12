@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="$store.state.shoppingCar.show"
-      class="van-sku-container"
-    >
+    <div class="van-sku-container" >
       <van-sku
         v-model="$store.state.shoppingCar.show"
         :sku="sku"
@@ -12,12 +9,13 @@
         :hide-stock="sku.hide_stock"
         @buy-clicked="onBuyClicked"
         @add-cart="onAddCartClicked"
+        
       >
         <template
           slot="sku-actions"
           slot-scope="props"
         >
-          <div class="van-sku-actions">
+          <div class="van-sku-actions" v-if="$store.state.shoppingCar.show" >
             <van-button
               v-if="$store.state.shoppingCar.type===1||$store.state.shoppingCar.type===2"
               square

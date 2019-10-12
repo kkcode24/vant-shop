@@ -5,7 +5,7 @@
     </keep-alive>
     <router-view class="view-router" v-if="!$route.meta.keepAlive"></router-view>
     <router-view name="tabbar"></router-view>
-    <shoppingCar />
+    <shoppingCar v-if="$store.state.shoppingCar.show" />
     <authLogin />
   </div>
 </template>
