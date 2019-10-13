@@ -20,7 +20,13 @@
           <h1 style="margin-left: 20px;height:20px;" v-if="data.fruitList&&data.fruitList.length > 0" :key="data.name ">{{data.name}}</h1>
           <div class="fruitItem"  :key="index"  v-for="(item, index) in data.fruitList">
             <div class="fruitImg">
-              <img  v-lazy="app.prefixAttachs + item.thumbnailImage" >
+              <van-image
+                    class="cap-goods__img--cover"
+                    lazy-load 
+                    :src="app.prefixAttachs+item.thumbnailImage"
+                  >
+                  <template v-slot:error>加载失败</template>
+                </van-image>
             </div>
             <div class="fruitDetail">
                 <h3 class="fruitTitle">
@@ -92,6 +98,7 @@ export default {
           click: true
         });
         this.foodScroll.on('scroll', (pos) => {
+          console.log(pos.y)
           this.scrolly = Math.abs(Math.round(pos.y));
         });
     },
@@ -178,9 +185,17 @@ export default {
         margin-right: 8px;
         overflow: hidden;
         border-radius: 5px;
-        img {
-          width: 88px;
-          height: 88px;
+        position: relative;
+        .cap-goods__img--cover {
+          width: 100%;
+          background-position: 50%;
+          background-repeat: no-repeat;
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          background-size: cover;
         }
       }
       .fruitDetail {
