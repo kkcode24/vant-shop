@@ -8,17 +8,17 @@
           class="menu-item van-ellipsis" 
           :class="{'current':currentIndex == index}"
           @click="selectMenu(index, $event)"
-          v-if='item.fruitList&&item.fruitList.length > 0'
         >
           <span class="text"> {{item.name}} </span>
         </li>
+        <li style="height: 55px"></li>
       </ul>
     </div>
     <div class="mainConent" ref="foodWrapper">
       <ul>
-        <li v-for="(data, i) in dataList" class="food-list-hook" :key="data.name + i">
-          <h1 style="margin-left: 20px;height:20px;" v-if="data.fruitList&&data.fruitList.length > 0" :key="data.name ">{{data.name}}</h1>
-          <div class="fruitItem"  :key="index"  v-for="(item, index) in data.fruitList">
+        <li v-for="(data, i) in dataList" class="food-list-hook" :key="data.name + i" >
+          <h1 style="margin-left: 20px;height:20px;" :key="data.name ">{{data.name}}</h1>
+          <div class="fruitItem" @click="getDetail(item.id)"  :key="index"  v-for="(item, index) in data.fruitList">
             <div class="fruitImg">
               <van-image
                     class="cap-goods__img--cover"
@@ -43,6 +43,7 @@
             </div>
           </div>
         </li>
+        <li style="height: 55px"></li>
       </ul>
     </div>
   </div>
@@ -79,6 +80,14 @@ export default {
     this.getFriutList();
   },
   methods: {
+    // 查看详情
+    getDetail(fruitId){
+      fruitId = 1
+      this.$router.push({
+        params: {id:fruitId},
+        name: 'goods'
+      })
+    },
     selectMenu(index, event) {
        if (!event._constructed) {
           // 去掉自带click事件的点击
@@ -98,7 +107,6 @@ export default {
           click: true
         });
         this.foodScroll.on('scroll', (pos) => {
-          console.log(pos.y)
           this.scrolly = Math.abs(Math.round(pos.y));
         });
     },
@@ -115,7 +123,6 @@ export default {
     },
     // 添加购物车
     addShopCart(id) {
-      console.log(id)
       getNromById({id}).then(res => {
         if(res.code == 0) {
           this.$store.commit('ADD_GOODS', res.data)
@@ -125,7 +132,10 @@ export default {
     getFriutList(fruitTypeId) {
       getFriutList({}).then(res => {
         if (res.code == 0) {
-          this.dataList = res.data;
+          let list = res.data.filter((item) => {
+            return item.fruitList&&item.fruitList.length > 0
+          })
+          this.dataList = list;
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();
