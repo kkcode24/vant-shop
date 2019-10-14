@@ -36,7 +36,7 @@
                         合计：<span>{{item.discountTotalPrice}}</span> 元
                     </div>
                     <div v-if="item.status===0" class="order-btn">
-                      <van-button type="default" size="small">取消</van-button>
+                      <!-- <van-button type="default" size="small">取消</van-button> -->
                       <van-button @click="payOrder(item)" type="danger" size="small">付款</van-button>
                     </div>
                 </van-panel>

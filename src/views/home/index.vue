@@ -64,8 +64,9 @@
           </div>
         </van-col>
         <van-col span="6">
+            <!-- @click="$router.push({ name: 'news' })" -->
           <div
-            @click="$router.push({ name: 'news' })"
+          @click="sorry"
             class="router-image"
           >
             <img :src="modulesEntry.news">
@@ -86,8 +87,9 @@
           </div>
         </van-col>
         <van-col span="6">
+            <!-- @click="$router.push({ name: 'salesman' })" -->
           <div
-            @click="$router.push({ name: 'salesman' })"
+            @click="sorry"
             class="router-image"
           >
             <img :src="modulesEntry.distribution">
@@ -267,11 +269,15 @@ export default {
     });
   },
   methods: {
+    sorry(){
+      this.$toast('对不起，该功能正在开发中')
+    },
     async initView() {
-      let process = "done";
+      let process = "try";
       try {
         await this.getNewFruits();
         await this.getSwipeImages();
+        process = "done";
         // 收货地址
         this.$store.dispatch("getWxUserAddress");
       } catch (error) {
@@ -306,7 +312,7 @@ export default {
       }
     },
     showShopping(fruitId) {
-      getGoodDetail(1).then(res => {
+      getGoodDetail(fruitId).then(res => {
         if (res.code === 0) {
           this.$store.dispatch('openSku',1).then(()=>{
             this.$store.commit('ADD_GOODS', res.data)
