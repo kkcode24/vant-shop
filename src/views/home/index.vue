@@ -1,33 +1,18 @@
 <template>
-  <div
-    class="page"
-    v-cloak
-  >
-    <van-notice-bar
-      left-icon="volume-o"
-      mode="closeable"
-    >
+  <div class="page" v-cloak>
+    <van-notice-bar left-icon="volume-o" mode="closeable">
       受国庆影响。南京快递严查，快递时效不保证请理解，感谢您的惠顾。
     </van-notice-bar>
 
     <section class="banner-swipe">
-      <van-swipe
-        :autoplay="3000"
-        indicator-color="white"
-      >
-        <van-swipe-item
-          v-for="(item, index) in images"
-          :key="index"
-        >
+      <van-swipe :autoplay="3000" indicator-color="white">
+        <van-swipe-item v-for="(item, index) in images" :key="index">
           <img :src="prefixAttachs+item.image" />
         </van-swipe-item>
       </van-swipe>
 
       <div class="lazy-component__image">
-        <div
-          class="cap-image-ad__swipe__background-center"
-          v-lazy:background-image="adSrc"
-        />
+        <div class="cap-image-ad__swipe__background-center" v-lazy:background-image="adSrc" />
       </div>
     </section>
 
@@ -38,25 +23,16 @@
           <div class="cap-search">
             <van-search placeholder="输入产品的关键字，如“苹果”" />
           </div>
-          <div
-            @click="$router.push({ name: 'search' })"
-            class="showcase-search-mask"
-          >
+          <div @click="$router.push({ name: 'search' })" class="showcase-search-mask">
           </div>
         </div>
       </div>
     </div>
 
     <div class="modules-entry">
-      <van-row
-        type="flex"
-        justify="space-around"
-      >
+      <van-row type="flex" justify="space-around">
         <van-col span="6">
-          <div
-            @click="$router.push({ name: 'coupon' })"
-            class="router-image"
-          >
+          <div @click="$router.push({ name: 'coupon' })" class="router-image">
             <img :src="modulesEntry.coupon">
           </div>
           <div class="nav-title">
@@ -64,11 +40,8 @@
           </div>
         </van-col>
         <van-col span="6">
-            <!-- @click="$router.push({ name: 'news' })" -->
-          <div
-          @click="sorry"
-            class="router-image"
-          >
+          <!-- @click="$router.push({ name: 'news' })" -->
+          <div @click="sorry" class="router-image">
             <img :src="modulesEntry.news">
           </div>
           <div class="nav-title">
@@ -76,10 +49,7 @@
           </div>
         </van-col>
         <van-col span="6">
-          <div
-            @click="$router.push({ name: 'signin' })"
-            class="router-image"
-          >
+          <div @click="$router.push({ name: 'signin' })" class="router-image">
             <img :src="modulesEntry.signin">
           </div>
           <div class="nav-title">
@@ -87,11 +57,8 @@
           </div>
         </van-col>
         <van-col span="6">
-            <!-- @click="$router.push({ name: 'salesman' })" -->
-          <div
-            @click="sorry"
-            class="router-image"
-          >
+          <!-- @click="$router.push({ name: 'salesman' })" -->
+          <div @click="sorry" class="router-image">
             <img :src="modulesEntry.distribution">
           </div>
           <div class="nav-title">
@@ -99,31 +66,19 @@
           </div>
         </van-col>
       </van-row>
-      <van-row
-        type="flex"
-        justify="space-around"
-      >
+      <van-row type="flex" justify="space-around">
         <van-col span="12">
-          <div
-            @click="$router.push({ name: 'groupDiscount' })"
-            class="router-big-image"
-          >
+          <div @click="$router.push({ name: 'groupDiscount' })" class="router-big-image">
             <img :src="modulesEntry.ptzk">
           </div>
         </van-col>
         <van-col span="12">
-          <div
-            @click="$router.push({ name: 'integralMall' })"
-            class="router-big-image"
-          >
+          <div @click="$router.push({ name: 'integralMall' })" class="router-big-image">
             <img :src="modulesEntry.jfsc">
           </div>
         </van-col>
       </van-row>
-      <van-row
-        type="flex"
-        justify="space-around"
-      >
+      <van-row type="flex" justify="space-around">
         <van-col span="24">
           <div class="router-big-image">
             <img :src="modulesEntry.mzsx">
@@ -138,13 +93,9 @@
           <li @click="goDetail(item)">
             <a class="cap-goods-layout__item">
               <div class="cap-goods__photo">
-                <van-image
-                    class="cap-goods__img--cover"
-                    lazy-load
-                    :src="prefixAttachs+item.thumbnailImage"
-                  >
+                <van-image class="cap-goods__img--cover" lazy-load :src="prefixAttachs+item.thumbnailImage">
                   <template v-slot:error>加载失败</template>
-                  </van-image>
+                </van-image>
               </div>
               <div class="cap-goods-layout__info">
                 <div class="cap-goods-layout__info-title">
@@ -165,25 +116,21 @@
         </swiper-slide>
       </swiper>
     </div>
+    <div class="banner">
+      <van-image :src="bannerSrc">
+        <template v-slot:error>所有商品</template>
+      </van-image>
+    </div>
     <!-- 水果list -->
     <div class="goods">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <div class="goods-list-wrapper">
           <ul class="cap-goods-layout-container">
             <li @click="goDetail(item)" v-for="(item,index) in list" class="good-item" :key="index">
               <a class="cap-goods-layout__item">
                 <div class="cap-goods__photo">
-                  <van-image
-                    class="cap-goods__img--cover"
-                    lazy-load
-                    :src="prefixAttachs+item.thumbnailImage"
-                  >
-                  <template v-slot:error>加载失败</template>
+                  <van-image class="cap-goods__img--cover" lazy-load :src="prefixAttachs+item.thumbnailImage">
+                    <template v-slot:error>加载失败</template>
                   </van-image>
                 </div>
                 <div class="cap-goods-layout__info">
@@ -198,14 +145,8 @@
                         </div>
                       </span>
                     </div>
-                    <div
-                      @click.stop="showShopping(item.id)"
-                      class="cap-goods-layout__buy-btn-wrapper"
-                    >
-                      <van-icon
-                        class="cap-goods-layout__buy-btn"
-                        name="add-o"
-                      />
+                    <div @click.stop="showShopping(item.id)" class="cap-goods-layout__buy-btn-wrapper">
+                      <van-icon class="cap-goods-layout__buy-btn" name="add-o" />
                     </div>
                   </div>
                 </div>
@@ -219,20 +160,21 @@
 </template>
 
 <script>
-import { getIndexSwipeImages, getNewFruits,getGoodDetail } from "@/api/app";
+import { getIndexSwipeImages, getNewFruits, getGoodDetail } from "@/api/app";
 import { getAllFriuts } from "@/api/class";
 export default {
   name: "home",
   data() {
     return {
       swiperOption: {
-        slidesPerView: 'auto',
+        slidesPerView: "auto",
         spaceBetween: 10
       },
       prefixAttachs: this.app.prefixAttachs,
       value: "",
       activeSearch: false,
       adSrc: "../../../static/images/index/ad-swipe.jpg",
+      bannerSrc: "../../../static/images/index/banner.png",
       images: [], // 轮播图
       newGoods: [], // 时令上新
       modulesEntry: {
@@ -269,8 +211,8 @@ export default {
     });
   },
   methods: {
-    sorry(){
-      this.$toast('对不起，该功能正在开发中')
+    sorry() {
+      this.$toast("对不起，该功能正在开发中");
     },
     async initView() {
       let process = "try";
@@ -300,11 +242,11 @@ export default {
         }
       });
     },
-    goDetail(fruit){
+    goDetail(fruit) {
       this.$router.push({
-        params: {id:fruit.id},
-        name: 'goods'
-      })
+        params: { id: fruit.id },
+        name: "goods"
+      });
     },
     showAuth() {
       if (!this.$store.getters.isAuth) {
@@ -314,26 +256,26 @@ export default {
     showShopping(fruitId) {
       getGoodDetail(fruitId).then(res => {
         if (res.code === 0) {
-          this.$store.dispatch('openSku',1).then(()=>{
-            this.$store.commit('ADD_GOODS', res.data)
-          })
+          this.$store.dispatch("openSku", 1).then(() => {
+            this.$store.commit("ADD_GOODS", res.data);
+          });
         }
       });
     },
     onLoad() {
       getAllFriuts(this.page).then(res => {
         if (res.code == 0) {
-          if(res.data.length>0){
+          if (res.data.length > 0) {
             this.list = this.list.concat(res.data);
           }
           this.loading = false;
           if (this.list.length >= res.total) {
             this.finished = true;
-          }else{
-            this.page.current++
+          } else {
+            this.page.current++;
           }
-        }else{
-          this.page.current=1;
+        } else {
+          this.page.current = 1;
         }
       });
     }
@@ -461,6 +403,20 @@ export default {
         }
       }
     }
+  }
+}
+.banner {
+  padding: 10px 0;
+  width: 100%;
+  height: 100px;
+  background: #fff;
+  .van-image {
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    width: 100%;
+    height: 100%;
   }
 }
 .goods {
