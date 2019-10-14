@@ -97,10 +97,16 @@
         </p>
         <div class="price-panel__total van-hairline--top">
           合计：
-          <span v-if="checked" class="price-panel__amount theme-color">
+          <span
+            v-if="checked"
+            class="price-panel__amount theme-color"
+          >
             ¥{{order.discountTotalPrice+order.freight-(order.couponPrice/100)-user.pointRule.price}}</span>
-            <span v-else class="price-panel__amount theme-color">
-            ¥{{order.discountTotalPrice+order.freight-(order.couponPrice/100)}}</span>
+          <span
+            v-else
+            class="price-panel__amount theme-color"
+          >
+            ¥{{(order.discountTotalPrice+order.freight-(order.couponPrice/100)).toFixed(2)}}</span>
         </div>
       </div>
     </div>
@@ -146,7 +152,7 @@ export default {
           id: 1,
           price: 0,
           integral: 100,
-          name: '满100积分兑换1元',
+          name: "满100积分兑换1元"
         }
       },
       showCoupon: false,
@@ -157,7 +163,7 @@ export default {
       show: false,
       loading: false,
       currentContact: {},
-      addresslist: [],
+      addressList: [],
       orderGoodList: [],
       orderId: "",
       order: {
@@ -176,13 +182,16 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
+    console.log(to);
     // 清除订单数据
-    if (to.name !== "address") {
+    if (to.name === "address" || to.name === "addAddress") {
+      console.log("不清除订单数据");
+      next();
+    } else {
+      console.log("清除订单数据");
       this.$store.dispatch("clearOrderCache").then(() => {
         next();
       });
-    } else {
-      next();
     }
   },
   mounted() {
@@ -214,7 +223,7 @@ export default {
           if (res.data.userCouponList && res.data.userCouponList.length > 0) {
             this.dealCouponData(res.data.userCouponList);
           }
-          this.order.freight = res.data.freight;
+          this.order.freight = res.data.freight ? res.data.freight : 0;
           this.user = {
             isMember: res.data.isMember,
             point: res.data.userIntegral,
@@ -263,13 +272,21 @@ export default {
     },
     onChange(index) {
       this.showCoupon = false;
-      this.chosenCoupon = index;
-      let coupon = this.coupons[index];
-      this.order.couponPrice = coupon.value;
-      this.order.couponId = coupon.id;
+      if (index === -1) {
+        this.chosenCoupon = -1;
+        this.order.couponPrice = 0;
+        this.order.couponId = "";
+        return false;
+      } else {
+        this.chosenCoupon = index;
+        let coupon = this.coupons[index];
+        this.order.couponPrice = coupon.value;
+        this.order.couponId = coupon.id;
+      }
     },
     choseAddress() {
       let path = "/user/address";
+      console.log(this.addressList);
       if (this.addressList.length === 0) {
         path = "/user/address/add";
       }
@@ -279,18 +296,22 @@ export default {
       });
     },
     onSubmit() {
-      let orderData = {...this.order};
-      let lastPrice = orderData.discountTotalPrice+orderData.freight;
+      if (!this.order.addressId) {
+        this.$toast("请添加收货地址");
+        return;
+      }
+      let orderData = { ...this.order };
+      let lastPrice = orderData.discountTotalPrice + orderData.freight;
       if (this.checked) {
         if (this.user.point < this.user.pointRule.integral) {
           this.$toast("积分不够");
           return;
-        }else{
-          lastPrice = lastPrice-this.user.pointRule.price;
+        } else {
+          lastPrice = lastPrice - this.user.pointRule.price;
         }
       }
-      if(orderData.couponId){
-        lastPrice = lastPrice - (orderData.couponPrice/100);
+      if (orderData.couponId) {
+        lastPrice = lastPrice - orderData.couponPrice / 100;
       }
       orderData.discountTotalPrice = lastPrice;
       this.loading = true;
@@ -319,10 +340,10 @@ export default {
                 {
                   appId: d.appId, //公众号名称，由商户传入
                   timeStamp: d.timestamp + "", //时间戳，自1970年以来的秒数
-                  nonceStr: d.nonce_str, //随机串
+                  nonceStr: d.nonceStr, //随机串
                   package: d.package,
                   signType: "MD5", //微信签名方式：
-                  paySign: d.sign //微信签名
+                  paySign: d.paySign //微信签名
                 },
                 function(res) {
                   if (res.err_msg == "get_brand_wcpay_request:ok") {
@@ -392,6 +413,7 @@ export default {
 
 <style lang="scss" scoped>
 .order {
+  padding-bottom: 60px;
   .allGood {
     margin-top: 14px;
   }
