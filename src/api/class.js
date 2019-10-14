@@ -15,3 +15,8 @@ export function getFriutListById(data) {
 export function getNromById(data) {
   return request({ url: '/fruit/' + data.id + '/getForm', method: 'get'})
 }
+
+//获取新品
+export function getAdvanceFruit(data) {
+  return request({ url: '/getIsAdvanceFruit', method: 'get'})
+}
