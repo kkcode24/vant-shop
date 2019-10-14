@@ -91,6 +91,7 @@
           icon="points"
           title="个人信息"
           is-link
+          to="user/editInfo"
         />
         <van-cell
           @click="sorry"

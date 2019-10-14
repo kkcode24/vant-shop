@@ -273,6 +273,7 @@ export default {
     onChange(index) {
       this.showCoupon = false;
       if (index === -1) {
+        this.chosenCoupon = -1;
         this.order.couponPrice = 0;
         this.order.couponId = "";
         return false;
@@ -342,7 +343,7 @@ export default {
                   nonceStr: d.nonceStr, //随机串
                   package: d.package,
                   signType: "MD5", //微信签名方式：
-                  paySign: d.sign //微信签名
+                  paySign: d.paySign //微信签名
                 },
                 function(res) {
                   if (res.err_msg == "get_brand_wcpay_request:ok") {

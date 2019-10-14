@@ -1,6 +1,6 @@
 <template>
     <div class="coupon">
-        <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" :show-exchange-bar="false" :show-close-button="false" @change="onChange" />
+        <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" :show-exchange-bar="false" :show-close-button="false" />
     </div>
 </template>
 
@@ -49,13 +49,6 @@ export default {
           this.disabledCoupons.push({ ...currObj, reason: "已过期" });
         }
       });
-    },
-    onChange(index) {
-      this.showCoupon = false;
-      this.chosenCoupon = index;
-      let coupon = this.coupons[index];
-      this.order.couponPrice = coupon.value;
-      this.order.couponId = coupon.id;
     }
   }
 };

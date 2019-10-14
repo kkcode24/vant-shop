@@ -177,8 +177,13 @@ const router = new Router({
       component: () => import('@/views/user/order/index')
     },
     {
+      path: '/user/coupon',
+      name: 'myCoupon',
+      component: () => import('@/views/user/coupon/index')
+    },
+    {
       path: '/user/editInfo',
-      name: 'myOrder',
+      name: 'myInfo',
       component: () => import('@/views/user/editInfo/index')
     }
   ]
