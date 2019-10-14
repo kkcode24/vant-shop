@@ -61,20 +61,8 @@ export default {
       scrolly: 0, // 滚动高度
       foodScroll: "",
       menuScroll: '',
-      clickFlag: false
+      currentIndex: 0
     };
-  },
-  computed: {
-      currentIndex() {
-        for (let i = 0; i < this.listHeight.length; i++) {
-          let height = this.listHeight[i];
-          let height2 = this.listHeight[i + 1];
-          if (!height2 || (this.scrolly >= height && this.scrolly < height2)) {
-            return i;
-          }
-        }
-        return 0;
-      }
   },
   mounted() {
     this.getFriutList();
@@ -93,10 +81,10 @@ export default {
           // 去掉自带click事件的点击
           return;
         }
+        this.currentIndex = index
         let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook');
         let el = foodList[index];
         this.foodScroll.scrollToElement(el, 300);
-        this.$refs.foodWrapper.scrollTop = this.listHeight[index]
       },
     _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
@@ -106,9 +94,20 @@ export default {
           probeType: 3,
           click: true
         });
-        this.foodScroll.on('scroll', (pos) => {
-          this.scrolly = Math.abs(Math.round(pos.y));
+        this.foodScroll.on('scrollEnd', (pos) => {
+          let scrolly = Math.abs(Math.round(pos.y));
+          this.currentIndex = this.findIndex(scrolly)
         });
+    },
+    // 找到index
+    findIndex(scrolly) {
+      for (let i = 0; i < this.listHeight.length; i++) {
+          let height = this.listHeight[i];
+          let height2 = this.listHeight[i + 1];
+          if (!height2 || (scrolly >= height && scrolly < height2)) {
+            return i;
+          }
+      }
     },
     // 收集每个分类的高度
     _calculateHeight() {
@@ -135,7 +134,7 @@ export default {
           let list = res.data.filter((item) => {
             return item.fruitList&&item.fruitList.length > 0
           })
-          this.dataList = list;
+          this.dataList = list
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();
@@ -179,10 +178,6 @@ export default {
   }
   .mainConent {
     background: #fff;
-    flex: 1;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    transition: .5 all; 
     .fruitItem {
       padding: 6px;
       display: flex;

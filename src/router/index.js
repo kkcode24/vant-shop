@@ -55,7 +55,6 @@ const router = new Router({
       name: 'news',
       components: {
         default: () => import('@/views/news/index'),
-        tabbar: Tabbar
       },
       meta: {
         requiresAuth: true,
@@ -176,6 +175,11 @@ const router = new Router({
       path: '/user/order',
       name: 'myOrder',
       component: () => import('@/views/user/order/index')
+    },
+    {
+      path: '/user/editInfo',
+      name: 'myOrder',
+      component: () => import('@/views/user/editInfo/index')
     }
   ]
 })

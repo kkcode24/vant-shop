@@ -2,7 +2,7 @@
   <div class="user">
     <div class="member-center__user-info-wrapper">
       <div class="member-center__user-info avatar-at-top">
-        <div class="user-info__avatar">
+        <div class="user-info__avatar" @click="$router.push({path: 'user/editInfo'})">
           <img v-if="user.wxImage" :src="user.wxImage">
           <img v-else src="../../../static/images/user/avatar.png" alt="avatar">
         </div>
