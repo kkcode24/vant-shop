@@ -52,11 +52,15 @@ const address = {
     updateWxUserAddress({commit},addressData){
       return new Promise((resolve, reject)=>{
         updateAddress(addressData).then(response=>{
-          const addressList = JSON.parse(getUserAddress())
-          addressList.forEach((v,i) => {
-            addressList[i].isDefault = 1;
-          });
-          addressList.push(response.data);
+          let addressList = JSON.parse(getUserAddress())
+          if(addressList&&addressList.length>0){
+            addressList.forEach((v,i) => {
+              addressList[i].isDefault = 1;
+            });
+            addressList.push(response.data);
+          }else{
+            addressList = [];
+          }
           const address_list = JSON.stringify(addressList);
           commit('SET_USERADDRESS', addressList);
           setUserAddress(address_list);

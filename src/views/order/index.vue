@@ -151,6 +151,7 @@ export default {
       let postData = [];
       this.list.forEach(item => {
         if (item.checked) {
+          item.picture = this.app.prefixAttachs + item.picture;
           postData.push(item);
         }
       });
@@ -199,7 +200,7 @@ export default {
 #shoppingCar {
   width: 100%;
   height: calc(100% - 110px);
-  background: #fafafa;
+  background: #f8f8f8;
   position: relative;
   overflow-y: scroll;
   .nogood {

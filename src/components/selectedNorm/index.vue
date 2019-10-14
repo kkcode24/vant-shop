@@ -139,12 +139,13 @@ export default {
       };
       let goodsData = this.$store.state.shoppingCar.fruit;
       skuMap.price = goodsData.fruit.price;
+      skuMap.stock_num = goodsData.storageNum;
       skuMap.tree[0].v = this.goodSpecificationsList.map(item => {
         skuMap.list.push({
           id: item.id,
           s1: item.id,
           price: item.price * 100,
-          stock_num: item.fruitNumber,
+          stock_num: goodsData.storageNum,
           advancePrice: item.advancePrice,
           freightPrice: item.freightPrice,
           fruitId: item.fruitId,

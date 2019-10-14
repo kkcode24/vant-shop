@@ -33,15 +33,15 @@
       </div>
     </div>
     <div class="member-center__stats">
-      <div class="member-center__stats-item">
+      <div @click="sorry" class="member-center__stats-item">
         <div>{{user.userBalance}}</div>
         <div>余额</div>
       </div>
-      <div class="member-center__stats-item">
+      <div @click="sorry" class="member-center__stats-item">
         <div>{{user.integral}}</div>
         <div>积分</div>
       </div>
-      <div class="member-center__stats-item">
+      <div @click="$router.push({name:'myCoupon'})" class="member-center__stats-item">
         <div>{{user.couponNum}}</div>
         <div>优惠券</div>
       </div>
@@ -93,6 +93,7 @@
           is-link
         />
         <van-cell
+          @click="sorry"
           icon="gold-coin-o"
           title="客服聊天"
           is-link
@@ -104,6 +105,7 @@
           to="user/address"
         />
         <van-cell
+          @click="sorry"
           icon="gift-o"
           title="分销员中心"
           is-link
@@ -122,9 +124,14 @@ export default {
     };
   },
   mounted(){
-    this.user = this.$store.getters.userInfo;
+    this.$store.dispatch('getActionWxUserInfo').then(res=>{
+      this.user = this.$store.getters.userInfo;
+    })
   },
   methods: {
+    sorry(){
+      this.$toast('对不起，该功能正在开发中')
+    },
     goOrder(i) {
       this.$router.push({ name: "myOrder", query: { status: i } });
     }
@@ -134,6 +141,7 @@ export default {
 
 <style rel="stylesheet/scss" scoped lang="scss">
 .user {
+  padding-bottom: 60px;
   background: #f8f8f8;
   .member-center__user-info-wrapper {
     margin-bottom: 10px;

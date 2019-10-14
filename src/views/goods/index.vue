@@ -1,13 +1,7 @@
 <template>
   <div class="goods">
-    <van-swipe
-      class="goods-swipe"
-      :autoplay="3000"
-    >
-      <div
-        v-for="item in goods.fruitImageList"
-        :key="item.id"
-      >
+    <van-swipe class="goods-swipe" :autoplay="3000">
+      <div v-for="item in goods.fruitImageList" :key="item.id">
         <van-swipe-item v-if="item.type===2">
           <img :src="app.prefixAttachs+item.image">
         </van-swipe-item>
@@ -20,10 +14,7 @@
         <div class="goods-price">¥ {{ goods.price }}</div>
       </van-cell>
       <van-cell class="goods-express">
-        <van-col
-          v-if="goodSpecificationsList.length>0"
-          span="10"
-        >
+        <van-col v-if="goodSpecificationsList.length>0" span="10">
           运费：
           <span v-if="goodSpecificationsList[0].freightPrice>0">{{ goodSpecificationsList[0].freightPrice }}</span>
           <span v-else>免运费</span>
@@ -34,34 +25,19 @@
 
     <div class="goods-detail">
       <h3>商品详情</h3>
-      <div
-      class="goods-detail-image"
-        v-for="item in goods.fruitImageList"
-        :key="item.id"
-      >
-        <van-image
-          v-if="item.type===3"
-          :src="app.prefixAttachs+item.image"
-        />
+      <div v-for="item in goods.fruitImageList" :key="item.id">
+        <div v-if="item.type===3" class="goods-detail-image">
+          <van-image :src="app.prefixAttachs+item.image" />
+        </div>
       </div>
+
     </div>
 
     <van-goods-action>
-      <van-goods-action-icon
-        icon="chat-o"
-      >客服</van-goods-action-icon>
-      <van-goods-action-icon
-        icon="cart-o"
-        @click="onClickCart"
-      >购物车</van-goods-action-icon>
-      <van-goods-action-button
-        type="warning"
-        @click="onAddCart"
-      >加入购物车</van-goods-action-button>
-      <van-goods-action-button
-        type="danger"
-        @click="onBuyClicked"
-      >立即购买</van-goods-action-button>
+      <van-goods-action-icon icon="chat-o">客服</van-goods-action-icon>
+      <van-goods-action-icon icon="cart-o" @click="onClickCart">购物车</van-goods-action-icon>
+      <van-goods-action-button type="warning" @click="onAddCart">加入购物车</van-goods-action-button>
+      <van-goods-action-button type="danger" @click="onBuyClicked">立即购买</van-goods-action-button>
     </van-goods-action>
   </div>
 </template>
@@ -102,9 +78,9 @@ export default {
     onBuyClicked() {
       getGoodDetail(this.fruitId).then(res => {
         if (res.code === 0) {
-          this.$store.dispatch('openSku',3).then(()=>{
-            this.$store.commit('ADD_GOODS', res.data)
-          })
+          this.$store.dispatch("openSku", 3).then(() => {
+            this.$store.commit("ADD_GOODS", res.data);
+          });
         }
       });
     },
@@ -114,9 +90,9 @@ export default {
     onAddCart() {
       getGoodDetail(this.fruitId).then(res => {
         if (res.code === 0) {
-          this.$store.dispatch('openSku',2).then(()=>{
-            this.$store.commit('ADD_GOODS', res.data)
-          })
+          this.$store.dispatch("openSku", 2).then(() => {
+            this.$store.commit("ADD_GOODS", res.data);
+          });
         }
       });
     }
