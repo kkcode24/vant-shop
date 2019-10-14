@@ -23,7 +23,7 @@ export function modifyOrderStatus(id) {
 // 查询订单支付结果
 export function queryOrderPayResult(id) {
   return request({
-    url: '/order/queryorder',
+    url: '/order/orderquery',
     method: 'post',
     params: {
       orderId: id

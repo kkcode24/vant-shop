@@ -31,10 +31,10 @@ const auth = {
       return new Promise((resolve, reject) => {
         UserInfo().then(response => {
           const user_info = JSON.stringify(response.data);
-          commit('SET_AUTH', false);
+          commit('SET_AUTH', response.data.isAuth);
           commit('SET_USERINfO', response.data);
           setUserInfo(user_info);
-          setUserAuth(false);
+          setUserAuth(response.data.isAuth);
           resolve(response.data);
         }).catch(error => {
           reject(error);
