@@ -141,6 +141,7 @@ export default {
 
 <style rel="stylesheet/scss" scoped lang="scss">
 .user {
+  padding-bottom: 60px;
   background: #f8f8f8;
   .member-center__user-info-wrapper {
     margin-bottom: 10px;

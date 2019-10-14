@@ -157,7 +157,7 @@ export default {
       show: false,
       loading: false,
       currentContact: {},
-      addresslist: [],
+      addressList: [],
       orderGoodList: [],
       orderId: "",
       order: {
@@ -214,7 +214,7 @@ export default {
           if (res.data.userCouponList && res.data.userCouponList.length > 0) {
             this.dealCouponData(res.data.userCouponList);
           }
-          this.order.freight = res.data.freight;
+          this.order.freight = res.data.freight?res.data.freight:0;
           this.user = {
             isMember: res.data.isMember,
             point: res.data.userIntegral,
@@ -270,6 +270,7 @@ export default {
     },
     choseAddress() {
       let path = "/user/address";
+      console.log(this.addressList);
       if (this.addressList.length === 0) {
         path = "/user/address/add";
       }
@@ -279,6 +280,10 @@ export default {
       });
     },
     onSubmit() {
+      if(!this.order.addressId){
+        this.$toast('请添加收货地址');
+        return;
+      }
       let orderData = {...this.order};
       let lastPrice = orderData.discountTotalPrice+orderData.freight;
       if (this.checked) {
@@ -392,6 +397,7 @@ export default {
 
 <style lang="scss" scoped>
 .order {
+  padding-bottom: 60px;
   .allGood {
     margin-top: 14px;
   }
