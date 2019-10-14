@@ -68,12 +68,14 @@
       </van-row>
       <van-row type="flex" justify="space-around">
         <van-col span="12">
-          <div @click="$router.push({ name: 'groupDiscount' })" class="router-big-image">
+          <!-- @click="$router.push({ name: 'groupDiscount' })" -->
+          <div @click="sorry" class="router-big-image">
             <img :src="modulesEntry.ptzk">
           </div>
         </van-col>
         <van-col span="12">
-          <div @click="$router.push({ name: 'integralMall' })" class="router-big-image">
+          <!-- @click="$router.push({ name: 'integralMall' })" -->
+          <div @click="sorry" class="router-big-image">
             <img :src="modulesEntry.jfsc">
           </div>
         </van-col>
