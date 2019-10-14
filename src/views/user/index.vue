@@ -41,7 +41,7 @@
         <div>{{user.integral}}</div>
         <div>积分</div>
       </div>
-      <div class="member-center__stats-item">
+      <div @click="$router.push({name:'myCoupon'})" class="member-center__stats-item">
         <div>{{user.couponNum}}</div>
         <div>优惠券</div>
       </div>

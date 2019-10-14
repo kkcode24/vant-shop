@@ -176,6 +176,11 @@ const router = new Router({
       path: '/user/order',
       name: 'myOrder',
       component: () => import('@/views/user/order/index')
+    },
+    {
+      path: '/user/coupon',
+      name: 'myCoupon',
+      component: () => import('@/views/user/coupon/index')
     }
   ]
 })
