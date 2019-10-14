@@ -158,6 +158,7 @@ export default {
           name: item.specifications
         };
       });
+      
       return skuMap;
     }
   }
