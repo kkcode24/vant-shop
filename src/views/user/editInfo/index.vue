@@ -26,14 +26,14 @@
             <span class="custom-title" v-else>请填写</span>
         </template>
     </van-cell>
-    <van-cell>
+    <van-cell is-link @click="showPhone = true">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">手机号</span>
         </template>
         <template slot="default">
             <span class="custom-title" v-if="userInfo.phone">{{userInfo.phone}}</span>
-            <span v-else>未关联手机号</span>
+            <span v-else>请填写</span>
         </template>
     </van-cell>
     <van-cell is-link @click="showSex = true">
@@ -107,7 +107,23 @@
         @confirm='getName'
     >
         <van-cell-group style="margin: 10px">
-            <van-field  v-model="userInfo.name" placeholder="请输入用户名" />
+            <van-field  v-model="name" placeholder="请输入用户名" />
+        </van-cell-group>
+    </van-dialog>
+    <!-- 手机号 -->
+    <van-dialog
+        v-model="showPhone"
+        title="修改手机号"
+        show-cancel-button
+        @cancel='showPhone = false'
+        @confirm='getPhone'
+    >
+        <van-cell-group style="margin: 10px">
+           <van-field
+                v-model="phone"
+                maxlength='11'
+                placeholder="请输入手机号"
+            />
         </van-cell-group>
     </van-dialog>
   </div>
@@ -117,6 +133,7 @@
 import areaList from "@/views/user/address/area";
 import { updateUserInfo } from '@/api/user';
 import moment from 'moment'
+import { Notify } from 'vant'
 export default {
   name: "coupon",
   data() {
@@ -126,7 +143,10 @@ export default {
         showSex: false,
         showTime: false,
         showName: false,
+        showPhone: false,
         sexList: ['保密', '男', '女'],
+        name: this.$store.getters.userInfo.name,
+        phone: this.$store.getters.userInfo.phone,
         currentDate: moment(this.$store.getters.userInfo.birthDay)
     };
   },
@@ -139,15 +159,30 @@ export default {
     }
   },
   methods: {
+    //   获取手机号
+    getPhone() {
+        let reg = /^[1]([3-9])[0-9]{9}$/i
+        if(reg.test(this.phone)) {
+            this.updateUserInfo({
+              phone: this.phone
+            })
+        } else {
+            this.phone = ''
+            Notify({
+                type: 'danger',
+                message: '手机号不合法',
+                duration: 3 * 1000
+            });
+        }
+    },
     //   获取姓名
     getName() {
         this.updateUserInfo({
-          name: this.$store.getters.userInfo.name
+          name: this.name
         })
     },
     //   获取日期
     getBirthday(value) {
-        console.log(moment(value).format('YYYY-MM-DD'))
         this.updateUserInfo({
           birthDay: moment(value).format('YYYY-MM-DD')
         })
@@ -172,9 +207,16 @@ export default {
                     this.showAddress = false
                     this.showSex = false
                     this.showTime = false
+                    this.showPhone = false
+                    this.showName = false
+                    this.name = res.data.name
+                    this.phone = res.data.phone
                     this.$toast('更新成功!')
                     this.$store.commit('SET_USERINfO', res.data)
-                }
+                } else {
+                    this.name = this.$store.getters.userInfo.name
+                    this.phone = this.$store.getters.userInfo.phone
+                }  
             })
         })
     }
