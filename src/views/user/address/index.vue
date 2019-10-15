@@ -75,7 +75,10 @@ export default {
   },
   methods: {
     onAdd() {
-      this.$router.push("/user/address/add");
+      this.$router.push({
+        path: "/user/address/add",
+        query: { redirect: this.$route.query.redirect }
+      });
     },
     onEdit(item, index) {
       this.$router.push({

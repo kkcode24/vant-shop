@@ -14,18 +14,14 @@ export default {
   name: "addAddress",
   data() {
     return {
-      loading: false,
-      loadingText: '提交中',
       areaList: areaList,
     };
   },
   methods: {
     onSave(f) {
       let postData = Object.assign({},f,{isDefault:0});
-      this.loading = true;
       this.$store.dispatch('saveWxUserAddress',postData).then(res=>{
         if(res.code===0){
-          this.loading = false;
           this.$router.replace(this.$route.query.redirect || '/user/address')
         }
       })
@@ -33,6 +29,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

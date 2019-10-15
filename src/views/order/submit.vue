@@ -286,7 +286,6 @@ export default {
     },
     choseAddress() {
       let path = "/user/address";
-      console.log(this.addressList);
       if (this.addressList.length === 0) {
         path = "/user/address/add";
       }
