@@ -1,58 +1,49 @@
 <template>
   <div class="page">
-    <van-tabs
-      v-model="currentActive"
-      @change='change'
-      sticky
-    >
-      <van-tab
-        :title="val"
-        v-for="(val,index) in tabs"
-        :key="index"
-      >
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          @load="onLoad"
-        >
-        <div class="order-list">
+    <van-tabs v-model="currentActive" @change='change' sticky>
+      <van-tab :title="val" v-for="(val,index) in tabs" :key="index">
+        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+          <div class="order-list">
             <div v-for="(item,index) in list" :key="index" class="order-item">
-                <van-panel title="店铺：丰登" :status="getStatusText(item.status)">
-                    <div class="order-code">
-                      订单编号: {{item.code}}
-                    </div>
-                    <div v-for="o in item.orderFruitList" :key="o.id" class="orderFruits">
-                      <van-card
-                      :num="o.fruitNum"
-                      :price="o.fruitPrice"
-                      :desc="o.fruitDescribe"
-                      :title="o.fruitName"
-                      :thumb="app.prefixAttachs + o.fruitImage"
-                      />
-                    </div>
-                    
-                    <div class="order-footer">
-                        合计：<span>{{item.discountTotalPrice}}</span> 元
-                    </div>
-                    <div v-if="item.status===0" class="order-btn">
-                      <van-button @click="payOrder(item)" type="danger" size="small">付款</van-button>
-                    </div>
-                </van-panel>
+              <van-panel title="店铺：丰登" :status="getStatusText(item.status)">
+                <div class="order-code">
+                  订单编号: {{item.code}}
+                </div>
+                <div v-for="o in item.orderFruitList" :key="o.id" class="orderFruits">
+                  <van-card :num="o.fruitNum" :price="o.fruitPrice" :desc="o.fruitDescribe" :title="o.fruitName" :thumb="app.prefixAttachs + o.fruitImage" />
+                </div>
+                <div class="order-footer">
+                  合计：
+                  <span>{{item.discountTotalPrice}}</span> 元
+                </div>
+                <div v-if="item.status===0" class="order-btn">
+                  <van-button @click="payOrder(item)" type="danger" size="small">付款</van-button>
+                </div>
+                <div v-if="item.status===2" class="order-btn">
+                  <van-button @click="signfor(item)" type="primary" size="small">签收</van-button>
+                </div>
+              </van-panel>
             </div>
-        </div>
+          </div>
         </van-list>
       </van-tab>
     </van-tabs>
-
-    <van-action-sheet
-      v-model="show"
-      :actions="actions"
-      cancel-text="取消"
-      @select="onSelect"
-      @cancel="onCancel"
+    <!-- 微信支付 -->
+    <van-action-sheet v-model="show" :actions="actions" cancel-text="取消" @select="onSelect" @cancel="onCancel" />
+    <!-- 评论-签收 -->
+    <van-dialog
+      v-model="showCommit"
+      show-cancel-button
+      @confirm="submitCommit"
+      @cancel="cancelCommit"
+    >
+    <van-field
+      v-model="evaluate"
+      type="textarea"
+      placeholder="请输入评价内容"
+      rows="3"
     />
-
+    </van-dialog>
   </div>
 </template>
 
@@ -61,45 +52,50 @@ import {
   getMyOrder,
   billWXPay,
   queryOrderPayResult,
-  modifyOrderStatus
+  modifyOrderStatus,
+  commitOrderInfo
 } from "@/api/order";
 export default {
   name: "myOrder",
   data() {
     return {
-      orderId: '',
+      order: {},
+      evaluate: "",
+      orderId: "",
       show: false,
       loading: false,
       finished: false,
+      showCommit:false,
       currentActive: 0,
       list: [],
-      page:{
-        status: '',
-        current:1,
+      page: {
+        status: "",
+        current: 1,
         size: 5
       },
       actions: [{ name: "微信支付", payType: "wx" }],
       tabs: ["全部", "待付款", "待发货", "待收货", "已完成"],
-      statusText: ['待付款','待发货','已发货','待评价','已取消','已完成']
+      statusText: ["待付款", "待发货", "已发货", "待评价", "已取消", "已完成"]
     };
   },
   created() {
     let status = this.$route.query.status;
-    if (status+1) {
-      this.currentActive = status+1;
+    if (status + 1) {
+      this.currentActive = status + 1;
     }
   },
   methods: {
     change(i) {
+      let statusArr = ["",0,1,2,5];
       this.currentActive = i;
-      this.page= {
-        status: i===0?'':i-1,
-        current:1,
+      this.page = {
+        status: statusArr[i],
+        current: 1,
         size: 5
       };
       this.loading = false;
       this.finished = false;
-      this.list =[];
+      this.list = [];
     },
     getStatusText(status) {
       return this.statusText[status];
@@ -107,21 +103,44 @@ export default {
     onLoad() {
       getMyOrder(this.page).then(res => {
         if (res.code == 0) {
-          if(res.data.length>0){
+          if (res.data.length > 0) {
             this.list = this.list.concat(res.data);
           }
           this.loading = false;
           if (this.list.length >= res.total) {
             this.finished = true;
-          }else{
-            this.page.current++
+          } else {
+            this.page.current++;
           }
-        }else{
-          this.page.current=1;
+        } else {
+          this.page.current = 1;
         }
       });
     },
-    payOrder(item){
+    // 签收/评价
+    signfor(item) {
+      this.order = item;
+      this.showCommit = true;
+    },
+    submitCommit(){
+      let that = this;
+      commitOrderInfo({id:this.order.id,evaluate:this.evaluate}).then(res=>{
+        if(res.code===0){
+          that.$toast({
+            type: "success",
+            message: "签收成功",
+            onClose: function() {
+              // 订单完成页签
+              that.change(4);
+            }
+          });
+        }
+      })
+    },
+    cancelCommit(){
+      this.commit = '';
+    },
+    payOrder(item) {
       this.orderId = item.id;
       this.show = true;
     },
@@ -204,24 +223,24 @@ export default {
 
 <style lang="scss" scoped>
 .order-list {
-    .order-item {
-        margin: 10px 0;
-        .order-code {
-          color: #999;
-          font-size: 12px;
-          padding: 4px 15px;
-        }
-        .order-footer {
-            text-align: right;
-            padding: 6px 10px;
-            span {
-                color: #ee0a24;
-            }
-        }
-        .order-btn {
-          padding: 6px 10px;
-          text-align: right;
-        }
+  .order-item {
+    margin: 10px 0;
+    .order-code {
+      color: #999;
+      font-size: 12px;
+      padding: 4px 15px;
     }
+    .order-footer {
+      text-align: right;
+      padding: 6px 10px;
+      span {
+        color: #ee0a24;
+      }
+    }
+    .order-btn {
+      padding: 6px 10px;
+      text-align: right;
+    }
+  }
 }
 </style>

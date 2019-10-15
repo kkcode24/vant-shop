@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+// 订单评价，确认签收
+export function commitOrderInfo(data) {
+  return request({
+    url: '/order/customerEvaluate',
+    method: 'post',
+    params: {info:JSON.stringify(data)}
+  })
+}
+
 // 获取当前订单的优惠券，用户积分规则，运费
 export function queryOrderInfo(data) {
   return request({
