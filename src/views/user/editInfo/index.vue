@@ -1,7 +1,7 @@
 <template>
   <div class="selfInfo">
     <h2 class="block-header">基本信息</h2>
-    <van-cell is-link style="display: flex; justify-content: center; align-items: center;">
+    <van-cell style="display: flex; justify-content: center; align-items: center;">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">头像</span>
