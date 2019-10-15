@@ -1,46 +1,24 @@
 <template>
-  <div>
-    <van-popup
-      v-model="$store.state.auth.show"
-      position="bottom"
-      :style="{ height: '40%',padding: '10px' }"
-    >
-      <p>本应用申请</p>
-      <h2>获取你的昵称、头像、地区及性别</h2>
+  <div class="auth">
+    <van-popup v-model="$store.state.auth.show" position="bottom" :style="{ height: '40%',padding: '10px' }">
+      <p class="app">本应用申请</p>
+      <h2 class="tip">获取你的昵称、头像、地区及性别</h2>
       <div class="user">
-        <van-row>
-          <van-col span="4">
-            <div class="user-avatar">
-              <img
-                :src="user.wxImage"
-                alt="用户头像"
-              >
-            </div>
-          </van-col>
-          <van-col span="20">
-            <div class="user-info">
-              <van-cell
-                :title="user.wxNickname"
-                value=""
-                label="微信个人信息"
-              />
-            </div>
-          </van-col>
+        <van-row class="clearfix"> 
+          <div class="user-avatar fl">
+            <img :src="user.wxImage" alt="用户头像">
+          </div>
+          <div class="user-info fl">
+            <van-cell :title="user.wxNickname" value="" label="微信个人信息" />
+          </div>
         </van-row>
-
       </div>
-      <van-row>
-        <van-col span="12">
-          <van-button
-            @click="closePopup"
-            type="default"
-          >取 消</van-button>
+      <van-row gutter="20">
+        <van-col offset="4" span="8">
+          <van-button @click="closePopup" type="default">取 消</van-button>
         </van-col>
-        <van-col span="12">
-          <van-button
-            @click="auth"
-            type="primary"
-          >允 许</van-button>
+        <van-col span="8">
+          <van-button @click="auth" type="primary">允 许</van-button>
         </van-col>
       </van-row>
     </van-popup>
@@ -90,21 +68,35 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.user {
-  box-sizing: border-box;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  .user-avatar {
-    padding-top: 10px;
-    img {
-      width: 50px;
-      height: 50px;
-      border-radius: 5px;
+.auth {
+  .app {
+    font-size: 14px;
+  }
+  .tip {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+  .user {
+    padding: 4px 0;
+    box-sizing: border-box;
+    border-top: 1px solid #ebedf0;
+    border-bottom: 1px solid #ebedf0;
+    .user-avatar {
+      padding-top: 10px;
+      img {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ebedf0;
+        border-radius: 5px;
+      }
+    }
+    .user-info {
+      width: 200px;
     }
   }
-}
-.van-button {
-  width: 80%;
-  margin-top: 20px;
+  .van-button {
+    width: 100%;
+    margin-top: 20px;
+  }
 }
 </style>
