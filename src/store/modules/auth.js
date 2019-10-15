@@ -22,6 +22,7 @@ const auth = {
     },
     SET_USERINfO: (state, userInfo) => {
       state.userInfo = userInfo
+      setUserInfo(JSON.stringify(userInfo));
     }
   },
 

@@ -70,7 +70,6 @@ export default {
   methods: {
     // 查看详情
     getDetail(fruitId){
-      fruitId = 1
       this.$router.push({
         params: {id:fruitId},
         name: 'goods'
@@ -78,7 +77,6 @@ export default {
     },
     selectMenu(index, event) {
        if (!event._constructed) {
-          // 去掉自带click事件的点击
           return;
         }
         this.currentIndex = index

@@ -25,7 +25,7 @@
             <span class="custom-title">请填写</span>
         </template>
     </van-cell>
-    <van-cell  is-link>
+    <van-cell>
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">手机号</span>
@@ -34,63 +34,126 @@
             <span class="custom-title">17625763879</span>
         </template>
     </van-cell>
-    <van-cell is-link>
+    <van-cell is-link @click="showSex = true">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">性别</span>
         </template>
         <template slot="default">
-            <span class="custom-title">保密</span>
+            <span class="custom-title" v-if="userInfo.sex">{{userInfo.sex}}</span>
+            <span v-else>请填写</span>
         </template>
     </van-cell>
-    <van-cell value="内容" is-link>
+    <van-cell value="内容" is-link @click="showTime = true">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">生日</span>
         </template>
         <template slot="default">
-            <span class="custom-title">请填写</span>
+            <span class="custom-title" v-if="userInfo.birthDay">{{userInfo.birthDay}}</span>
+            <span v-else>请填写</span>
         </template>
     </van-cell>
-    <van-cell value="内容" is-link  @click="show = true">
+    <van-cell value="内容" is-link  @click="showAddress = true">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">地区</span>
         </template>
         <template slot="default">
-            <span class="custom-title" v-if="address.length == 0">请填写</span>
-            <span class="custom-title" v-else v-for="(item, index) in address" :key="item.code">{{item.name}}<span v-if="index != address.length - 1">-</span></span>
-            
+            <span class="custom-title" v-if="userInfo.areaCode">{{userInfo.areaCode}}</span>
+            <span class="custom-title" v-else >请填写</span>
         </template>
     </van-cell>
+    <!-- 城市选择 -->
     <van-popup
-        v-model="show"
+        v-model="showAddress"
         position="bottom"   
     >
-      <van-area :value='address.length > 0 ? address[0].code : ""' :area-list="areaList" @confirm='confirmAddress' @cancel='cancelChoose'/>
+      <van-area :value='userInfo.areaCode' :area-list="areaList" @confirm='confirmAddress' @cancel='showAddress = false'/>
+    </van-popup>
+    <!-- 性别选择 -->
+    <van-popup v-model="showSex" position="bottom">
+        <van-picker
+            show-toolbar
+            :columns="['保密', '男', '女']"
+            @cancel="showSex = false"
+            @confirm="confirmSex"
+        />
+    </van-popup>
+    <!-- 选择生日 -->
+    
+    <van-popup
+        v-model="showTime"
+        position="bottom"   
+    >
+        <van-datetime-picker
+            v-model="currentDate"
+            type="date"
+            @cancel='showTime = false'
+            @confirm='getBirthday'
+            :min-date="new Date('1900-01-01')"
+            :max-date='new Date()'
+        />
     </van-popup>
   </div>
 </template>
 
 <script>
 import areaList from "@/views/user/address/area";
+import { updateUserInfo } from '@/api/user';
+import moment from 'moment'
 export default {
   name: "coupon",
   data() {
     return {
         areaList,
-        show: false,
-        address: [],
-
+        showAddress: false,
+        showSex: false,
+        showTime: false,
+        currentDate: moment(this.$store.getters.userInfo.birthDay)
     };
   },
+  mounted() {
+    console.log(moment(this.$store.getters.userInfo.birthDay))
+  },
+  computed:{
+    userInfo() {
+        return this.$store.getters.userInfo
+    }
+  },
   methods: {
-    confirmAddress(data) {
-        this.address = data
-        this.show = false
+    //   获取日期
+    getBirthday(value) {
+       console.log(moment(value).format('YYYY-MM-DD'))
+       this.updateUserInfo({
+          birthDay: moment(value).format('YYYY-MM-DD')
+        })
     },
-    cancelChoose() {
-        this.show = false
+    //   选地址
+    confirmAddress(data) {
+        let areaCode = data[data.length - 1].code
+        let areaStr = data.map(item => {
+            return item.name
+        })
+        areaStr = areaStr.join('-')
+        this.updateUserInfo({areaCode, areaStr})
+    },
+    confirmSex(sex) {
+        this.updateUserInfo({sex})
+    },
+    // 更新用户信息
+    updateUserInfo(data) {
+        return new Promise((resolve, reject) => {
+            updateUserInfo(data).then(res => {
+                if(res.code == 0) {
+                    this.showAddress = false
+                    this.showSex = false
+                    this.showTime = false
+                    this.$toast('更新成功!')
+                    this.$store.commit('SET_USERINfO', res.data)
+                }
+            })
+        })
     }
   }
 };
