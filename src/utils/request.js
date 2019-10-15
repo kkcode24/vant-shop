@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Notify } from 'vant'
 const service = axios.create({
-  baseURL: '',
+  baseURL: '/api',
   timeout: 2000000000
 })
 
