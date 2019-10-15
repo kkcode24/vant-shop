@@ -34,6 +34,16 @@ const router = new Router({
       }
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/login/index'),
+    },
+    {
+      path: '/supplier',
+      name: 'supplier',
+      component: () => import('@/views/login/supplier'),
+    },
+    {
       path: '/search',
       name: 'search',
       component: () => import('@/views/search/index'),
