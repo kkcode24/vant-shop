@@ -9,20 +9,21 @@
         <template slot="default">
             <van-image
                 round
-                width="30px"
-                height='30px'
+                width="34px"
+                height='34px'
                 fit='cover'
-                src="https://b.yzcdn.cn/showcase/membercenter/2018/08/06/default_avatar@2x.png"
+                :src="userInfo.wxImage"
             />
         </template>
     </van-cell>
-    <van-cell is-link>
+    <van-cell is-link @click="showName = true">
         <!-- 使用 title 插槽来自定义标题 -->
         <template slot="title">
             <span class="custom-title">姓名</span>
         </template>
         <template slot="default">
-            <span class="custom-title">请填写</span>
+            <span class="custom-title" v-if="userInfo.name">{{userInfo.name}}</span>
+            <span class="custom-title" v-else>请填写</span>
         </template>
     </van-cell>
     <van-cell>
@@ -31,7 +32,8 @@
             <span class="custom-title">手机号</span>
         </template>
         <template slot="default">
-            <span class="custom-title">17625763879</span>
+            <span class="custom-title" v-if="userInfo.phone">{{userInfo.phone}}</span>
+            <span v-else>未关联手机号</span>
         </template>
     </van-cell>
     <van-cell is-link @click="showSex = true">
@@ -60,7 +62,7 @@
             <span class="custom-title">地区</span>
         </template>
         <template slot="default">
-            <span class="custom-title" v-if="userInfo.areaCode">{{userInfo.areaCode}}</span>
+            <span class="custom-title" v-if="userInfo.areaStr">{{userInfo.areaStr}}</span>
             <span class="custom-title" v-else >请填写</span>
         </template>
     </van-cell>
@@ -75,7 +77,8 @@
     <van-popup v-model="showSex" position="bottom">
         <van-picker
             show-toolbar
-            :columns="['保密', '男', '女']"
+            :columns="sexList"
+            :default-index='sexList.findIndex((item) => { return item == userInfo.sex})'
             @cancel="showSex = false"
             @confirm="confirmSex"
         />
@@ -95,6 +98,18 @@
             :max-date='new Date()'
         />
     </van-popup>
+    <!-- 姓名 -->
+    <van-dialog
+        v-model="showName"
+        title="修改姓名"
+        show-cancel-button
+        @cancel='showName = false'
+        @confirm='getName'
+    >
+        <van-cell-group style="margin: 10px">
+            <van-field  v-model="userInfo.name" placeholder="请输入用户名" />
+        </van-cell-group>
+    </van-dialog>
   </div>
 </template>
 
@@ -110,6 +125,8 @@ export default {
         showAddress: false,
         showSex: false,
         showTime: false,
+        showName: false,
+        sexList: ['保密', '男', '女'],
         currentDate: moment(this.$store.getters.userInfo.birthDay)
     };
   },
@@ -122,10 +139,16 @@ export default {
     }
   },
   methods: {
+    //   获取姓名
+    getName() {
+        this.updateUserInfo({
+          name: this.$store.getters.userInfo.name
+        })
+    },
     //   获取日期
     getBirthday(value) {
-       console.log(moment(value).format('YYYY-MM-DD'))
-       this.updateUserInfo({
+        console.log(moment(value).format('YYYY-MM-DD'))
+        this.updateUserInfo({
           birthDay: moment(value).format('YYYY-MM-DD')
         })
     },
