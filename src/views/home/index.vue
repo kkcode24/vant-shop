@@ -41,7 +41,7 @@
         </van-col>
         <van-col span="6">
           <!-- @click="$router.push({ name: 'news' })" -->
-          <div @click="sorry" class="router-image">
+          <div @click="$router.push({ name: 'news' })" class="router-image">
             <img :src="modulesEntry.news">
           </div>
           <div class="nav-title">

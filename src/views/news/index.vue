@@ -97,14 +97,12 @@ export default {
       return process;
     },
     goDetail(fruit){
-      fruit.id = 1
       this.$router.push({
         params: {id:fruit.id},
         name: 'goods'
       })
     },
     showShopping(fruitId) {
-      fruitId = 1
       getGoodDetail(fruitId).then(res => {
         if (res.code === 0) {
           this.$store.dispatch('openSku', fruitId).then(()=>{
