@@ -54,3 +54,11 @@ export function getAllItems() {
     method: 'get'
   })
 }
+
+// 首页公告
+export function getNotice() {
+  return request({
+    url: '/getNotice',
+    method: 'get'
+  })
+}

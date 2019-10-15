@@ -1,7 +1,7 @@
 <template>
   <div class="page" v-cloak>
-    <van-notice-bar left-icon="volume-o" mode="closeable">
-      受国庆影响。南京快递严查，快递时效不保证请理解，感谢您的惠顾。
+    <van-notice-bar v-if="showNotice" left-icon="volume-o" mode="closeable">
+      {{notice}}
     </van-notice-bar>
 
     <section class="banner-swipe">
@@ -162,12 +162,14 @@
 </template>
 
 <script>
-import { getIndexSwipeImages, getNewFruits, getGoodDetail } from "@/api/app";
+import { getNotice,getIndexSwipeImages, getNewFruits, getGoodDetail } from "@/api/app";
 import { getAllFriuts } from "@/api/class";
 export default {
   name: "home",
   data() {
     return {
+      showNotice: false,
+      notice: '',
       swiperOption: {
         slidesPerView: "auto",
         spaceBetween: 10
@@ -219,6 +221,7 @@ export default {
     async initView() {
       let process = "try";
       try {
+        await this.getNotice();
         await this.getNewFruits();
         await this.getSwipeImages();
         process = "done";
@@ -229,6 +232,16 @@ export default {
         return process;
       }
       return process;
+    },
+    getNotice(){
+      getNotice().then(res=>{
+        if(res.code===0){
+          if(res.data&&res.data.length>0){
+            this.showNotice = res.data[0].isShow;
+            this.notice = res.data[0].notice;
+          }
+        }
+      })
     },
     getNewFruits() {
       getNewFruits().then(res => {
