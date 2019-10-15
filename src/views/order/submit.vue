@@ -1,88 +1,38 @@
 <template>
   <div class="order">
     <!-- 联系人卡片 -->
-    <van-contact-card
-      :type="cardType"
-      :name="currentContact.name"
-      :tel="currentContact.tel"
-      add-text="添加收货地址"
-      @click="choseAddress"
-    />
+    <van-contact-card :type="cardType" :name="currentContact.name" :tel="currentContact.tel" add-text="添加收货地址" @click="choseAddress" />
     <!-- 商品Panel -->
-    <van-panel
-      title="商品"
-      class="allGood"
-    >
+    <van-panel title="商品" class="allGood">
       <div class="allGood-item">
-        <div
-          v-for="(item,index) in orderGoodList"
-          :key="index"
-        >
-          <van-card
-            :title="item.name"
-            :desc="item.fruitDescribe"
-            :num="item.fruitNum"
-            :price="item.price"
-            :thumb="item.picture"
-          >
+        <div v-for="(item,index) in orderGoodList" :key="index">
+          <van-card :title="item.name" :desc="item.fruitDescribe" :num="item.fruitNum" :price="item.price" :thumb="item.picture">
           </van-card>
         </div>
       </div>
     </van-panel>
-
+    <!-- 积分 -->
     <div class="deduction">
       <van-cell-group>
-        <van-coupon-cell
-          :coupons="coupons"
-          :chosen-coupon="chosenCoupon"
-          @click="showCoupon = true"
-        />
-        <van-cell
-          title="积分"
-          class="point-deduction"
-          v-if="user"
-        >
+        <van-coupon-cell :coupons="coupons" :chosen-coupon="chosenCoupon" @click="showCoupon = true" />
+        <van-cell title="积分" class="point-deduction" v-if="user">
           {{user.pointRule.name}}
-          <i
-            class="point-deduction__question van-icon van-icon-question-o"
-            style="color: rgb(51, 136, 255); font-size: 14px;"
-          ></i>
-          <van-switch
-            class="point-deduction__switch"
-            size="20px"
-            v-model="checked"
-          />
+          <i class="point-deduction__question van-icon van-icon-question-o" style="color: rgb(51, 136, 255); font-size: 14px;"></i>
+          <van-switch class="point-deduction__switch" size="20px" v-model="checked" />
         </van-cell>
       </van-cell-group>
     </div>
-
     <!-- 优惠券列表 -->
-    <van-popup
-      v-model="showCoupon"
-      position="bottom"
-    >
-      <van-coupon-list
-        :coupons="coupons"
-        :chosen-coupon="chosenCoupon"
-        :disabled-coupons="disabledCoupons"
-        :show-exchange-bar="false"
-        @change="onChange"
-      />
+    <van-popup v-model="showCoupon" position="bottom">
+      <van-coupon-list :coupons="coupons" :chosen-coupon="chosenCoupon" :disabled-coupons="disabledCoupons" :show-exchange-bar="false" @change="onChange" />
     </van-popup>
-
-    <van-panel
-      title="配送方式"
-      :status="order.freight>0?'快递，运费 ￥'+order.freight:'快递，免运费'"
-      style="margin-top:15px;"
-    >
+    <!-- 配送方式,留言 -->
+    <van-panel title="配送方式" :status="order.freight>0?'快递，运费 ￥'+order.freight:'快递，免运费'" style="margin-top:15px;">
       <van-cell-group>
-        <van-field
-          v-model="order.remark"
-          label="留言"
-          placeholder="点击给卖家留言"
-        />
+        <van-field v-model="order.remark" label="留言" placeholder="点击给卖家留言" />
       </van-cell-group>
     </van-panel>
+    <!-- 优惠，金额合计 -->
     <div>
       <div class="price-panel">
         <p>商品金额
@@ -91,47 +41,16 @@
         <p>运费
           <span>+ ¥ {{order.freight}}</span>
         </p>
-        <p v-if="order">优惠
-          <span v-if="checked">- ¥ {{(order.couponPrice/100)+user.pointRule.price}}</span>
-          <span v-else>- ¥ {{(order.couponPrice/100)}}</span>
-        </p>
+        <p>优惠<span>- ¥ {{favorablePrice|amount}}</span></p>
         <div class="price-panel__total van-hairline--top">
-          合计：
-          <span
-            v-if="checked"
-            class="price-panel__amount theme-color"
-          >
-            ¥{{order.discountTotalPrice+order.freight-(order.couponPrice/100)-user.pointRule.price}}</span>
-          <span
-            v-else
-            class="price-panel__amount theme-color"
-          >
-            ¥{{(order.discountTotalPrice+order.freight-(order.couponPrice/100)).toFixed(2)}}</span>
+          合计<span class="price-panel__amount theme-color">¥{{totalPrice|amount}}</span>
         </div>
       </div>
     </div>
-
-    <van-submit-bar
-      v-if="checked"
-      :loading="loading"
-      :price="(order.discountTotalPrice+order.freight-(order.couponPrice/100)-user.pointRule.price)*100"
-      button-text="提交订单"
-      @submit="onSubmit"
-    />
-    <van-submit-bar
-      v-else
-      :loading="loading"
-      :price="(order.discountTotalPrice+order.freight-(order.couponPrice/100))*100"
-      button-text="提交订单"
-      @submit="onSubmit"
-    />
-    <van-action-sheet
-      v-model="show"
-      :actions="actions"
-      cancel-text="取消"
-      @select="onSelect"
-      @cancel="onCancel"
-    />
+    <!-- 提交订单 -->
+    <van-submit-bar :loading="loading" :price="totalPrice*100" button-text="提交订单" @submit="onSubmit" />
+    <!-- 支付方式：微信 -->
+    <van-action-sheet v-model="show" :actions="actions" cancel-text="取消" @select="onSelect" @cancel="onCancel" />
   </div>
 </template>
 
@@ -183,7 +102,6 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     console.log(to);
-    // 清除订单数据
     if (to.name === "address" || to.name === "addAddress") {
       console.log("不清除订单数据");
       next();
@@ -399,10 +317,26 @@ export default {
     },
     onCancel() {
       this.$toast("已取消支付");
-      this.$router.push({ name: "home" });
+      this.$router.push({ name: "myOrder" });
     }
   },
   computed: {
+    totalPrice(){
+      let price = 0;
+      if(this.checked){
+        price = this.order.discountTotalPrice + this.order.freight - (this.order.couponPrice/100+this.user.pointRule.price);
+      }else{
+        price = this.order.discountTotalPrice + this.order.freight - (this.order.couponPrice/100);
+      }
+      return price>=0.01?price:0.01;
+    },
+    favorablePrice(){
+      if(this.checked){
+        return this.order.couponPrice/100+this.user.pointRule.price;
+      }else{
+        return this.order.couponPrice/100;
+      }
+    },
     cardType() {
       return this.order.addressId !== null ? "edit" : "add";
     }
