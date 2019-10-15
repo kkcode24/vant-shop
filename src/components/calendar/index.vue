@@ -3,11 +3,11 @@
     <div class="wh_content_all">
       <div class="wh_top_changge">
         <li @click="PreMonth(myDate,false)">
-          <div class="wh_jiantou1"></div>
+          <van-icon name="arrow-left" />
         </li>
         <li class="wh_content_li">{{dateTop}}</li>
         <li @click="NextMonth(myDate,false)">
-          <div class="wh_jiantou2"></div>
+          <van-icon name="arrow" />
         </li>
       </div>
       <div class="wh_content">
