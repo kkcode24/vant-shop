@@ -61,6 +61,7 @@ import {
   queryOrderPayResult,
   modifyOrderStatus
 } from "@/api/order";
+import moment from 'moment';
 import { queryOrderInfo } from "@/api/order";
 export default {
   name: "submitOrder",
@@ -154,16 +155,16 @@ export default {
     },
     dealCouponData(couponList) {
       couponList.forEach(item => {
-        let startAt = new Date(item.startTime).getTime();
-        let endAt = new Date(item.endTime).getTime();
+        let startAt = moment(item.startTime).valueOf();
+        let endAt = moment(item.endTime).valueOf();
         let now = Date.now();
         let currObj = {
           id: item.couponId,
           condition: item.couponRule,
           value: item.couponPrice * 100,
           name: item.couponName,
-          startAt: startAt / 1000,
-          endAt: endAt / 1000,
+          startAt: Math.floor(startAt / 1000),
+          endAt: Math.floor(endAt / 1000),
           valueDesc: item.couponPrice,
           unitDesc: "元"
         };

@@ -10,8 +10,9 @@
           <div class="cap-search">
             <van-search placeholder="输入产品的关键字，如“苹果”" />
           </div>
+            <!-- @click="$router.push({ name: 'search',query: { redirect: $route.fullPath } })" -->
           <div
-            @click="$router.push({ name: 'search',query: { redirect: $route.fullPath } })"
+            @click="sorry"
             class="showcase-search-mask"
           >
           </div>
@@ -79,6 +80,9 @@ export default {
     };
   },
   methods: {
+    sorry() {
+      this.$toast("对不起，该功能正在开发中");
+    },
     onLoad() {
       getCouponList(this.page).then(res => {
         if (res.code == 0) {

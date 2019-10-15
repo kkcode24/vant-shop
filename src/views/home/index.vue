@@ -23,7 +23,8 @@
           <div class="cap-search">
             <van-search placeholder="输入产品的关键字，如“苹果”" />
           </div>
-          <div @click="$router.push({ name: 'search' })" class="showcase-search-mask">
+          <!-- @click="$router.push({ name: 'search' })" -->
+          <div @click="sorry" class="showcase-search-mask">
           </div>
         </div>
       </div>
