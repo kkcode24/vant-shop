@@ -1,6 +1,6 @@
 <template>
   <div class="auth">
-    <van-popup v-model="$store.state.auth.show" position="bottom" :style="{ height: '40%',padding: '10px' }">
+    <van-popup v-model="$store.state.auth.show" position="bottom" :style="{ height: '260px',padding: '10px' }">
       <p class="app">本应用申请</p>
       <h2 class="tip">获取你的昵称、头像、地区及性别</h2>
       <div class="user">

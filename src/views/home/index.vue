@@ -7,10 +7,11 @@
     <section class="banner-swipe">
       <van-swipe :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="(item, index) in images" :key="index">
-          <img :src="prefixAttachs+item.image" />
+          <div @click="goDetail(item)">
+            <img :src="prefixAttachs+item.image" />
+          </div>
         </van-swipe-item>
       </van-swipe>
-
       <div class="lazy-component__image">
         <div class="cap-image-ad__swipe__background-center" v-lazy:background-image="adSrc" />
       </div>
@@ -260,7 +261,7 @@ export default {
     },
     goDetail(fruit) {
       this.$router.push({
-        params: { id: fruit.id },
+        params: { id: fruit.isIndexRotationChart===1?fruit.fruitId:fruit.id },
         name: "goods"
       });
     },
@@ -388,8 +389,8 @@ export default {
           h3.title {
             font-weight: normal;
             font-size: 12px;
-            height: 30px;
-            max-height: 30px;
+            height: 35px;
+            max-height: 35px;
             overflow: hidden;
             word-break: break-all;
             text-overflow: ellipsis;
@@ -404,7 +405,7 @@ export default {
           .price-info {
             font-weight: normal;
             padding-right: 25px;
-            height: 30px;
+            height: 25px;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
@@ -482,8 +483,8 @@ export default {
               h3.title {
                 font-weight: normal;
                 font-size: 12px;
-                height: 30px;
-                max-height: 30px;
+                height: 35px;
+                max-height: 35px;
                 overflow: hidden;
                 word-break: break-all;
                 text-overflow: ellipsis;

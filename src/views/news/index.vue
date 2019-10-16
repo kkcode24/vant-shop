@@ -105,9 +105,9 @@ export default {
     showShopping(fruitId) {
       getGoodDetail(fruitId).then(res => {
         if (res.code === 0) {
-          this.$store.dispatch('openSku', fruitId).then(()=>{
-            this.$store.commit('ADD_GOODS', res.data)
-          })
+          this.$store.dispatch("openSku", 1).then(() => {
+            this.$store.commit("ADD_GOODS", res.data);
+          });
         }
       });
     },
@@ -186,8 +186,8 @@ export default {
               h3.title {
                 font-weight: normal;
                 font-size: 12px;
-                height: 30px;
-                max-height: 30px;
+                height: 35px;
+                max-height: 35px;
                 overflow: hidden;
                 word-break: break-all;
                 text-overflow: ellipsis;

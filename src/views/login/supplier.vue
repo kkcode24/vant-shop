@@ -13,7 +13,7 @@
       <van-field
         @click="showPopup('plan')"
         label="预计种植时间"
-        v-model="supplier.planningTime"
+        v-model="supplier.plantingTime"
       />
       <van-field
         label="预计种植数量"
@@ -74,14 +74,14 @@ export default {
       this.show = true;
       this.type = type;
       if (type === "plan") {
-        this.currentDate = new Date(this.supplier.planningTime);
+        this.currentDate = this.supplier.plantingTime?new Date(this.supplier.plantingTime):new Date();
       } else if (type === "maturation") {
-        this.currentDate = new Date(this.supplier.maturationTime);
+        this.currentDate = this.supplier.maturationTime?new Date(this.supplier.maturationTime):new Date();
       }
     },
     confirm(v) {
       if (this.type === "plan") {
-        this.supplier.planningTime = moment(v).format("YYYY-MM-DD");
+        this.supplier.plantingTime = moment(v).format("YYYY-MM-DD");
       } else if (this.type === "maturation") {
         this.supplier.maturationTime = moment(v).format("YYYY-MM-DD");
       }
@@ -101,8 +101,8 @@ export default {
       getSupplier().then(res => {
         if (res.code === 0) {
           this.supplier = Object.assign({}, res.data, {
-            planningTime: moment(res.data.planningTime).format("YYYY-MM-DD"),
-            maturationTime: moment(res.data.maturationTime).format("YYYY-MM-DD")
+            plantingTime: res.data.plantingTime===null?null:moment(res.data.plantingTime).format("YYYY-MM-DD"),
+            maturationTime: res.data.maturationTime===null?null:moment(res.data.maturationTime).format("YYYY-MM-DD")
           });
         }
       });
@@ -111,5 +111,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.van-cell {
+  line-height: 0.84rem;
+  .van-field__label {
+    margin-right: 10px;
+  }
+}
 </style>
