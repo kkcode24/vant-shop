@@ -4,7 +4,7 @@
       <van-field
         label="用户名"
         v-model="supplier.supplierName"
-        disabled
+        readonly
       />
       <van-field
         label="供应水果"
