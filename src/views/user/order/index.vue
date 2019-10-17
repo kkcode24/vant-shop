@@ -19,8 +19,8 @@
                 <div v-if="item.status===0" class="order-btn">
                   <van-button @click="payOrder(item)" type="danger" size="small">付款</van-button>
                 </div>
-                <div v-if="item.status===2" class="order-btn">
-                  <van-button @click="signfor(item)" type="primary" size="small">签收</van-button>
+                <div v-if="item.status===5" class="order-btn">
+                  <van-button @click="signfor(item)" type="primary" size="small">评价</van-button>
                 </div>
               </van-panel>
             </div>
@@ -74,7 +74,7 @@ export default {
         size: 5
       },
       actions: [{ name: "微信支付", payType: "wx" }],
-      tabs: ["全部", "待付款", "待发货", "待收货", "已完成"],
+      tabs: ["全部", "待付款", "待发货", "待收货", "待评价"],
       statusText: ["待付款", "待发货", "已发货", "待评价", "已取消", "已完成"]
     };
   },
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     change(i) {
-      let statusArr = ["",0,1,2,5];
+      let statusArr = ["",0,1,2,3];
       this.currentActive = i;
       this.page = {
         status: statusArr[i],
@@ -128,10 +128,9 @@ export default {
         if(res.code===0){
           that.$toast({
             type: "success",
-            message: "签收成功",
+            message: "评价成功",
             onClose: function() {
-              // 订单完成页签
-              that.change(4);
+              that.change(0);
             }
           });
         }
