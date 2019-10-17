@@ -247,10 +247,11 @@ export default {
       });
     },
     onSelect(item) {
+      let that = this;
       this.show = false;
       if (item.payType === "wx") {
         // 微信支付
-        billWXPay(this.orderId)
+        billWXPay(that.orderId)
           .then(res => {
             function onBridgeReady(e, d) {
               WeixinJSBridge.invoke(
@@ -265,24 +266,24 @@ export default {
                 },
                 function(res) {
                   if (res.err_msg == "get_brand_wcpay_request:ok") {
-                    queryOrderPayResult(this.orderId).then(response => {
+                    queryOrderPayResult(that.orderId).then(response => {
                       if (response.code === 0) {
-                        this.$toast("支付成功");
+                        that.$toast("支付成功");
                         // 修改订单状态
-                        modifyOrderStatus(this.orderId).then(r => {
+                        modifyOrderStatus(that.orderId).then(r => {
                           if (r.code === 0) {
-                            this.$router.push({ name: "home" });
+                            that.$router.push({ name: "home" });
                           }
                         });
                       } else {
-                        this.$toast("支付失败");
-                        this.$router.push({ name: "home" });
+                        that.$toast("支付失败");
+                        that.$router.push({ name: "home" });
                       }
                     });
                   }
                   if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                    this.$toast("支付已取消");
-                    this.$router.push({ name: "home" });
+                    that.$toast("支付已取消");
+                    that.$router.push({ name: "home" });
                   }
                 }
               );

@@ -36,7 +36,7 @@
                     <div class="sale-price" style="color: rgb(255, 68, 68);">
                       <span class="price-tag">¥</span>{{item.price | amount}}
                     </div>
-                    <span @click.stop="addShopCart(1)">
+                    <span @click.stop="addShopCart(item.id)">
                       <van-icon name="cart-circle-o" class="shoppingCart" />
                     </span>
                 </div>

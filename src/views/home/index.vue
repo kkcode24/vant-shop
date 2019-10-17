@@ -215,6 +215,8 @@ export default {
         });
       }
     });
+    // 清除本地订单数据
+    this.$store.dispatch("clearOrderCache");
   },
   methods: {
     sorry() {
